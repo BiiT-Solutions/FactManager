@@ -1,0 +1,1 @@
+INSERT INTO `facts` VALUES (1,'2019-01-30', 'test fact');
