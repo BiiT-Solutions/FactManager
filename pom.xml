@@ -6,7 +6,7 @@
 
     <groupId>com.biit</groupId>
     <artifactId>fact-manager</artifactId>
-    <version>0.1</version>
+    <version>0.1.1-SNAPSHOT</version>
     <name>FactManager</name>
     <modules>
         <module>fact-manager-logger</module>
@@ -24,34 +24,25 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <profiles>
-        <profile>
-            <id>dev-azure-com-maisteringbv-mbv-val-artifacts</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <distributionManagement>
-                <repository>
-                    <id>dev-azure-com-maisteringbv-mbv-val-artifacts</id>
-                    <name>libs-releases</name>
-                    <url>https://pkgs.dev.azure.com/maisteringbv/_packaging/MBV-VAL-ARTIFACTS/maven/v1</url>
-                </repository>
-            </distributionManagement>
-        </profile>
-    </profiles>
-
-    <repositories>
+    <distributionManagement>
         <repository>
-            <id>dev-azure-com-maisteringbv-mbv-val-artifacts</id>
-            <url>https://pkgs.dev.azure.com/maisteringbv/_packaging/MBV-VAL-ARTIFACTS/maven/v1</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+            <id>central</id>
+            <name>libs-releases</name>
+            <url>https://artifactory.biit-solutions.com/artifactory/libs-release</url>
         </repository>
-    </repositories>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>libs-snapshot</name>
+            <url>https://artifactory.biit-solutions.com/artifactory/libs-snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <scm>
+        <connection>scm:git:git.biit-solutions.com:FactManager.git</connection>
+        <developerConnection>scm:git:git.biit-solutions.com:FactManager.git</developerConnection>
+        <tag>FactManager</tag>
+    </scm>
+
 
     <build>
         <finalName>factManager</finalName>
@@ -119,6 +110,7 @@
         <log4j.version>1.2.17</log4j.version>
         <main.basedir>${project.basedir}</main.basedir>
         <microsoft-insights.version>1.1.2</microsoft-insights.version>
+        <project.scm.id>git</project.scm.id>
         <org.testng.version>6.8.13</org.testng.version>
         <spring-boot.version>2.1.8.RELEASE</spring-boot.version>
         <springfox-swagger.version>2.9.2</springfox-swagger.version>
