@@ -11,7 +11,7 @@
     <parent>
         <artifactId>fact-manager</artifactId>
         <groupId>com.biit</groupId>
-        <version>0.1</version>
+        <version>0.1.1-SNAPSHOT</version>
     </parent>
 
 
@@ -41,11 +41,6 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.biit</groupId>
-            <artifactId>action-underlying-model</artifactId>
-            <version>${action-underlying-model.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

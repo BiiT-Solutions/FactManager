@@ -114,7 +114,6 @@
         <org.testng.version>6.8.13</org.testng.version>
         <spring-boot.version>2.1.8.RELEASE</spring-boot.version>
         <springfox-swagger.version>2.9.2</springfox-swagger.version>
-        <action-underlying-model.version>[0.6,0.7)</action-underlying-model.version>
         <azure-storage.version>8.4.0</azure-storage.version>
         <postgresql.version>42.2.10</postgresql.version>
     </properties>

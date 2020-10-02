@@ -1,7 +1,5 @@
 package com.biit.factmanager.rest;
 
-import com.biit.action.underlying.model.entities.CompleteCustomField;
-import com.biit.action.underlying.model.entities.Task;
 import com.biit.factmanager.rest.utils.ArtGenerator;
 import com.microsoft.applicationinsights.TelemetryClient;
 import org.springframework.boot.SpringApplication;
@@ -40,7 +38,7 @@ import java.util.Collections;
 public class FactManagerServicesServer {
 	private static final String SWAGGER_TITLE = "FactManager";
 	private static final String SWAGGER_REST_LOCATION = "com.biit.factmanager.rest";
-	private static final Class[] IGNORED_CLASSES = {Task.class};
+	private static final Class[] IGNORED_CLASSES = {};
 
 	public static void main(String[] args) {
 		if (System.getenv().containsKey("developer")) {
@@ -49,14 +47,14 @@ public class FactManagerServicesServer {
 		SpringApplication.run(FactManagerServicesServer.class, args);
 	}
 
-	@Bean
+	/*@Bean
 	public Docket templateApi() {
 		return new Docket(DocumentationType.SWAGGER_2)
 				// OpenAPI doc cannot handle period
 				.directModelSubstitute(Period.class, String.class).directModelSubstitute(CompleteCustomField.class, String.class).select()
 				.apis(RequestHandlerSelectors.basePackage(SWAGGER_REST_LOCATION)).paths(PathSelectors.any()).build()
 				.forCodeGeneration(true).apiInfo(getApiInfo()).ignoredParameterTypes(IGNORED_CLASSES);
-	}
+	}*/
 
 	private ApiInfo getApiInfo() {
 		return new ApiInfo(SWAGGER_TITLE, SWAGGER_TITLE, "1.0", "",
