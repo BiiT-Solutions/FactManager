@@ -103,7 +103,7 @@
 
     <properties>
         <azure.version>1.23.0</azure.version>
-        <biit-common-utils.version>[0.4,0.5)</biit-common-utils.version>
+        <biit-common-utils.version>[1.0,1.1)</biit-common-utils.version>
         <checkstyle.version>2.17</checkstyle.version>
         <findbug.version>3.0.5</findbug.version>
         <spotbugs.version>4.0.4</spotbugs.version>

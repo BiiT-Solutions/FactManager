@@ -15,8 +15,8 @@ import java.util.Properties;
 public class AppConfiguration implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {
     private ConfigurationClient configurationClient = null;
     private final String appConfigurationConn = System.getenv("AppConfigConnection");
-    private final boolean developerMode = System.getenv().containsKey("developer");
-
+    // private final boolean developerMode = System.getenv().containsKey("developer");
+    private static final boolean developerMode = true;
     private ConfigurationClient getConfigurationClient() {
         if (configurationClient == null) {
             configurationClient = new ConfigurationClientBuilder()
