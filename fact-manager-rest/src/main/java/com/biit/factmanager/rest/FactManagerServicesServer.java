@@ -1,6 +1,6 @@
 package com.biit.factmanager.rest;
 
-import com.biit.factmanager.rest.utils.ArtGenerator;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -36,23 +36,19 @@ import java.util.Collections;
 public class FactManagerServicesServer {
 	private static final String SWAGGER_TITLE = "FactManager";
 	private static final String SWAGGER_REST_LOCATION = "com.biit.factmanager.rest";
-	private static final Class[] IGNORED_CLASSES = {};
 
 	public static void main(String[] args) {
-		if (System.getenv().containsKey("developer")) {
-			printWelcome();
-		}
 		SpringApplication.run(FactManagerServicesServer.class, args);
 	}
 
-	/*@Bean
-	public Docket templateApi() {
+	@Bean
+	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2)
-				// OpenAPI doc cannot handle period
-				.directModelSubstitute(Period.class, String.class).directModelSubstitute(CompleteCustomField.class, String.class).select()
-				.apis(RequestHandlerSelectors.basePackage(SWAGGER_REST_LOCATION)).paths(PathSelectors.any()).build()
-				.forCodeGeneration(true).apiInfo(getApiInfo()).ignoredParameterTypes(IGNORED_CLASSES);
-	}*/
+				.select()
+				.apis(RequestHandlerSelectors.any())
+				.paths(PathSelectors.any())
+				.build();
+	}
 
 	private ApiInfo getApiInfo() {
 		return new ApiInfo(SWAGGER_TITLE, SWAGGER_TITLE, "1.0", "",
@@ -83,10 +79,5 @@ public class FactManagerServicesServer {
 		executor.setWaitForTasksToCompleteOnShutdown(true);
 		executor.setThreadNamePrefix("Rest_Async-");
 		return executor;
-	}
-
-	private static void printWelcome() {
-		System.err.println("Welcome developer!");
-		ArtGenerator.print(System.getProperty("user.name"), 10);
 	}
 }
