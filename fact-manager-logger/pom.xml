@@ -47,17 +47,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-cloud-azure-appconfiguration-config</artifactId>
-            <version>1.2.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>applicationinsights-spring-boot-starter</artifactId>
-            <version>${microsoft-insights.version}</version>
-        </dependency>
     </dependencies>
 
     <build>

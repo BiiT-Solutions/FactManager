@@ -1,7 +1,6 @@
 package com.biit.factmanager.rest;
 
 import com.biit.factmanager.rest.utils.ArtGenerator;
-import com.microsoft.applicationinsights.TelemetryClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -34,7 +33,6 @@ import java.util.Collections;
 @EnableJpaRepositories({"com.biit.factmanager.persistence.repositories"})
 @EntityScan({"com.biit.factmanager.persistence.entities"})
 @EnableSwagger2
-@Import(TelemetryClient.class)
 public class FactManagerServicesServer {
 	private static final String SWAGGER_TITLE = "FactManager";
 	private static final String SWAGGER_REST_LOCATION = "com.biit.factmanager.rest";

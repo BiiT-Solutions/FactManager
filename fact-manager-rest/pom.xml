@@ -25,23 +25,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-cloud-starter-azure-appconfiguration-config</artifactId>
-            <version>1.2.5</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-cloud-azure-feature-management-web</artifactId>
-            <version>1.2.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>spring-cloud-azure-appconfiguration-config</artifactId>
-            <version>1.2.2</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
@@ -68,11 +51,7 @@
             </exclusions>
         </dependency>
         <!-- Telemetry -->
-        <dependency>
-            <groupId>com.microsoft.azure</groupId>
-            <artifactId>azure</artifactId>
-            <version>${azure.version}</version>
-        </dependency>
+
         <!-- Add Log4j2 Dependency -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
