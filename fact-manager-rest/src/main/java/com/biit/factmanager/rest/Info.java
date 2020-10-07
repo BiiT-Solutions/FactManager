@@ -2,20 +2,24 @@ package com.biit.factmanager.rest;
 
 import com.biit.factmanager.logger.FactManagerLogger;
 import io.swagger.annotations.ApiOperation;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import javax.naming.AuthenticationException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
-
-import javax.naming.AuthenticationException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 public class Info {
@@ -50,7 +54,7 @@ public class Info {
 
         if (!hash.equalsIgnoreCase(infoPassword)) {
             FactManagerLogger.warning(getClass().getName(),
-                    "IP :{}  tried to get Info with an invalid password", request.getRemoteAddr());
+                    "IP :" + request.getRemoteAddr() + "  tried to get Info with an invalid password");
             throw new AuthenticationException("Incorrect Password");
         }
         final HashMap<String, String> info = new HashMap<>();
