@@ -1,6 +1,7 @@
 package com.biit.factmanager.rest.api;
 
 import com.biit.factmanager.core.providers.FactProvider;
+import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -29,6 +30,7 @@ public class FactServices {
 	@ResponseStatus(value = HttpStatus.OK)
 	@GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Collection<Fact> getAllFacts(HttpServletRequest httpRequest) {
+		FactManagerLogger.info(this.getClass().getName(), "Get all facts");
 		return factProvider.getAll();
 	}
 
@@ -38,6 +40,7 @@ public class FactServices {
 	@PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Fact addFact(@ApiParam(value = "Notification Request", required = true) @RequestBody Fact fact,
 						HttpServletRequest httpRequest) {
+		FactManagerLogger.info(this.getClass().getName(), "Add fact");
 		return factProvider.add(fact);
 	}
 
@@ -47,6 +50,7 @@ public class FactServices {
 	@DeleteMapping(value = "")
 	public void deleteFact(@ApiParam(value = "Notification Request", required = true) @RequestBody Fact fact,
 						HttpServletRequest httpRequest) {
+		FactManagerLogger.info(this.getClass().getName(), "Remove fact");
 		factProvider.delete(fact);
 	}
 
