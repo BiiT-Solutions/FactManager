@@ -24,7 +24,7 @@ public class FactServices {
 		this.factProvider = factProvider;
 	}
 
-	@ApiOperation(value = "Get all facts", notes = "Parameters:")
+	/*@ApiOperation(value = "Get all facts", notes = "Parameters:")
 	@ResponseStatus(value = HttpStatus.OK)
 	@GetMapping(value = "")
 	public Collection<Fact> getAllFacts(HttpServletRequest httpRequest) {
@@ -38,7 +38,7 @@ public class FactServices {
 	public Fact addFact(@ApiParam(value = "Notification Request", required = true) @RequestBody Fact fact,
 						HttpServletRequest httpRequest) {
 		return factProvider.add(fact);
-	}
+	}*/
 
 	@ApiOperation(value = "Deletes a fact", notes = "Parameters:\n"
 			+ "fact (required): Fact object to be removed.")
