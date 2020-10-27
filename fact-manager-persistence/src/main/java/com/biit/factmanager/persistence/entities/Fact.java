@@ -12,23 +12,131 @@ import javax.persistence.*;
 @Table(name = "facts")
 public class Fact {
 
+    public static final int MAX_UNIQUE_COLUMN_LENGTH = 190;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
 
+    @Column(name = "patient_id")
+    private long patientId;
+
+    @Column(name = "organization_id")
+    private long organizationId;
+
+    @Column(length = MAX_UNIQUE_COLUMN_LENGTH)
+    private String category;
+
+    @Column(length = MAX_UNIQUE_COLUMN_LENGTH)
+    private String question;
+
+    @Column(length = MAX_UNIQUE_COLUMN_LENGTH)
+    private String answer;
+
+    @Column(name = "score")
+    private double score;
+
+    @Column(length = MAX_UNIQUE_COLUMN_LENGTH)
+    private String xpath;
+
+    @Column(length = MAX_UNIQUE_COLUMN_LENGTH)
+    private String examination_name;
+
+    @Column(name = "examination_version")
+    private long examination_version;
+
+    @Column(name = "company_id")
+    private long companyId;
+
     @Column(name = "created_at")
     private Date createdAt;
-
-
-    @Column(name = "fact")
-    private String fact;
 
 
     public Fact() {
         setCreatedAt(new Date());
     }
 
+
+    public long getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(long patientId) {
+        this.patientId = patientId;
+    }
+
+    public long getOrganizationId() {
+        return organizationId;
+    }
+
+    public void setOrganizationId(long organizationId) {
+        this.organizationId = organizationId;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    public double getScore() {
+        return score;
+    }
+
+    public void setScore(double score) {
+        this.score = score;
+    }
+
+    public String getXpath() {
+        return xpath;
+    }
+
+    public void setXpath(String xpath) {
+        this.xpath = xpath;
+    }
+
+    public String getExamination_name() {
+        return examination_name;
+    }
+
+    public void setExamination_name(String examination_name) {
+        this.examination_name = examination_name;
+    }
+
+    public long getExamination_version() {
+        return examination_version;
+    }
+
+    public void setExamination_version(long examination_version) {
+        this.examination_version = examination_version;
+    }
+
+    public long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(long companyId) {
+        this.companyId = companyId;
+    }
 
     public Date getCreatedAt() {
         return createdAt == null ? null : new Date(createdAt.getTime());
@@ -38,11 +146,6 @@ public class Fact {
         this.createdAt = createdAt == null ? null : new Date(createdAt.getTime());
     }
 
-    public String getFact(){
-        return fact;
-    }
-
-    public void setFact(String fact) { this.fact = fact; }
 
 
     public Integer getId() {

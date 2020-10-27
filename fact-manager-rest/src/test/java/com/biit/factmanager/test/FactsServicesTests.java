@@ -1,6 +1,5 @@
 package com.biit.factmanager.test;
 
-import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.persistence.repositories.FactRepository;
 import com.biit.factmanager.rest.api.FactServices;

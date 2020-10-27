@@ -43,4 +43,11 @@ public class FactProvider {
         factRepository.delete(fact);
     }
 
+    /**
+     * Returns the number of entities available.
+     *
+     * @return the number of entities.
+     */
+    public long count() { return factRepository.count(); }
+
 }
