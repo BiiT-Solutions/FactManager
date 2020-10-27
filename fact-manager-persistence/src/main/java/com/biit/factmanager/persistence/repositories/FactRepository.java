@@ -13,5 +13,11 @@ import java.util.Collection;
 @Transactional
 public interface FactRepository extends CrudRepository<Fact, Integer> {
 
+    Collection<Fact> findByPatientId(long patientId);
 
+    Collection<Fact> findByPatientIdAndExaminationName(long patientId, String examinationName);
+
+    Collection<Fact> findByCompanyIdAndExaminationName(long companyId, String examinationName);
+
+    Collection<Fact> findByOrganizationIdAndExaminationName(long organizationId, String examinationName);
 }
