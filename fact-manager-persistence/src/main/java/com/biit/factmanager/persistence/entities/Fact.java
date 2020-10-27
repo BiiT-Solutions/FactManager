@@ -40,11 +40,11 @@ public class Fact {
     @Column(length = MAX_UNIQUE_COLUMN_LENGTH)
     private String xpath;
 
-    @Column(length = MAX_UNIQUE_COLUMN_LENGTH)
-    private String examination_name;
+    @Column(length = MAX_UNIQUE_COLUMN_LENGTH, name = "examination_name")
+    private String examinationName;
 
     @Column(name = "examination_version")
-    private long examination_version;
+    private long examinationVersion;
 
     @Column(name = "company_id")
     private long companyId;
@@ -56,7 +56,6 @@ public class Fact {
     public Fact() {
         setCreatedAt(new Date());
     }
-
 
     public long getPatientId() {
         return patientId;
@@ -114,20 +113,20 @@ public class Fact {
         this.xpath = xpath;
     }
 
-    public String getExamination_name() {
-        return examination_name;
+    public String getExaminationName() {
+        return examinationName;
     }
 
-    public void setExamination_name(String examination_name) {
-        this.examination_name = examination_name;
+    public void setExaminationName(String examinationName) {
+        this.examinationName = examinationName;
     }
 
-    public long getExamination_version() {
-        return examination_version;
+    public long getExaminationVersion() {
+        return examinationVersion;
     }
 
-    public void setExamination_version(long examination_version) {
-        this.examination_version = examination_version;
+    public void setExaminationVersion(long examinationVersion) {
+        this.examinationVersion = examinationVersion;
     }
 
     public long getCompanyId() {
