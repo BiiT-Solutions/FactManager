@@ -33,12 +33,12 @@ public class FactRepositoryTests extends AbstractTransactionalTestNGSpringContex
 
 	@Test(dependsOnMethods = "getAllAtTheBeginning")
 	private void addFact() {
-		Fact factTosave = new Fact();
-		factTosave.setPatientId(FACT_PATIENT_ID);
-		factTosave.setExaminationName(FACT_EXAMINATION_NAME);
-		factTosave.setCompanyId(FACT_COMPANY_ID);
-		factTosave.setOrganizationId(FACT_ORGANIZATION_ID);
-		fact =  factRepository.save(factTosave);
+		Fact factToSave = new Fact();
+		factToSave.setPatientId(FACT_PATIENT_ID);
+		factToSave.setExaminationName(FACT_EXAMINATION_NAME);
+		factToSave.setCompanyId(FACT_COMPANY_ID);
+		factToSave.setOrganizationId(FACT_ORGANIZATION_ID);
+		fact =  factRepository.save(factToSave);
 		Assert.assertEquals(factRepository.count(), 1);
 	}
 

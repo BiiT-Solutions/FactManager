@@ -11,6 +11,9 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SpringBootTest
 @Test(groups = { "factsServices" })
 public class FactsServicesTests extends AbstractTestNGSpringContextTests {
@@ -18,11 +21,9 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private FactServices factServices;
+    
 
-    @Autowired
-    private FactRepository factRepository;
-
-    private Fact fact = null;
+    private List<Fact> facts = new ArrayList<>();
 
 
     @BeforeClass
@@ -31,28 +32,36 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void addFact() {
+    public void addFacts() {
         // One fact is added by default to test
         Assert.assertEquals(factServices.getAllFacts(null).size(), 1);
-        fact = factServices.addFact(new Fact(), null);
-        Assert.assertNotNull(fact);
-        Assert.assertEquals(factServices.getAllFacts(null).size(), 2);
+        // Save 2 empty facts
+        facts.add(new Fact());
+        facts.add(new Fact());
+        facts = factServices.addFactList( facts, null);
+        Assert.assertNotNull(facts);
+        Assert.assertEquals(facts.size(), 2);
+        // 2 saved + the one added at the beginning
+        Assert.assertEquals(factServices.getAllFacts(null).size(), 3);
     }
 
-    @Test(dependsOnMethods = "addFact")
+    @Test(dependsOnMethods = "addFacts")
     public void removeFact() {
-        Assert.assertEquals(factServices.getAllFacts(null).size(), 2);
-        factServices.deleteFact(fact, null);
-        Assert.assertNotNull(fact);
+        Assert.assertEquals(factServices.getAllFacts(null).size(), 3);
+        Assert.assertNotNull(facts);
+        for (Fact fact: facts) {
+            factServices.deleteFact(fact, null);
+        }
         Assert.assertEquals(factServices.getAllFacts(null).size(), 1);
-        fact = null;
     }
 
 
     @AfterClass
     public void cleanDatabase() {
-        if(fact != null){
-            factRepository.delete(fact);
+        if(facts != null){
+            for (Fact fact: facts) {
+                factServices.deleteFact(fact, null);
+            }
         }
     }
 }

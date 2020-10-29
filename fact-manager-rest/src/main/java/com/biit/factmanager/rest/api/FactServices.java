@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @RequestMapping(value = "/facts")
 @RestController
@@ -34,7 +35,7 @@ public class FactServices {
 		return factProvider.getAll();
 	}
 
-	@ApiOperation(value = "Adds a new fact", notes = "Parameters:\n"
+	/*@ApiOperation(value = "Adds a new fact", notes = "Parameters:\n"
 			+ "fact (required): Fact object to be added")
 	@ResponseStatus(value = HttpStatus.CREATED)
 	@PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -42,6 +43,21 @@ public class FactServices {
 						HttpServletRequest httpRequest) {
 		FactManagerLogger.info(this.getClass().getName(), "Add fact");
 		return factProvider.add(fact);
+	}*/
+
+	@ApiOperation(value = "Save a list of facts", notes = "Parameters:\n"
+			+ "facts (required): List of Fact objects to be added")
+	@ResponseStatus(value = HttpStatus.CREATED)
+	@PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<Fact> addFactList(@ApiParam(value = "Notification Request", required = true) @RequestBody List<Fact> facts,
+						HttpServletRequest httpRequest) {
+		FactManagerLogger.info(this.getClass().getName(), "Save a list of facts");
+		List<Fact> savedFacts = new ArrayList<>();
+		for (Fact fact: facts) {
+			Fact savedFact = factProvider.add(fact);
+			savedFacts.add(savedFact);
+		}
+		return savedFacts;
 	}
 
 	@ApiOperation(value = "Deletes a fact", notes = "Parameters:\n"
