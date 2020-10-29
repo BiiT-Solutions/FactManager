@@ -1,6 +1,7 @@
 package com.biit.factmanager.test;
 
 import com.biit.factmanager.persistence.entities.Fact;
+import com.biit.factmanager.persistence.enums.Level;
 import com.biit.factmanager.persistence.repositories.FactRepository;
 import com.biit.factmanager.rest.api.FactServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,8 @@ import java.util.List;
 @Test(groups = { "factsServices" })
 public class FactsServicesTests extends AbstractTestNGSpringContextTests {
 
-
     @Autowired
     private FactServices factServices;
-    
 
     private List<Fact> facts = new ArrayList<>();
 
@@ -34,7 +33,7 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
     @Test
     public void addFacts() {
         // One fact is added by default to test
-        Assert.assertEquals(factServices.getAllFacts(null).size(), 1);
+        Assert.assertEquals(factServices.getFacts(1L, "examination_name", Level.COMPANY, null).size(), 1);
         // Save 2 empty facts
         facts.add(new Fact());
         facts.add(new Fact());
@@ -42,17 +41,17 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
         Assert.assertNotNull(facts);
         Assert.assertEquals(facts.size(), 2);
         // 2 saved + the one added at the beginning
-        Assert.assertEquals(factServices.getAllFacts(null).size(), 3);
+        Assert.assertEquals(factServices.getFacts(1L, "examination_name", null, null).size(), 3);
     }
 
     @Test(dependsOnMethods = "addFacts")
     public void removeFact() {
-        Assert.assertEquals(factServices.getAllFacts(null).size(), 3);
+        Assert.assertEquals(factServices.getFacts(1L, "", null, null).size(), 3);
         Assert.assertNotNull(facts);
         for (Fact fact: facts) {
             factServices.deleteFact(fact, null);
         }
-        Assert.assertEquals(factServices.getAllFacts(null).size(), 1);
+        Assert.assertEquals(factServices.getFacts(1L, null, null, null).size(), 1);
     }
 
 

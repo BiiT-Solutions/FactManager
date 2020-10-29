@@ -3,6 +3,7 @@ package com.biit.factmanager.rest.api;
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
+import com.biit.factmanager.persistence.enums.Level;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,14 @@ public class FactServices {
 	@ApiOperation(value = "Get all facts", notes = "Parameters:")
 	@ResponseStatus(value = HttpStatus.OK)
 	@GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Collection<Fact> getAllFacts(HttpServletRequest httpRequest) {
+	public Collection<Fact> getFacts(
+			@ApiParam(value = "Id", required = false) @RequestParam(value = "id") Long id,
+			@ApiParam(value = "ExaminationName", required = false) @RequestParam(value = "examinationName") String examinationName,
+			@ApiParam(value = "Level: [PATIENT, COMPANY, ORGANIZATION]", required = false) @RequestParam(value = "level") Level level,
+			HttpServletRequest httpRequest
+	) {
 		FactManagerLogger.info(this.getClass().getName(), "Get all facts");
-		return factProvider.getAll();
+		return factProvider.getFiltered(level, id, examinationName);
 	}
 
 	/*@ApiOperation(value = "Adds a new fact", notes = "Parameters:\n"
@@ -52,9 +58,9 @@ public class FactServices {
 	public List<Fact> addFactList(@ApiParam(value = "Notification Request", required = true) @RequestBody List<Fact> facts,
 						HttpServletRequest httpRequest) {
 		FactManagerLogger.info(this.getClass().getName(), "Save a list of facts");
-		List<Fact> savedFacts = new ArrayList<>();
-		for (Fact fact: facts) {
-			Fact savedFact = factProvider.add(fact);
+		final List<Fact> savedFacts = new ArrayList<>();
+		for (final Fact fact: facts) {
+			final Fact savedFact = factProvider.add(fact);
 			savedFacts.add(savedFact);
 		}
 		return savedFacts;

@@ -2,6 +2,7 @@ package com.biit.factmanager.core.providers;
 
 import com.biit.factmanager.core.providers.exceptions.FactNotFoundException;
 import com.biit.factmanager.persistence.entities.Fact;
+import com.biit.factmanager.persistence.enums.Level;
 import com.biit.factmanager.persistence.repositories.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,36 @@ public class FactProvider {
         return StreamSupport.stream(factRepository.findAll().spliterator(), false).collect(Collectors.toSet());
     }
 
+    public Collection<Fact> getPatientLevel(long id, String examinationName) {
+        return StreamSupport.stream(factRepository.findByPatientIdAndExaminationName(id, examinationName).spliterator(),
+                false).collect(Collectors.toSet());
+    }
+
+    public Collection<Fact> getCompanyLevel(long id, String examinationName) {
+        return StreamSupport.stream(factRepository.findByCompanyIdAndExaminationName(id, examinationName).spliterator(),
+                false).collect(Collectors.toSet());
+    }
+
+    public Collection<Fact> getOrganizationLevel(long id, String examinationName) {
+        return StreamSupport.stream(factRepository.findByOrganizationIdAndExaminationName(id, examinationName).spliterator(),
+                false).collect(Collectors.toSet());
+    }
+
+    public Collection<Fact> getFiltered(Level level, Long id, String organizationName) {
+        if (level != null && id != null) {
+            switch (level) {
+                case PATIENT:
+                    return getPatientLevel(id, organizationName);
+                case COMPANY:
+                    return getCompanyLevel(id, organizationName);
+                case ORGANIZATION:
+                    return getOrganizationLevel(id, organizationName);
+                default:
+                    return getAll();
+            }
+        }
+        return getAll();
+    }
 
     /**
      * Saves a given entity. Use the returned instance for further operations as the save operation might have changed the
@@ -56,6 +87,8 @@ public class FactProvider {
      *
      * @return the number of entities.
      */
-    public long count() { return factRepository.count(); }
+    public long count() {
+        return factRepository.count();
+    }
 
 }
