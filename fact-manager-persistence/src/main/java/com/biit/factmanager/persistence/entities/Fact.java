@@ -150,4 +150,22 @@ public class Fact {
     public Integer getId() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return "Fact{" +
+                "id=" + id +
+                ", patientId=" + patientId +
+                ", companyId=" + companyId +
+                ", organizationId=" + organizationId +
+                ", examinationVersion=" + examinationVersion +
+                ", examinationName=" + examinationName +
+                ", category=" + category +
+                ", question=" + question +
+                ", answer=" + answer +
+                ", xpath=" + xpath +
+                ", createdAt=" + createdAt +
+                '}';
+    }
+
 }

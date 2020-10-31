@@ -62,6 +62,7 @@ public class FactServices {
 		for (final Fact fact: facts) {
 			final Fact savedFact = factProvider.add(fact);
 			savedFacts.add(savedFact);
+			FactManagerLogger.debug(this.getClass().getName(), "Save fact " + fact.toString());
 		}
 		return savedFacts;
 	}
