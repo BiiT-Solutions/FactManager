@@ -57,21 +57,22 @@ public class FactServices {
 	@PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<Fact> addFactList(@ApiParam(value = "Notification Request", required = true) @RequestBody List<Fact> facts,
 						HttpServletRequest httpRequest) {
-		FactManagerLogger.info(this.getClass().getName(), "Save a list of facts");
+		/*FactManagerLogger.info(this.getClass().getName(), "Saving a list of facts");
 		final List<Fact> savedFacts = new ArrayList<>();
 		for (final Fact fact: facts) {
 			final Fact savedFact = factProvider.add(fact);
 			savedFacts.add(savedFact);
 			FactManagerLogger.debug(this.getClass().getName(), "Save fact " + fact.toString());
-		}
-		return savedFacts;
+		}*/
+		// return savedFacts;
+		return factProvider.save(facts);
 	}
 
 	@ApiOperation(value = "Deletes a fact", notes = "Parameters:\n"
 			+ "fact (required): Fact object to be removed.")
 	@ResponseStatus(value = HttpStatus.OK)
 	@DeleteMapping(value = "")
-	public void deleteFact(@ApiParam(value = "Notification Request", required = true) @RequestBody Fact fact,
+	public void deleteFact(@ApiParam(value = "Fact entity", required = true) @RequestBody Fact fact,
 						HttpServletRequest httpRequest) {
 		FactManagerLogger.info(this.getClass().getName(), "Remove fact");
 		factProvider.delete(fact);

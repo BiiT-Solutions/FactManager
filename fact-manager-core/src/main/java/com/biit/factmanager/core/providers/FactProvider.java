@@ -1,13 +1,16 @@
 package com.biit.factmanager.core.providers;
 
 import com.biit.factmanager.core.providers.exceptions.FactNotFoundException;
+import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.persistence.enums.Level;
 import com.biit.factmanager.persistence.repositories.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -72,6 +75,24 @@ public class FactProvider {
      */
     public Fact add(Fact fact) {
         return factRepository.save(fact);
+    }
+
+    /**
+     * Saves the given entity List. Use the returned instance for further operations as the save operation might have changed the
+     * entity instance completely.
+     *
+     * @param facts must not be {@literal null}.
+     * @return the List of saved entitis; will never be {@literal null}.
+     * @throws IllegalArgumentException in case the given {@literal entity} is {@literal null}.
+     */
+    public List<Fact> save(List<Fact> facts) {
+        final List<Fact> savedFacts = new ArrayList<>();
+        for (final Fact fact: facts) {
+            final Fact savedFact = add(fact);
+            savedFacts.add(savedFact);
+            FactManagerLogger.debug(this.getClass().getName(), "Saved fact " + fact.toString());
+        }
+        return savedFacts;
     }
 
     public Fact update(Fact fact) {

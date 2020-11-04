@@ -16,8 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
-@Test(groups = { "factsServices" })
+@Test(groups = {"factsServices"})
 public class FactsServicesTests extends AbstractTestNGSpringContextTests {
+
+    private static final String FACT_EXAMINATION_NAME = "examination_name";
+    private static final Long FACT_ID = 1L;
 
     @Autowired
     private FactServices factServices;
@@ -33,32 +36,32 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
     @Test
     public void addFacts() {
         // One fact is added by default to test
-        Assert.assertEquals(factServices.getFacts(1L, "examination_name", Level.COMPANY, null).size(), 1);
+        Assert.assertEquals(factServices.getFacts(FACT_ID, FACT_EXAMINATION_NAME, Level.COMPANY, null).size(), 1);
         // Save 2 empty facts
         facts.add(new Fact());
         facts.add(new Fact());
-        facts = factServices.addFactList( facts, null);
+        facts = factServices.addFactList(facts, null);
         Assert.assertNotNull(facts);
         Assert.assertEquals(facts.size(), 2);
         // 2 saved + the one added at the beginning
-        Assert.assertEquals(factServices.getFacts(1L, "examination_name", null, null).size(), 3);
+        Assert.assertEquals(factServices.getFacts(FACT_ID, FACT_EXAMINATION_NAME, null, null).size(), 3);
     }
 
     @Test(dependsOnMethods = "addFacts")
     public void removeFact() {
-        Assert.assertEquals(factServices.getFacts(1L, "", null, null).size(), 3);
+        Assert.assertEquals(factServices.getFacts(FACT_ID, "", null, null).size(), 3);
         Assert.assertNotNull(facts);
-        for (Fact fact: facts) {
+        for (Fact fact : facts) {
             factServices.deleteFact(fact, null);
         }
-        Assert.assertEquals(factServices.getFacts(1L, null, null, null).size(), 1);
+        Assert.assertEquals(factServices.getFacts(FACT_ID, null, null, null).size(), 1);
     }
 
 
     @AfterClass
     public void cleanDatabase() {
-        if(facts != null){
-            for (Fact fact: facts) {
+        if (facts != null) {
+            for (Fact fact : facts) {
                 factServices.deleteFact(fact, null);
             }
         }
