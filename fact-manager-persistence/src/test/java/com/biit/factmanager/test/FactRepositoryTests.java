@@ -19,6 +19,7 @@ public class FactRepositoryTests extends AbstractTransactionalTestNGSpringContex
 	private static final long FACT_PATIENT_ID = 1;
 	private static final long FACT_COMPANY_ID = 1;
 	private static final long FACT_ORGANIZATION_ID = 1;
+	private static final long FACT_PROFESSIONAL_ID = 1;
 	private static final String FACT_EXAMINATION_NAME = "test";
 
 	@Autowired
@@ -38,6 +39,7 @@ public class FactRepositoryTests extends AbstractTransactionalTestNGSpringContex
 		factToSave.setExaminationName(FACT_EXAMINATION_NAME);
 		factToSave.setCompanyId(FACT_COMPANY_ID);
 		factToSave.setOrganizationId(FACT_ORGANIZATION_ID);
+		factToSave.setProfessionalId(FACT_PROFESSIONAL_ID);
 		fact =  factRepository.save(factToSave);
 		Assert.assertEquals(factRepository.count(), 1);
 	}

@@ -25,6 +25,9 @@ public class Fact {
     @Column(name = "organization_id")
     private long organizationId;
 
+    @Column(name = "professional_id")
+    private long professionalId;
+
     @Column(length = MAX_UNIQUE_COLUMN_LENGTH)
     private String category;
 
@@ -71,6 +74,14 @@ public class Fact {
 
     public void setOrganizationId(long organizationId) {
         this.organizationId = organizationId;
+    }
+
+    public long getProfessionalId() {
+        return professionalId;
+    }
+
+    public void setProfessionalId(long professionalId) {
+        this.professionalId = professionalId;
     }
 
     public String getCategory() {
@@ -158,6 +169,7 @@ public class Fact {
                 ", patientId=" + patientId +
                 ", companyId=" + companyId +
                 ", organizationId=" + organizationId +
+                ", professionalId=" + professionalId +
                 ", examinationVersion=" + examinationVersion +
                 ", examinationName=" + examinationName +
                 ", category=" + category +
