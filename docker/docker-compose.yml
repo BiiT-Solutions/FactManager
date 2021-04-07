@@ -1,0 +1,84 @@
+version: '2.1'
+
+
+
+volumes:
+  mysql-fact-manager:
+  fact-manager-logs:
+
+networks:
+  kafka_default:
+    external: true
+  containers:
+    internal: true
+  external:
+    internal: false
+
+
+services:
+
+  mysql-fact-manager:
+    build:
+      context: ./mysql-fact-manager
+    image: mysql-fact-manager
+    restart: always
+    networks:
+      - containers
+      - external
+    ports:
+      - "12306:3306"
+    volumes:
+      - mysql-fact-manager:/var/lib/mysql
+    container_name: mysql-fact-manager
+    hostname: mysql-fact-manager
+    environment:
+      - MYSQL_ROOT_PASSWORD=${fact_manager_mysql_password}
+      - MYSQL_ROOT_USER=root
+      - MYSQL_DATABASE=${fact_manager_mysql_database}
+      - MYSQL_USER=${fact_manager_mysql_user}
+      - MYSQL_PASSWORD=${fact_manager_mysql_password}
+    command:
+      - --character-set-server=${character_set}
+      - --collation-server=${database_collation}
+    healthcheck:
+      test: mysql --user=${fact_manager_mysql_user} --password=${fact_manager_mysql_password} -e 'select 1;' ${fact_manager_mysql_database}
+      interval: 30s
+      timeout: 30s
+      retries: 5
+    logging:
+      options:
+        max-size: "1m"
+
+  fact-manager:
+    build:
+      context: ./fact-manager
+      args:
+        - jenkins_user
+        - jenkins_password
+        - jenkins_url      
+        - machine_domain
+    image: fact-manager
+    restart: always
+    networks:
+      - kafka_default
+      - containers
+    ports:
+      - "8085:8085"
+    container_name: fact-manager
+    hostname: fact-manager
+    working_dir: /usr/share/fact-manager/
+    environment:
+      - NODE_PATH=/usr/local/lib/node_modules/
+    healthcheck:
+      test: curl --fail --request GET --silent http://localhost:8085/fact-manager/healthCheck || exit 1
+      interval: 30s
+      timeout: 30s
+      retries: 5
+    links:
+      - "mysql-fact-manager"
+    depends_on:
+      mysql-fact-manager:
+        condition: service_healthy
+
+  
+    
