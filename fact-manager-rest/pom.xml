@@ -37,6 +37,11 @@
         </dependency>
         <dependency>
             <groupId>com.biit</groupId>
+            <artifactId>fact-manager-kafka</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.biit</groupId>
             <artifactId>fact-manager-persistence</artifactId>
             <version>${project.version}</version>
         </dependency>
