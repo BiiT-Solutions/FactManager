@@ -22,11 +22,18 @@ public class FormAnswerConsumer extends KafkaConsumerClient {
 
     public FormAnswerConsumer(){
         super(Fact.class);
-        // TODO (oferrando): remove hardcoded properties
-        setProperties(getPropertiesHardcoded());
-        FactManagerLogger.debug(this.getClass().getName(), "Starting FormAnswersConsumer");
-        startConsumer(Collections.singleton(TOPIC_NAME), getConsumer());
-        FactManagerLogger.debug(this.getClass().getName(), "Started FormAnswersConsumer");
+        new Thread(() -> { // Start async and capture errors in the case there is no kafka running
+            try {
+                // TODO (oferrando): remove hardcoded properties
+                setProperties(getPropertiesHardcoded());
+                FactManagerLogger.debug(this.getClass().getName(), "Starting FormAnswersConsumer");
+                startConsumer(Collections.singleton(TOPIC_NAME), getConsumer());
+                FactManagerLogger.debug(this.getClass().getName(), "Started FormAnswersConsumer");
+            } catch (Exception e) {
+                FactManagerLogger.errorMessage(this.getClass().getName(), "Error starting the FormAnswerConsumer");
+                FactManagerLogger.errorMessage(this.getClass().getName(), e.getMessage());
+            }
+        }).start();
     }
 
     private Consumer getConsumer(){
@@ -50,25 +57,5 @@ public class FormAnswerConsumer extends KafkaConsumerClient {
         return result;
     }
 
-
-    private Consumer getConsumer2(){
-        return (x) -> {
-            final List<Fact> facts = (ArrayList<Fact>) x;
-            FactManagerLogger.debug(this.getClass().getName(), "Event consumed " + facts.toString());
-            FactManagerLogger.debug(this.getClass().getName(), "Event consumed " + x.toString());
-            while (facts.iterator().hasNext()){
-                FactManagerLogger.debug(this.getClass().getName(), "fact sto save " + facts.iterator().next().toString());
-            }
-            for (final Fact fact: facts){
-                FactManagerLogger.debug(this.getClass().getName(), "fact to save " + fact.toString());
-            }
-            facts.forEach(fact -> {
-                FactManagerLogger.debug(this.getClass().getName(), "fact to save " + fact.toString());
-                final Fact savedFact = factProvider.add((Fact) fact);
-                FactManagerLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
-            });
-
-        };
-    }
 
 }
