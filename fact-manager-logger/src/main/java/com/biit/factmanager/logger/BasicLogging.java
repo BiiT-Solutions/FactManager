@@ -17,7 +17,7 @@ public class BasicLogging extends AbstractLogging {
      * Following is the definition for a pointcut to select all the methods
      * available. So advice will be called for all the methods.
      */
-    @Pointcut("execution(* com.biit.factmanager.rest..*(..))")
+    @Pointcut("execution(* com.biit.factmanager.rest.api..*(..))")
     private void selectAll() {
     }
 
