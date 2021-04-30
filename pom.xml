@@ -115,7 +115,7 @@
         <spring-boot.version>2.1.8.RELEASE</spring-boot.version>
         <springfox-swagger.version>2.9.2</springfox-swagger.version>
         <postgresql.version>42.2.10</postgresql.version>
-        <kafka-client.version>0.0.26</kafka-client.version>
+        <kafka-client.version>[0.0.26,0.1)</kafka-client.version>
     </properties>
 
 </project>
