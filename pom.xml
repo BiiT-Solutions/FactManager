@@ -40,7 +40,7 @@
 
     <scm>
         <connection>scm:git:git.biit-solutions.com:BiiT/FactManager.git</connection>
-        <connection>scm:git:git.biit-solutions.com:BiiT/FactManager.git</developerConnection>
+        <developerConnection>scm:git:git.biit-solutions.com:BiiT/FactManager.git</developerConnection>
         <tag>FactManager</tag>
     </scm>
 
