@@ -9,8 +9,8 @@ import javax.persistence.*;
 
 @Entity
 @Primary
-@Table(name = "facts")
-public class Fact {
+@Table(name = "formrunner_facts")
+public class FormrunnerFact {
 
     public static final int MAX_UNIQUE_COLUMN_LENGTH = 190;
 
@@ -56,7 +56,7 @@ public class Fact {
     private Date createdAt;
 
 
-    public Fact() {
+    public FormrunnerFact() {
         setCreatedAt(new Date());
     }
 

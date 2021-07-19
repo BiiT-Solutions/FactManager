@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
-public class FactProvider {
+public class FormrunnerFactProvider {
     private final FactRepository factRepository;
 
 

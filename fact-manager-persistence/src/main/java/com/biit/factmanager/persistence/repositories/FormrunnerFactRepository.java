@@ -11,7 +11,7 @@ import java.util.Collection;
 
 @Repository
 @Transactional
-public interface FactRepository extends CrudRepository<Fact, Integer> {
+public interface FormrunnerFactRepository extends CrudRepository<Fact, Integer> {
 
     Collection<Fact> findByPatientId(long patientId);
 
