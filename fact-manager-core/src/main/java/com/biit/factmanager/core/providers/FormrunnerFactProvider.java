@@ -2,9 +2,9 @@ package com.biit.factmanager.core.providers;
 
 import com.biit.factmanager.core.providers.exceptions.FactNotFoundException;
 import com.biit.factmanager.logger.FactManagerLogger;
-import com.biit.factmanager.persistence.entities.Fact;
+import com.biit.factmanager.persistence.entities.FormrunnerFact;
 import com.biit.factmanager.persistence.enums.Level;
-import com.biit.factmanager.persistence.repositories.FactRepository;
+import com.biit.factmanager.persistence.repositories.FormrunnerFactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,40 +16,40 @@ import java.util.stream.StreamSupport;
 
 @Service
 public class FormrunnerFactProvider {
-    private final FactRepository factRepository;
+    private final FormrunnerFactRepository factRepository;
 
 
     @Autowired
-    public FactProvider(FactRepository factRepository) {
+    public FormrunnerFactProvider(FormrunnerFactRepository factRepository) {
         this.factRepository = factRepository;
     }
 
-    public Fact get(int factId) {
+    public FormrunnerFact get(int factId) {
         return factRepository.findById(factId).orElseThrow(
                 () -> new FactNotFoundException(this.getClass(), "No fact with id '" + factId + "' found."));
     }
 
 
-    public Collection<Fact> getAll() {
+    public Collection<FormrunnerFact> getAll() {
         return StreamSupport.stream(factRepository.findAll().spliterator(), false).collect(Collectors.toSet());
     }
 
-    public Collection<Fact> getPatientLevel(long id, String examinationName) {
+    public Collection<FormrunnerFact> getPatientLevel(long id, String examinationName) {
         return StreamSupport.stream(factRepository.findByPatientIdAndExaminationName(id, examinationName).spliterator(),
                 false).collect(Collectors.toSet());
     }
 
-    public Collection<Fact> getCompanyLevel(long id, String examinationName) {
+    public Collection<FormrunnerFact> getCompanyLevel(long id, String examinationName) {
         return StreamSupport.stream(factRepository.findByCompanyIdAndExaminationName(id, examinationName).spliterator(),
                 false).collect(Collectors.toSet());
     }
 
-    public Collection<Fact> getOrganizationLevel(long id, String examinationName) {
+    public Collection<FormrunnerFact> getOrganizationLevel(long id, String examinationName) {
         return StreamSupport.stream(factRepository.findByOrganizationIdAndExaminationName(id, examinationName).spliterator(),
                 false).collect(Collectors.toSet());
     }
 
-    public Collection<Fact> getFiltered(Level level, Long id, String organizationName) {
+    public Collection<FormrunnerFact> getFiltered(Level level, Long id, String organizationName) {
         if (level != null && id != null) {
             switch (level) {
                 case PATIENT:
@@ -73,7 +73,7 @@ public class FormrunnerFactProvider {
      * @return the saved entity; will never be {@literal null}.
      * @throws IllegalArgumentException in case the given {@literal entity} is {@literal null}.
      */
-    public Fact add(Fact fact) {
+    public FormrunnerFact add(FormrunnerFact fact) {
         return factRepository.save(fact);
     }
 
@@ -85,21 +85,21 @@ public class FormrunnerFactProvider {
      * @return the List of saved entitis; will never be {@literal null}.
      * @throws IllegalArgumentException in case the given {@literal entity} is {@literal null}.
      */
-    public List<Fact> save(List<Fact> facts) {
-        final List<Fact> savedFacts = new ArrayList<>();
-        for (final Fact fact: facts) {
-            final Fact savedFact = add(fact);
+    public List<FormrunnerFact> save(List<FormrunnerFact> facts) {
+        final List<FormrunnerFact> savedFacts = new ArrayList<>();
+        for (final FormrunnerFact fact : facts) {
+            final FormrunnerFact savedFact = add(fact);
             savedFacts.add(savedFact);
             FactManagerLogger.debug(this.getClass().getName(), "Saved fact " + fact.toString());
         }
         return savedFacts;
     }
 
-    public Fact update(Fact fact) {
+    public FormrunnerFact update(FormrunnerFact fact) {
         return factRepository.save(fact);
     }
 
-    public void delete(Fact fact) {
+    public void delete(FormrunnerFact fact) {
         factRepository.delete(fact);
     }
 

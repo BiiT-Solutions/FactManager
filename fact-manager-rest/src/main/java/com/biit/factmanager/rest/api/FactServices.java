@@ -1,8 +1,8 @@
 package com.biit.factmanager.rest.api;
 
-import com.biit.factmanager.core.providers.FactProvider;
+import com.biit.factmanager.core.providers.FormrunnerFactProvider;
 import com.biit.factmanager.logger.FactManagerLogger;
-import com.biit.factmanager.persistence.entities.Fact;
+import com.biit.factmanager.persistence.entities.FormrunnerFact;
 import com.biit.factmanager.persistence.enums.Level;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -19,17 +19,17 @@ import java.util.List;
 @RestController
 public class FactServices {
 
-	private final FactProvider factProvider;
+	private final FormrunnerFactProvider factProvider;
 
 	@Autowired
-	public FactServices(FactProvider factProvider) {
+	public FactServices(FormrunnerFactProvider factProvider) {
 		this.factProvider = factProvider;
 	}
 
 	@ApiOperation(value = "Get all facts", notes = "Parameters:")
 	@ResponseStatus(value = HttpStatus.OK)
 	@GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Collection<Fact> getFacts(
+	public Collection<FormrunnerFact> getFacts(
 			@ApiParam(value = "Id", required = false) @RequestParam(value = "id") Long id,
 			@ApiParam(value = "ExaminationName", required = false) @RequestParam(value = "examinationName") String examinationName,
 			@ApiParam(value = "Level: [PATIENT, COMPANY, ORGANIZATION]", required = false) @RequestParam(value = "level") Level level,
@@ -53,7 +53,7 @@ public class FactServices {
 			+ "facts (required): List of Fact objects to be added")
 	@ResponseStatus(value = HttpStatus.CREATED)
 	@PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Fact> addFactList(@ApiParam(value = "Notification Request", required = true) @RequestBody List<Fact> facts,
+	public List<FormrunnerFact> addFactList(@ApiParam(value = "Notification Request", required = true) @RequestBody List<FormrunnerFact> facts,
 						HttpServletRequest httpRequest) {
 		/*FactManagerLogger.info(this.getClass().getName(), "Saving a list of facts");
 		final List<Fact> savedFacts = new ArrayList<>();
@@ -70,7 +70,7 @@ public class FactServices {
 			+ "fact (required): Fact object to be removed.")
 	@ResponseStatus(value = HttpStatus.OK)
 	@DeleteMapping(value = "")
-	public void deleteFact(@ApiParam(value = "Fact entity", required = true) @RequestBody Fact fact,
+	public void deleteFact(@ApiParam(value = "Fact entity", required = true) @RequestBody FormrunnerFact fact,
 						HttpServletRequest httpRequest) {
 		FactManagerLogger.info(this.getClass().getName(), "Remove fact");
 		factProvider.delete(fact);

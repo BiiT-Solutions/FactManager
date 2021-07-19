@@ -1,8 +1,7 @@
 package com.biit.factmanager.test;
 
-import com.biit.factmanager.persistence.entities.Fact;
+import com.biit.factmanager.persistence.entities.FormrunnerFact;
 import com.biit.factmanager.persistence.enums.Level;
-import com.biit.factmanager.persistence.repositories.FactRepository;
 import com.biit.factmanager.rest.api.FactServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,7 +24,7 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
     @Autowired
     private FactServices factServices;
 
-    private List<Fact> facts = new ArrayList<>();
+    private List<FormrunnerFact> facts = new ArrayList<>();
 
 
     @BeforeClass
@@ -38,8 +37,8 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
         // One fact is added by default to test
         Assert.assertEquals(factServices.getFacts(FACT_ID, FACT_EXAMINATION_NAME, Level.COMPANY, null).size(), 1);
         // Save 2 empty facts
-        facts.add(new Fact());
-        facts.add(new Fact());
+        facts.add(new FormrunnerFact());
+        facts.add(new FormrunnerFact());
         facts = factServices.addFactList(facts, null);
         Assert.assertNotNull(facts);
         Assert.assertEquals(facts.size(), 2);
@@ -51,7 +50,7 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
     public void removeFact() {
         Assert.assertEquals(factServices.getFacts(FACT_ID, "", null, null).size(), 3);
         Assert.assertNotNull(facts);
-        for (Fact fact : facts) {
+        for (FormrunnerFact fact : facts) {
             factServices.deleteFact(fact, null);
         }
         Assert.assertEquals(factServices.getFacts(FACT_ID, null, null, null).size(), 1);
@@ -61,7 +60,7 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
     @AfterClass
     public void cleanDatabase() {
         if (facts != null) {
-            for (Fact fact : facts) {
+            for (FormrunnerFact fact : facts) {
                 factServices.deleteFact(fact, null);
             }
         }

@@ -1,7 +1,7 @@
 package com.biit.factmanager.test;
 
-import com.biit.factmanager.core.providers.FactProvider;
-import com.biit.factmanager.persistence.entities.Fact;
+import com.biit.factmanager.core.providers.FormrunnerFactProvider;
+import com.biit.factmanager.persistence.entities.FormrunnerFact;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -11,13 +11,13 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 @SpringBootTest
-@Test(groups = { "facts" })
+@Test(groups = {"facts"})
 public class FactsTests extends AbstractTestNGSpringContextTests {
 
     @Autowired
-    private FactProvider factProvider;
+    private FormrunnerFactProvider formrunnerFactProvider;
 
-    private Fact fact = null;
+    private FormrunnerFact fact = null;
 
 
     @BeforeClass
@@ -28,17 +28,17 @@ public class FactsTests extends AbstractTestNGSpringContextTests {
     @Test
     public void addFact() {
         // Added using the data.sql, so 1 fact is in the DB
-        Assert.assertEquals(factProvider.count(), 1);
-        fact = factProvider.add(new Fact());
+        Assert.assertEquals(formrunnerFactProvider.count(), 1);
+        fact = formrunnerFactProvider.add(new FormrunnerFact());
         Assert.assertNotNull(fact);
-        Assert.assertEquals(factProvider.count(), 2);
+        Assert.assertEquals(formrunnerFactProvider.count(), 2);
     }
 
 
     @AfterClass
     public void cleanDatabase() {
-        if(fact != null){
-            factProvider.delete(fact);
+        if (fact != null) {
+            formrunnerFactProvider.delete(fact);
         }
     }
 }

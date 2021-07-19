@@ -1,8 +1,6 @@
 package com.biit.factmanager.persistence.repositories;
 
-import com.biit.factmanager.persistence.entities.Fact;
-
-import org.springframework.data.jpa.repository.Query;
+import com.biit.factmanager.persistence.entities.FormrunnerFact;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,13 +9,13 @@ import java.util.Collection;
 
 @Repository
 @Transactional
-public interface FormrunnerFactRepository extends CrudRepository<Fact, Integer> {
+public interface FormrunnerFactRepository extends CrudRepository<FormrunnerFact, Integer> {
 
-    Collection<Fact> findByPatientId(long patientId);
+    Collection<FormrunnerFact> findByPatientId(long patientId);
 
-    Collection<Fact> findByPatientIdAndExaminationName(long patientId, String examinationName);
+    Collection<FormrunnerFact> findByPatientIdAndExaminationName(long patientId, String examinationName);
 
-    Collection<Fact> findByCompanyIdAndExaminationName(long companyId, String examinationName);
+    Collection<FormrunnerFact> findByCompanyIdAndExaminationName(long companyId, String examinationName);
 
-    Collection<Fact> findByOrganizationIdAndExaminationName(long organizationId, String examinationName);
+    Collection<FormrunnerFact> findByOrganizationIdAndExaminationName(long organizationId, String examinationName);
 }
