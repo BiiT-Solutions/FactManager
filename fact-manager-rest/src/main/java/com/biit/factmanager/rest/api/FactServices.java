@@ -19,24 +19,24 @@ import java.util.List;
 @RestController
 public class FactServices {
 
-	private final FormrunnerFactProvider factProvider;
+	private final FormrunnerFactProvider formrunnerFactProvider;
 
 	@Autowired
-	public FactServices(FormrunnerFactProvider factProvider) {
-		this.factProvider = factProvider;
+	public FactServices(FormrunnerFactProvider formrunnerFactProvider) {
+		this.formrunnerFactProvider = formrunnerFactProvider;
 	}
 
-	@ApiOperation(value = "Get all facts", notes = "Parameters:")
+	@ApiOperation(value = "Get all facts", notes = "Id requires a level to be set. Parameters:")
 	@ResponseStatus(value = HttpStatus.OK)
 	@GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Collection<FormrunnerFact> getFacts(
-			@ApiParam(value = "Id", required = false) @RequestParam(value = "id") Long id,
-			@ApiParam(value = "ExaminationName", required = false) @RequestParam(value = "examinationName") String examinationName,
-			@ApiParam(value = "Level: [PATIENT, COMPANY, ORGANIZATION]", required = false) @RequestParam(value = "level") Level level,
+			@ApiParam(value = "Id", required = false) @RequestParam(value = "id", required = false) Long id,
+			@ApiParam(value = "ExaminationName", required = false) @RequestParam(value = "examinationName", required = false) String examinationName,
+			@ApiParam(value = "Level: [PATIENT, COMPANY, ORGANIZATION]", required = false) @RequestParam(value = "level", required = false) Level level,
 			HttpServletRequest httpRequest
 	) {
 		FactManagerLogger.info(this.getClass().getName(), "Get all facts");
-		return factProvider.getFiltered(level, id, examinationName);
+		return formrunnerFactProvider.getFiltered(level, id, examinationName);
 	}
 
 	/*@ApiOperation(value = "Adds a new fact", notes = "Parameters:\n"
@@ -63,7 +63,7 @@ public class FactServices {
 			FactManagerLogger.debug(this.getClass().getName(), "Save fact " + fact.toString());
 		}*/
 		// return savedFacts;
-		return factProvider.save(facts);
+		return formrunnerFactProvider.save(facts);
 	}
 
 	@ApiOperation(value = "Deletes a fact", notes = "Parameters:\n"
@@ -73,7 +73,7 @@ public class FactServices {
 	public void deleteFact(@ApiParam(value = "Fact entity", required = true) @RequestBody FormrunnerFact fact,
 						HttpServletRequest httpRequest) {
 		FactManagerLogger.info(this.getClass().getName(), "Remove fact");
-		factProvider.delete(fact);
+		formrunnerFactProvider.delete(fact);
 	}
 
 

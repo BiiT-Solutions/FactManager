@@ -16,48 +16,48 @@ import java.util.stream.StreamSupport;
 
 @Service
 public class FormrunnerFactProvider {
-    private final FormrunnerFactRepository factRepository;
+    private final FormrunnerFactRepository formrunnerFactRepository;
 
 
     @Autowired
-    public FormrunnerFactProvider(FormrunnerFactRepository factRepository) {
-        this.factRepository = factRepository;
+    public FormrunnerFactProvider(FormrunnerFactRepository formrunnerFactRepository) {
+        this.formrunnerFactRepository = formrunnerFactRepository;
     }
 
     public FormrunnerFact get(int factId) {
-        return factRepository.findById(factId).orElseThrow(
+        return formrunnerFactRepository.findById(factId).orElseThrow(
                 () -> new FactNotFoundException(this.getClass(), "No fact with id '" + factId + "' found."));
     }
 
 
     public Collection<FormrunnerFact> getAll() {
-        return StreamSupport.stream(factRepository.findAll().spliterator(), false).collect(Collectors.toSet());
+        return StreamSupport.stream(formrunnerFactRepository.findAll().spliterator(), false).collect(Collectors.toSet());
     }
 
     public Collection<FormrunnerFact> getPatientLevel(long id, String examinationName) {
-        return StreamSupport.stream(factRepository.findByPatientIdAndExaminationName(id, examinationName).spliterator(),
+        return StreamSupport.stream(formrunnerFactRepository.findByPatientIdAndExaminationName(id, examinationName).spliterator(),
                 false).collect(Collectors.toSet());
     }
 
     public Collection<FormrunnerFact> getCompanyLevel(long id, String examinationName) {
-        return StreamSupport.stream(factRepository.findByCompanyIdAndExaminationName(id, examinationName).spliterator(),
+        return StreamSupport.stream(formrunnerFactRepository.findByCompanyIdAndExaminationName(id, examinationName).spliterator(),
                 false).collect(Collectors.toSet());
     }
 
     public Collection<FormrunnerFact> getOrganizationLevel(long id, String examinationName) {
-        return StreamSupport.stream(factRepository.findByOrganizationIdAndExaminationName(id, examinationName).spliterator(),
+        return StreamSupport.stream(formrunnerFactRepository.findByOrganizationIdAndExaminationName(id, examinationName).spliterator(),
                 false).collect(Collectors.toSet());
     }
 
-    public Collection<FormrunnerFact> getFiltered(Level level, Long id, String organizationName) {
+    public Collection<FormrunnerFact> getFiltered(Level level, Long id, String examinationName) {
         if (level != null && id != null) {
             switch (level) {
                 case PATIENT:
-                    return getPatientLevel(id, organizationName);
+                    return getPatientLevel(id, examinationName);
                 case COMPANY:
-                    return getCompanyLevel(id, organizationName);
+                    return getCompanyLevel(id, examinationName);
                 case ORGANIZATION:
-                    return getOrganizationLevel(id, organizationName);
+                    return getOrganizationLevel(id, examinationName);
                 default:
                     return getAll();
             }
@@ -74,7 +74,7 @@ public class FormrunnerFactProvider {
      * @throws IllegalArgumentException in case the given {@literal entity} is {@literal null}.
      */
     public FormrunnerFact add(FormrunnerFact fact) {
-        return factRepository.save(fact);
+        return formrunnerFactRepository.save(fact);
     }
 
     /**
@@ -96,11 +96,11 @@ public class FormrunnerFactProvider {
     }
 
     public FormrunnerFact update(FormrunnerFact fact) {
-        return factRepository.save(fact);
+        return formrunnerFactRepository.save(fact);
     }
 
     public void delete(FormrunnerFact fact) {
-        factRepository.delete(fact);
+        formrunnerFactRepository.delete(fact);
     }
 
     /**
@@ -109,7 +109,7 @@ public class FormrunnerFactProvider {
      * @return the number of entities.
      */
     public long count() {
-        return factRepository.count();
+        return formrunnerFactRepository.count();
     }
 
 }

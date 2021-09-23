@@ -5,9 +5,11 @@ import java.util.Date;
 import org.springframework.context.annotation.Primary;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
 
 
 @Entity
+@XmlRootElement
 @Primary
 @Table(name = "formrunner_facts")
 public class FormrunnerFact {
