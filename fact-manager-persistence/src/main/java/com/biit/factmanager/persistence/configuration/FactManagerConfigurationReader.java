@@ -19,6 +19,7 @@ public class FactManagerConfigurationReader extends ConfigurationReader {
     private static final String BOOTSTRAP_SERVERS_CONFIG = "bootstrap.servers";
     private static final String KEY_SERIALIZER_CLASS_CONFIG = "key.serializer";
     private static final String VALUE_SERIALIZER_CLASS_CONFIG = "value.serializer";
+    private static final String ID_DATABASE_ENCRYPTION_KEY = "database.encryption.key";
 
     // Default
     private static final String DEFAULT_KEY_DESERIALIZER_CLASS_CONFIG = "org.apache.kafka.common.serialization.StringDeserializer";
@@ -104,6 +105,10 @@ public class FactManagerConfigurationReader extends ConfigurationReader {
 
     public String getValueSerializerClassConfig() {
         return getPropertyLogException(VALUE_SERIALIZER_CLASS_CONFIG);
+    }
+
+    public String getDatabaseEncryptionKey() {
+        return getPropertyLogException(ID_DATABASE_ENCRYPTION_KEY);
     }
 
 
