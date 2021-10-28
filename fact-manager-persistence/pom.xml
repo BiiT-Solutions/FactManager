@@ -68,12 +68,6 @@
             <version>5.4.2.Final</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgresql.version}</version>
-        </dependency>
-
         <!-- Testing -->
         <dependency>
             <groupId>org.testng</groupId>

@@ -103,18 +103,16 @@
     </build>
 
     <properties>
-        <biit-common-utils.version>[1.0,1.1)</biit-common-utils.version>
+        <main.basedir>${project.basedir}</main.basedir>
         <checkstyle.version>2.17</checkstyle.version>
         <findbug.version>3.0.5</findbug.version>
         <spotbugs.version>4.0.4</spotbugs.version>
-        <log4j.version>1.2.17</log4j.version>
-        <main.basedir>${project.basedir}</main.basedir>
-        <microsoft-insights.version>1.1.2</microsoft-insights.version>
         <project.scm.id>git</project.scm.id>
         <org.testng.version>6.8.13</org.testng.version>
         <spring-boot.version>2.1.8.RELEASE</spring-boot.version>
         <springfox-swagger.version>2.9.2</springfox-swagger.version>
-        <postgresql.version>42.2.10</postgresql.version>
+        <!-- BiiT Dependencies -->
+        <biit-common-utils.version>[1.1,1.2)</biit-common-utils.version>
         <kafka-client.version>[0.0.26,0.1)</kafka-client.version>
     </properties>
 
