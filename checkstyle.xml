@@ -36,7 +36,7 @@
         <property name="tabWidth" value="4"/>
 
         <!-- IMPORT CHECKS -->
-
+        
         <module name="RedundantImport">
             <!-- Checks for redundant import statements. -->
             <property name="severity" value="error"/>

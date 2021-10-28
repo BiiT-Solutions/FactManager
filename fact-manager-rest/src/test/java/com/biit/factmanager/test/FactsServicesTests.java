@@ -62,6 +62,7 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
         if (facts != null) {
             for (FormrunnerFact fact : facts) {
                 factServices.deleteFact(fact, null);
+                System.out.println("deleted fact ");
             }
         }
     }

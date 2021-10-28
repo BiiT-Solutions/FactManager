@@ -27,6 +27,12 @@
 
         <dependency>
             <groupId>com.biit</groupId>
+            <artifactId>database-encryptor</artifactId>
+            <version>[0.1,0.2.1)</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.biit</groupId>
             <artifactId>fact-manager-logger</artifactId>
             <version>${project.version}</version>
         </dependency>
