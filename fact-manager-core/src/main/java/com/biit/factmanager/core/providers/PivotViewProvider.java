@@ -17,8 +17,6 @@ import java.util.stream.StreamSupport;
 public class PivotViewProvider {
     private final FormrunnerFactRepository formrunnerFactRepository;
 
-    private Collection<FormrunnerFact> formrunnerFacts = new ArrayList<>();
-
     @Autowired
     public PivotViewProvider(FormrunnerFactRepository formrunnerFactRepository) {
         this.formrunnerFactRepository = formrunnerFactRepository;
@@ -30,52 +28,53 @@ public class PivotViewProvider {
             getAllCombinations(tenantId, category, elementId, startDate, endDate);
         }
         if (startDate == null && endDate == null && lastDays != null) {
-            LocalDateTime localStartDate = LocalDateTime.now().minusDays(lastDays);
-            LocalDateTime localEndDate = LocalDateTime.now();
+            final LocalDateTime localStartDate = LocalDateTime.now().minusDays(lastDays);
+            final LocalDateTime localEndDate = LocalDateTime.now();
             getAllCombinations(tenantId, category, elementId, localStartDate, localEndDate);
         }
-        if(startDate == null && endDate == null && lastDays == null) {
-            LocalDateTime localStartDate = LocalDateTime.now().minusYears(100);
-            LocalDateTime localEndDate = LocalDateTime.now().plusYears(100);
+        if (startDate == null && endDate == null && lastDays == null) {
+            final LocalDateTime localStartDate = LocalDateTime.now().minusYears(100);
+            final LocalDateTime localEndDate = LocalDateTime.now().plusYears(100);
             getAllCombinations(tenantId, category, elementId, localStartDate, localEndDate);
         }
-        if(tenantId == null && category == "" && elementId == "" && startDate == null && endDate == null && lastDays == null) {
+        if (tenantId == null && "".equals(category) && "".equals(elementId) && startDate == null && endDate == null && lastDays == null) {
             formrunnerFacts = getAll();
         }
         return factToXml(formrunnerFacts);
     }
 
     public void getAllCombinations(Long tenantId, String category, String elementId, LocalDateTime startDate, LocalDateTime endDate) {
-        if (tenantId == null && category == "" && elementId == "") {
-            formrunnerFacts = getBetweenDates(startDate,endDate);
+        Collection<FormrunnerFact> formrunnerFacts = new ArrayList<>();
+        if (tenantId == null && "".equals(category) && "".equals(elementId)) {
+            formrunnerFacts = getBetweenDates(startDate, endDate);
         }
-        if (tenantId == null && category == "" && elementId != "") {
-            formrunnerFacts = StreamSupport.stream(formrunnerFactRepository.findByElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLowerThanEqual
+        if (tenantId == null && "".equals(category) && !"".equals(elementId)) {
+            formrunnerFacts = StreamSupport.stream(formrunnerFactRepository.findByElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
                     (elementId, startDate, endDate).spliterator(), false).collect(Collectors.toSet());
         }
-        if (tenantId == null && category != "" && elementId == "") {
-            formrunnerFacts = StreamSupport.stream(formrunnerFactRepository.findByCategoryAndCreatedAt
+        if (tenantId == null && !"".equals(category) && "".equals(elementId)) {
+            formrunnerFacts = StreamSupport.stream(formrunnerFactRepository.findByCategoryAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
                     (category, startDate, endDate).spliterator(), false).collect(Collectors.toSet());
         }
-        if (tenantId == null && category != "" && elementId != "") {
+        if (tenantId == null && !"".equals(category) && !"".equals(elementId)) {
             formrunnerFacts = StreamSupport.stream(formrunnerFactRepository.findByElementIdAndCategoryAndCreatedAt
                     (elementId, category, startDate, endDate).spliterator(), false).collect(Collectors.toSet());
         }
-        if (tenantId != null && category == "" && elementId == "") {
-            formrunnerFacts = StreamSupport.stream(formrunnerFactRepository.findByTenantIdAndCreatedAtGreaterThanEqualAndCreatedAtLowerThanEqual
-                    (tenantId,startDate, endDate).spliterator(), false).collect(Collectors.toSet());
+        if (tenantId != null && "".equals(category) && "".equals(elementId)) {
+            formrunnerFacts = StreamSupport.stream(formrunnerFactRepository.findByTenantIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
+                    (tenantId, startDate, endDate).spliterator(), false).collect(Collectors.toSet());
         }
-        if (tenantId != null && category == "" && elementId != "") {
-            formrunnerFacts = StreamSupport.stream(formrunnerFactRepository.findByTenantIdAndElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLowerThanEqual
-                    (tenantId,elementId, startDate, endDate).spliterator(), false).collect(Collectors.toSet());
+        if (tenantId != null && "".equals(category) && !"".equals(elementId)) {
+            formrunnerFacts = StreamSupport.stream(formrunnerFactRepository.findByTenantIdAndElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
+                    (tenantId, elementId, startDate, endDate).spliterator(), false).collect(Collectors.toSet());
         }
-        if (tenantId != null && category != "" && elementId == "") {
-            formrunnerFacts = StreamSupport.stream(formrunnerFactRepository.findByTenantIdAndCategoryAndCreatedAtGreaterThanEqualAndCreatedAtLowerThanEqual
+        if (tenantId != null && !"".equals(category) && "".equals(elementId)) {
+            formrunnerFacts = StreamSupport.stream(formrunnerFactRepository.findByTenantIdAndCategoryAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
                     (tenantId, category, startDate, endDate).spliterator(), false).collect(Collectors.toSet());
         }
-        if (tenantId != null && category != "" && elementId != "") {
+        if (tenantId != null && !"".equals(category) && !"".equals(elementId)) {
             formrunnerFacts = StreamSupport.stream(formrunnerFactRepository.findByTenantIdAndCategoryAndElementIdAndCreatedAt
-                    (tenantId, category,elementId, startDate, endDate).spliterator(), false).collect(Collectors.toSet());
+                    (tenantId, category, elementId, startDate, endDate).spliterator(), false).collect(Collectors.toSet());
         }
     }
 

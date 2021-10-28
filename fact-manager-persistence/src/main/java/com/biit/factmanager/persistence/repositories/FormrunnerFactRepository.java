@@ -13,19 +13,22 @@ import java.util.Collection;
 @Transactional
 public interface FormrunnerFactRepository extends CrudRepository<FormrunnerFact, Integer> {
 
-    Collection<FormrunnerFact> findByTenantIdAndCreatedAtGreaterThanEqualAndCreatedAtLowerThanEqual(long tenantId, LocalDateTime startDate, LocalDateTime endDate);
+    Collection<FormrunnerFact> findByTenantIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
+            (long tenantId, LocalDateTime startDate, LocalDateTime endDate);
 
-    Collection<FormrunnerFact> findByElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLowerThanEqual(String elementId, LocalDateTime startDate, LocalDateTime endDate);
+    Collection<FormrunnerFact> findByElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
+            (String elementId, LocalDateTime startDate, LocalDateTime endDate);
 
-    Collection<FormrunnerFact> findByCategoryAndCreatedAt(String category, LocalDateTime startDate, LocalDateTime endDate);
+
+    Collection<FormrunnerFact> findByCategoryAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(String category, LocalDateTime startDate, LocalDateTime endDate);
 
     Collection<FormrunnerFact> findByTenantIdAndCategory(long tenantId, String category);
 
-    Collection<FormrunnerFact> findByTenantIdAndElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLowerThanEqual
+    Collection<FormrunnerFact> findByTenantIdAndElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
             (long tenantId, String elementId, LocalDateTime startDate, LocalDateTime endDate);
 
-    Collection<FormrunnerFact> findByTenantIdAndCategoryAndCreatedAtGreaterThanEqualAndCreatedAtLowerThanEqual
-            (long tenantId, String Category, LocalDateTime startDate, LocalDateTime endDate);
+    Collection<FormrunnerFact> findByTenantIdAndCategoryAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
+            (long tenantId, String category, LocalDateTime startDate, LocalDateTime endDate);
 
     Collection<FormrunnerFact> findByCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(LocalDateTime startDate, LocalDateTime endDate);
 
@@ -33,11 +36,11 @@ public interface FormrunnerFactRepository extends CrudRepository<FormrunnerFact,
 
     Collection<FormrunnerFact> findByCreatedAtGreaterThan(LocalDateTime createdAt);
 
-    @Query("SELECT f FROM FormrunnerFact f WHERE (:tenantId is null or f.tenantId = :id) and (:category is null or f.category = :category)" +
+    @Query("SELECT f FROM FormrunnerFact f WHERE (:tenantId is null or f.tenantId = :tenantId) and (:category is null or f.category = :category)" +
             "and (:startDate is null or f.createdAt >= :startDate) and (:endDate is null or f.createdAt <= :endDate)")
     Collection<FormrunnerFact> findByTenantIdAndCategoryAndCreatedAt(Long tenantId, String category, LocalDateTime startDate, LocalDateTime endDate);
 
-    @Query("SELECT f FROM  FormrunnerFact f WHERE (:tenantId is null or f.tenantId = :tenantId) and (:value is null or f.value = :value)" +
+    @Query("SELECT f FROM  FormrunnerFact f WHERE (:tenantId is null or f.tenantId = :tenantId) and (:elementId is null or f.elementId = :elementId)" +
             "and (:startDate is null or f.createdAt >= :startDate) and (:endDate is null or f.createdAt <= :endDate)")
     Collection<FormrunnerFact> findByTenantIdAndElementIdAndCreatedAt(Long tenantId, String elementId, LocalDateTime startDate, LocalDateTime endDate);
 
@@ -48,6 +51,6 @@ public interface FormrunnerFactRepository extends CrudRepository<FormrunnerFact,
     @Query("SELECT f FROM FormrunnerFact f WHERE (:tenantId is null or f.tenantId = :tenantId) and (:category is null or f.category = :category)" +
             "and (:elementId is null or f.elementId = :elementId)" + "and (:startDate is null or f.createdAt >= :startDate) and (:endDate is null or " +
             "f.createdAt <= :endDate)")
-    Collection<FormrunnerFact> findByTenantIdAndCategoryAndElementIdAndCreatedAt(Long tenantId, String category,String elementId, LocalDateTime startDate,
+    Collection<FormrunnerFact> findByTenantIdAndCategoryAndElementIdAndCreatedAt(Long tenantId, String category, String elementId, LocalDateTime startDate,
                                                                                  LocalDateTime endDate);
 }

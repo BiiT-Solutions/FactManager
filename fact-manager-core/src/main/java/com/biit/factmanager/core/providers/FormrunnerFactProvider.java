@@ -29,39 +29,12 @@ public class FormrunnerFactProvider {
                 () -> new FactNotFoundException(this.getClass(), "No fact with id '" + factId + "' found."));
     }
 
-
     public Collection<FormrunnerFact> getAll() {
         return StreamSupport.stream(formrunnerFactRepository.findAll().spliterator(), false).collect(Collectors.toSet());
     }
 
-    public Collection<FormrunnerFact> getPatientLevel(long id, String examinationName) {
-        return StreamSupport.stream(formrunnerFactRepository.findByPatientIdAndExaminationName(id, examinationName).spliterator(),
-                false).collect(Collectors.toSet());
-    }
-
-    public Collection<FormrunnerFact> getCompanyLevel(long id, String examinationName) {
-        return StreamSupport.stream(formrunnerFactRepository.findByCompanyIdAndExaminationName(id, examinationName).spliterator(),
-                false).collect(Collectors.toSet());
-    }
-
-    public Collection<FormrunnerFact> getOrganizationLevel(long id, String examinationName) {
-        return StreamSupport.stream(formrunnerFactRepository.findByOrganizationIdAndExaminationName(id, examinationName).spliterator(),
-                false).collect(Collectors.toSet());
-    }
-
     public Collection<FormrunnerFact> getFiltered(Level level, Long id, String examinationName) {
-        if (level != null && id != null) {
-            switch (level) {
-                case PATIENT:
-                    return getPatientLevel(id, examinationName);
-                case COMPANY:
-                    return getCompanyLevel(id, examinationName);
-                case ORGANIZATION:
-                    return getOrganizationLevel(id, examinationName);
-                default:
-                    return getAll();
-            }
-        }
+
         return getAll();
     }
 
