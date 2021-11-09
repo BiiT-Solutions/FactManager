@@ -125,7 +125,7 @@ public class PivotViewProvider {
                     append("\n\t\t <Facets>\n");
             facts.stream().filter(fact -> fact.getTenantId() == tenantId).forEach(fact -> {
                 xml.append("\t\t    <Facet Name=\"").append(fact.getCategory()).append("\">\n");
-                xml.append("\t\t       <Number Value=\"").append(fact.getValue()).append("\"/>\n");
+                //xml.append("\t\t       <Number Value=\"").append(fact.getValue()).append("\"/>\n");
                 xml.append("\t\t    </Facet>\n");
             });
             xml.append("\t\t</Facets>\n\t      </Item>\n");

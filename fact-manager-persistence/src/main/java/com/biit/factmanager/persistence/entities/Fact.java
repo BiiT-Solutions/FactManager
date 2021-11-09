@@ -12,9 +12,11 @@ import java.time.LocalDateTime;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = "type")
 @Primary
 @Table(name = "facts")
-public abstract class Fact<T> {
+public abstract class Fact<Value> {
+    private static final int MAX_JSON_LENGTH = 100000;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +28,7 @@ public abstract class Fact<T> {
     @Column(name = "category")
     private String category;
 
-    @Column(name = "value")
+    @Column(name = "value", length = MAX_JSON_LENGTH)
     @Convert(converter = StringCryptoConverter.class)
     private String value;
 
@@ -49,12 +51,12 @@ public abstract class Fact<T> {
         this.category = category;
     }
 
-    protected String getValue() {
+    public String getValue() {
         return value;
     }
 
-    protected void setValue(String category) {
-        this.category = category;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public Integer getId() {
@@ -85,21 +87,21 @@ public abstract class Fact<T> {
         return createdAt;
     }
 
-    private void setCreatedAt(LocalDateTime createdAt) {
+    protected void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public void setEntity(T entity) {
+    public void setEntity(Value entity) {
         try {
-            setValue(new ObjectMapper().writeValueAsString(getValue()));
+            setValue(new ObjectMapper().writeValueAsString(entity));
         } catch (JsonProcessingException e) {
             throw new FactValueInvalidException(e);
         }
     }
 
-    public T getEntity() {
+    public Value getEntity() {
         try {
-            return new ObjectMapper().readValue(getValue(), new TypeReference<T>() {
+            return new ObjectMapper().readValue(getValue(), new TypeReference<Value>() {
             });
         } catch (JsonProcessingException e) {
             throw new FactValueInvalidException(e);

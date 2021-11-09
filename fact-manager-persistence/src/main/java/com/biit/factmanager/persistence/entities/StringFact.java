@@ -1,30 +1,24 @@
 package com.biit.factmanager.persistence.entities;
 
+import com.biit.factmanager.persistence.entities.values.StringValue;
+
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 @Entity
+@DiscriminatorValue("StringFact")
 public class StringFact extends Fact<StringValue> {
-    private final StringValue value;
+    @Transient
+    private final StringValue stringValue;
 
     public StringFact() {
-        this.value = new StringValue();
+        this.stringValue = new StringValue();
     }
 
     public String getString() {
-        return value.getString();
+        return stringValue.getString();
     }
 
-    //public void setString(String string) { this.string = string; }
-}
-
-class StringValue {
-    private String string;
-
-    public String getString() {
-        return string;
-    }
-
-    public void setString(String string) {
-        this.string = string;
-    }
+    public void setString(String string) { stringValue.setString(string); }
 }

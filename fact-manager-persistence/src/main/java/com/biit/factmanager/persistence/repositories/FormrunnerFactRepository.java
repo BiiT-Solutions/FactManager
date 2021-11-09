@@ -20,7 +20,8 @@ public interface FormrunnerFactRepository extends CrudRepository<FormrunnerFact,
             (String elementId, LocalDateTime startDate, LocalDateTime endDate);
 
 
-    Collection<FormrunnerFact> findByCategoryAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(String category, LocalDateTime startDate, LocalDateTime endDate);
+    Collection<FormrunnerFact> findByCategoryAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
+            (String category, LocalDateTime startDate, LocalDateTime endDate);
 
     Collection<FormrunnerFact> findByTenantIdAndCategory(long tenantId, String category);
 

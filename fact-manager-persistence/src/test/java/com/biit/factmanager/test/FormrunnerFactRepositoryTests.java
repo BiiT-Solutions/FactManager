@@ -19,7 +19,7 @@ import java.util.stream.StreamSupport;
 @SpringBootTest
 @Test(groups = "factRepository")
 @Rollback(false)
-public class FactRepositoryTests extends AbstractTransactionalTestNGSpringContextTests {
+public class FormrunnerFactRepositoryTests extends AbstractTransactionalTestNGSpringContextTests {
 
     private static final long FACT_TENANT_ID = 1;
     private static final String FACT_ELEMENT_ID = "elementId";
@@ -90,13 +90,13 @@ public class FactRepositoryTests extends AbstractTransactionalTestNGSpringContex
     @Test(dependsOnMethods = "factBetweenDates")
     private void factBeforeDate() {
         Assert.assertEquals(formrunnerFactRepository.findByCreatedAtLessThan
-                (FACT_DATE_NOW).stream().count(), 1);
+                (FACT_DATE_AFTER).stream().count(), 3);
     }
 
     @Test(dependsOnMethods = "factBeforeDate")
     private void factAfterDate() {
         Assert.assertEquals(formrunnerFactRepository.findByCreatedAtGreaterThan
-                (FACT_DATE_NOW).stream().count(), 2);
+                (FACT_DATE_NOW).stream().count(), 3);
     }
 
     @AfterClass

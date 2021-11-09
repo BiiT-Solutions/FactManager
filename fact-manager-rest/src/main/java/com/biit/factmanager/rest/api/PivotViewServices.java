@@ -25,19 +25,19 @@ public class PivotViewServices {
         this.pivotViewProvider = pivotViewProvider;
     }
 
-    @ApiOperation(value = "Get all facts", notes = "Id requires a level to be set. Parameters:")
+    @ApiOperation(value = "Get facts by params")
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(value = "", produces = MediaType.APPLICATION_XML_VALUE)
-    public StringBuilder getAllFacts(
+    public StringBuilder getFacts(
             @ApiParam(value = "tenantId", required = false) @RequestParam(value = "tenantId", required = false) Long tenantId,
             @ApiParam(value = "category", required = false) @RequestParam(value = "category", required = false) String category,
             @ApiParam(value = "elementId", required = false) @RequestParam(value = "elementId", required = false) String elementId,
             @ApiParam(value = "startDate", required = false) @RequestParam(value = "startDate", required = false) LocalDateTime startDate,
             @ApiParam(value = "endDate", required = false) @RequestParam(value = "endDate", required = false) LocalDateTime endDate,
-            @ApiParam(value = "ThrityDaysBefore", required = false) @RequestParam(value = "ThrityDaysBefore", required = false) Integer lastDays,
+            @ApiParam(value = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
             HttpServletRequest httpRequest
     ) {
-        FactManagerLogger.info(this.getClass().getName(), "Get all facts");
+        FactManagerLogger.info(this.getClass().getName(), "Get facts by params");
         return pivotViewProvider.getCase(tenantId, category, elementId, startDate, endDate, lastDays);
     }
 

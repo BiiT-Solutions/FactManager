@@ -7,7 +7,7 @@
             </run>
         </groups>
         <classes>
-            <class name="com.biit.factmanager.test.FactRepositoryTests" />
+            <class name="com.biit.factmanager.test.FormrunnerFactRepositoryTests" />
         </classes>
     </test>
 </suite>
