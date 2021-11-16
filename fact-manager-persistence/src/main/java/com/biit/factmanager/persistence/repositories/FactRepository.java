@@ -31,4 +31,8 @@ public interface FactRepository<T> extends CrudRepository<Fact<T>, Integer> {
     Collection<Fact<T>> findByCreatedAtLessThan(LocalDateTime createdAt);
 
     Collection<Fact<T>> findByCreatedAtGreaterThan(LocalDateTime createdAt);
+
+    Collection<Fact<T>> findByElementIdAndCategoryAndCreatedAt(String elementId, String category, LocalDateTime startDate, LocalDateTime endDate);
+
+    Collection<Fact<T>> findByTenantIdAndCategoryAndElementIdAndCreatedAt(Long tenantId, String category, String elementId, LocalDateTime startDate, LocalDateTime endDate);
 }

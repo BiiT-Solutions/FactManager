@@ -16,6 +16,14 @@ public class FormRunnerValue extends Fact<FormRunnerValue>{
 
     private String examinationVersion;
 
+    private long patientId;
+
+    private long organizationId;
+
+    private long professionalId;
+
+    private long companyId;
+
     public FormRunnerValue() {}
 
     @Override

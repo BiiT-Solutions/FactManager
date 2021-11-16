@@ -52,7 +52,7 @@ public abstract class Fact<Value> {
     }
 
     public String getValue() {
-        return value;
+        return value == null ? "" : value;
     }
 
     public void setValue(String value) {
