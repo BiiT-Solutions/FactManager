@@ -35,4 +35,16 @@ public interface FactRepository<T> extends CrudRepository<Fact<T>, Integer> {
     Collection<Fact<T>> findByElementIdAndCategoryAndCreatedAt(String elementId, String category, LocalDateTime startDate, LocalDateTime endDate);
 
     Collection<Fact<T>> findByTenantIdAndCategoryAndElementIdAndCreatedAt(Long tenantId, String category, String elementId, LocalDateTime startDate, LocalDateTime endDate);
+
+    Collection<Fact<T>> findByElementId(String elementId);
+
+    Collection<Fact<T>> findByCategory(String category);
+
+    Collection<Fact<T>> findByElementIdAndCategory(String elementId, String category);
+
+    Collection<Fact<T>> findByTenantId(Long tenantId);
+
+    Collection<Fact<T>> findByTenantIdAndElementId(Long tenantId, String elementId);
+
+    Collection<Fact<T>> findByTenantIdAndCategoryAndElementId(Long tenantId, String category, String elementId);
 }

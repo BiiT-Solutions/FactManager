@@ -13,8 +13,6 @@ import org.testng.annotations.Test;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @SpringBootTest
 @Test(groups = "factRepository")
@@ -58,8 +56,7 @@ public class FormrunnerFactRepositoryTests extends AbstractTransactionalTestNGSp
 
     @Test
     private void getAllAtTheBeginning() {
-        Assert.assertEquals(StreamSupport.stream(formrunnerFactRepository.findAll().spliterator(),false)
-                .count(), 3);
+        Assert.assertEquals(formrunnerFactRepository.count(), 3);
     }
 
     @Test(dependsOnMethods = "getAllAtTheBeginning")
@@ -101,11 +98,10 @@ public class FormrunnerFactRepositoryTests extends AbstractTransactionalTestNGSp
 
     @AfterClass
     private void deleteFact() {
-        formrunnerFacts = StreamSupport.stream(formrunnerFactRepository
-                .findAll().spliterator(), false).collect(Collectors.toList());
-        for (FormrunnerFact formrunnerFact:formrunnerFacts) {
-            formrunnerFactRepository.delete(formrunnerFact);
-        }
+        formrunnerFactRepository.findAll().
+                forEach( formrunnerFact -> {
+                    formrunnerFactRepository.delete(formrunnerFact);
+                });
         Assert.assertEquals(formrunnerFactRepository.count(), 0);
     }
 }

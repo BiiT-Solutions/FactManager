@@ -13,9 +13,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.Collection;
 
 @SpringBootTest
 @Test(groups = "factRepository")
@@ -32,11 +30,11 @@ public class StringFactRepositoryTests extends AbstractTransactionalTestNGSpring
 
     @Test
     private void createStringFact() {
-        Assert.assertEquals(StreamSupport.stream(stringFactRepository.findAll().spliterator(), false).count(), 0);
+        Assert.assertEquals(stringFactRepository.count(), 0);
         StringFact stringFact = new StringFact();
         stringFact.setValue(STRING_FACT);
         stringFactRepository.save(stringFact);
-        Assert.assertEquals(StreamSupport.stream(stringFactRepository.findAll().spliterator(), false).count(), 1);
+        Assert.assertEquals(stringFactRepository.count(), 1);
     }
 
     @Test
@@ -60,15 +58,15 @@ public class StringFactRepositoryTests extends AbstractTransactionalTestNGSpring
 
     @Test
     private void deleteStringFact() {
-        Assert.assertEquals(StreamSupport.stream(stringFactRepository.findAll().spliterator(), false).count(), 1);
-        List<Fact<StringValue>> stringFacts = StreamSupport.stream(stringFactRepository.findAll().spliterator(), false).collect(Collectors.toList());
-        stringFactRepository.delete(stringFacts.get(0));
-        Assert.assertEquals(StreamSupport.stream(stringFactRepository.findAll().spliterator(), false).count(), 0);
+        Assert.assertEquals(stringFactRepository.count(), 1);
+        Collection<Fact<StringValue>> stringFacts = (Collection<Fact<StringValue>>) stringFactRepository.findAll();
+        stringFactRepository.delete((Fact<StringValue>) stringFacts.toArray()[0]);
+        Assert.assertEquals(stringFactRepository.count(), 0);
     }
 
     @AfterClass
     private void clean() {
-        StreamSupport.stream(stringFactRepository.findAll().spliterator(), false).collect(Collectors.toList()).
+        stringFactRepository.findAll().
                 forEach(stringValueFact -> {
                     stringFactRepository.delete(stringValueFact);
                 });

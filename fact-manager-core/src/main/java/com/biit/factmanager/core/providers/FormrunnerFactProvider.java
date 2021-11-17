@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class FormrunnerFactProvider {
@@ -30,7 +28,7 @@ public class FormrunnerFactProvider {
     }
 
     public Collection<FormrunnerFact> getAll() {
-        return StreamSupport.stream(formrunnerFactRepository.findAll().spliterator(), false).collect(Collectors.toSet());
+        return (Collection<FormrunnerFact>) formrunnerFactRepository.findAll();
     }
 
     public Collection<FormrunnerFact> getFiltered(Level level, Long id, String examinationName) {

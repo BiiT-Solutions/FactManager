@@ -74,4 +74,36 @@ public class FormRunnerValue extends Fact<FormRunnerValue>{
     public void setExaminationVersion(String examinationVersion) {
         this.examinationVersion = examinationVersion;
     }
+
+    public long getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(long patientId) {
+        this.patientId = patientId;
+    }
+
+    public long getOrganizationId() {
+        return organizationId;
+    }
+
+    public void setOrganizationId(long organizationId) {
+        this.organizationId = organizationId;
+    }
+
+    public long getProfessionalId() {
+        return professionalId;
+    }
+
+    public void setProfessionalId(long professionalId) {
+        this.professionalId = professionalId;
+    }
+
+    public long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(long companyId) {
+        this.companyId = companyId;
+    }
 }

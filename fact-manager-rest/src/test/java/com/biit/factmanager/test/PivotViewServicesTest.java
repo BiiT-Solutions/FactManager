@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.StreamSupport;
 
 @SpringBootTest
 @Rollback(value = false)
@@ -63,7 +62,7 @@ public class PivotViewServicesTest extends AbstractTestNGSpringContextTests {
         for (FormrunnerFact fact : formrunnerFacts) {
             formrunnerFactRepository.delete(fact);
         }
-        Assert.assertEquals(StreamSupport.stream(formrunnerFactRepository.findAll().spliterator(), false).count(), 0);
+        Assert.assertEquals(formrunnerFactRepository.count(), 0);
     }
 
     @Test(dependsOnMethods = "addFact")

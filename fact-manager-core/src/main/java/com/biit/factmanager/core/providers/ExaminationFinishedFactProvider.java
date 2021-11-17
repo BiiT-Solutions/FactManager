@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class ExaminationFinishedFactProvider {
@@ -31,22 +29,19 @@ public class ExaminationFinishedFactProvider {
 
 
     public Collection<ExaminationFinishedFact> getAll() {
-        return StreamSupport.stream(examinationFinishedFactRepository.findAll().spliterator(), false).collect(Collectors.toSet());
+        return (Collection<ExaminationFinishedFact>) examinationFinishedFactRepository.findAll();
     }
 
     public Collection<ExaminationFinishedFact> getPatientLevel(long id, String examinationName) {
-        return StreamSupport.stream(examinationFinishedFactRepository.findByPatientIdAndExaminationName(id, examinationName).spliterator(),
-                false).collect(Collectors.toSet());
+        return examinationFinishedFactRepository.findByPatientIdAndExaminationName(id, examinationName);
     }
 
     public Collection<ExaminationFinishedFact> getCompanyLevel(long id, String examinationName) {
-        return StreamSupport.stream(examinationFinishedFactRepository.findByCompanyIdAndExaminationName(id, examinationName).spliterator(),
-                false).collect(Collectors.toSet());
+        return examinationFinishedFactRepository.findByCompanyIdAndExaminationName(id, examinationName);
     }
 
     public Collection<ExaminationFinishedFact> getOrganizationLevel(long id, String examinationName) {
-        return StreamSupport.stream(examinationFinishedFactRepository.findByOrganizationIdAndExaminationName(id, examinationName).spliterator(),
-                false).collect(Collectors.toSet());
+        return examinationFinishedFactRepository.findByOrganizationIdAndExaminationName(id, examinationName);
     }
 
     public Collection<ExaminationFinishedFact> getFiltered(Level level, Long id, String organizationName) {

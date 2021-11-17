@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class PivotViewProvider<T> {
@@ -37,9 +35,7 @@ public class PivotViewProvider<T> {
             getAllCombinations(tenantId, category, elementId, localStartDate, localEndDate);
         }
         if (startDate == null && endDate == null && lastDays == null) {
-            final LocalDateTime localStartDate = LocalDateTime.now().minusYears(100);
-            final LocalDateTime localEndDate = LocalDateTime.now().plusYears(100);
-            getAllCombinations(tenantId, category, elementId, localStartDate, localEndDate);
+            getCombinationsWithoutDates(tenantId,category,elementId);
         }
         if (tenantId == null && "".equals(category) && "".equals(elementId) && startDate == null && endDate == null && lastDays == null) {
             facts = getAll();
@@ -56,57 +52,76 @@ public class PivotViewProvider<T> {
     }
 
     public void getAllCombinations(Long tenantId, String category, String elementId, LocalDateTime startDate, LocalDateTime endDate) {
-        Collection<Fact<T>> facts = new ArrayList<>();
+        Collection facts = new ArrayList<>();
         if (tenantId == null && "".equals(category) && "".equals(elementId)) {
             facts = factRepository.findByCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(startDate, endDate);
         }
         if (tenantId == null && "".equals(category) && !"".equals(elementId)) {
-            facts = (Collection<Fact<T>>) StreamSupport.stream(factRepository.findByElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
-                    (elementId, startDate, endDate).spliterator(), false).collect(Collectors.toSet());
+            facts = factRepository.findByElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(elementId,startDate,endDate);
         }
         if (tenantId == null && !"".equals(category) && "".equals(elementId)) {
-            facts = (Collection<Fact<T>>) StreamSupport.stream(factRepository.findByCategoryAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
-                    (category, startDate, endDate).spliterator(), false).collect(Collectors.toSet());
+            facts = factRepository.findByCategoryAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(category, startDate, endDate);
         }
         if (tenantId == null && !"".equals(category) && !"".equals(elementId)) {
-            facts = (Collection<Fact<T>>) StreamSupport.stream(factRepository.findByElementIdAndCategoryAndCreatedAt
-                    (elementId, category, startDate, endDate).spliterator(), false).collect(Collectors.toSet());
+            facts = factRepository.findByElementIdAndCategoryAndCreatedAt(elementId, category, startDate, endDate);
         }
         if (tenantId != null && "".equals(category) && "".equals(elementId)) {
-            facts = (Collection<Fact<T>>) StreamSupport.stream(factRepository.findByTenantIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
-                    (tenantId, startDate, endDate).spliterator(), false).collect(Collectors.toSet());
+            facts = factRepository.findByTenantIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(tenantId, startDate, endDate);
         }
         if (tenantId != null && "".equals(category) && !"".equals(elementId)) {
-            facts = (Collection<Fact<T>>) StreamSupport.stream(factRepository.findByTenantIdAndElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
-                    (tenantId, elementId, startDate, endDate).spliterator(), false).collect(Collectors.toSet());
+            facts = factRepository.findByTenantIdAndElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(tenantId, elementId, startDate, endDate);
         }
         if (tenantId != null && !"".equals(category) && "".equals(elementId)) {
-            facts = (Collection<Fact<T>>) StreamSupport.stream(factRepository.findByTenantIdAndCategoryAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
-                    (tenantId, category, startDate, endDate).spliterator(), false).collect(Collectors.toSet());
+            facts = factRepository.findByTenantIdAndCategoryAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(tenantId, category, startDate, endDate);
         }
         if (tenantId != null && !"".equals(category) && !"".equals(elementId)) {
-            facts = (Collection<Fact<T>>) StreamSupport.stream(factRepository.findByTenantIdAndCategoryAndElementIdAndCreatedAt
-                    (tenantId, category, elementId, startDate, endDate).spliterator(), false).collect(Collectors.toSet());
+            facts = factRepository.findByTenantIdAndCategoryAndElementIdAndCreatedAt(tenantId, category, elementId, startDate, endDate);
+        }
+    }
+
+    public void getCombinationsWithoutDates(Long tenantId, String category, String elementId) {
+        Collection facts = new ArrayList<>();
+        if (tenantId == null && "".equals(category) && "".equals(elementId)) {
+            facts = (Collection) factRepository.findAll();
+        }
+        if (tenantId == null && "".equals(category) && !"".equals(elementId)) {
+            facts = factRepository.findByElementId(elementId);
+        }
+        if (tenantId == null && !"".equals(category) && "".equals(elementId)) {
+            facts = factRepository.findByCategory(category);
+        }
+        if (tenantId == null && !"".equals(category) && !"".equals(elementId)) {
+            facts = factRepository.findByElementIdAndCategory(elementId, category);
+        }
+        if (tenantId != null && "".equals(category) && "".equals(elementId)) {
+            facts = factRepository.findByTenantId(tenantId);
+        }
+        if (tenantId != null && "".equals(category) && !"".equals(elementId)) {
+            facts = factRepository.findByTenantIdAndElementId(tenantId, elementId);
+        }
+        if (tenantId != null && !"".equals(category) && "".equals(elementId)) {
+            facts = factRepository.findByTenantIdAndCategory(tenantId, category);
+        }
+        if (tenantId != null && !"".equals(category) && !"".equals(elementId)) {
+            facts = factRepository.findByTenantIdAndCategoryAndElementId(tenantId, category, elementId);
         }
     }
 
     public Collection<Fact<T>> getAll() {
-        return (Collection<Fact<T>>) StreamSupport.stream(factRepository.findAll().spliterator(), false).collect(Collectors.toSet());
+        return (Collection<Fact<T>>) factRepository.findAll();
     }
 
     public Collection<Fact<T>> getBetweenDates(LocalDateTime startDate, LocalDateTime endDate) {
-        return (Collection<Fact<T>>) StreamSupport.stream(factRepository.findByCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(
-                startDate, endDate).spliterator(), false).collect(Collectors.toSet());
+        return factRepository.findByCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(
+                startDate, endDate);
     }
 
     public Collection<Fact<T>> getAfterDate(LocalDateTime date) {
-        return (Collection<Fact<T>>) StreamSupport.stream(factRepository.findByCreatedAtGreaterThan(date).spliterator(), false)
-                .collect(Collectors.toSet());
+        return factRepository.findByCreatedAtGreaterThan(date);
     }
 
     public Collection<Fact<T>> getBeforeDate(LocalDateTime date) {
-        return (Collection<Fact<T>>) StreamSupport.stream(factRepository.findByCreatedAtLessThan(date).spliterator(), false)
-                .collect(Collectors.toSet());
+        return factRepository.findByCreatedAtLessThan(date);
     }
 
     public Collection<Fact<T>> getLastXDays(Integer days) {
