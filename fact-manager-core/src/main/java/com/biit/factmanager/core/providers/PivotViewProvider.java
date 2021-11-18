@@ -40,7 +40,8 @@ public class PivotViewProvider<E, T extends Fact<E>> {
         if (startDate == null && endDate == null && lastDays == null) {
             facts = getCombinationsWithoutDates(tenantId, category, elementId);
         }
-        if (tenantId == null && "".equals(category) && "".equals(elementId) && startDate == null && endDate == null && lastDays == null) {
+        if (tenantId == null && (category == null || category.isEmpty()) && (elementId == null || elementId.isEmpty())
+                && startDate == null && endDate == null && lastDays == null) {
             facts = getAll();
         }
         try {
@@ -56,56 +57,56 @@ public class PivotViewProvider<E, T extends Fact<E>> {
     }
 
     public Collection<T> getAllCombinations(Long tenantId, String category, String elementId, LocalDateTime startDate, LocalDateTime endDate) {
-        if (tenantId == null && "".equals(category) && elementId.isEmpty()) {
+        if (tenantId == null && (category == null || category.isEmpty()) && (elementId == null || elementId.isEmpty())) {
             return factRepository.findByCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(startDate, endDate);
         }
-        if (tenantId == null && "".equals(category) && !elementId.isEmpty()) {
+        if (tenantId == null && (category == null || category.isEmpty()) && (elementId != null && !elementId.isEmpty())) {
             return factRepository.findByElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(elementId, startDate, endDate);
         }
-        if (tenantId == null && !"".equals(category) && elementId.isEmpty()) {
+        if (tenantId == null && (category != null && !category.isEmpty()) && (elementId == null || elementId.isEmpty())) {
             return factRepository.findByCategoryAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(category, startDate, endDate);
         }
-        if (tenantId == null && !"".equals(category) && !elementId.isEmpty()) {
+        if (tenantId == null && (category != null && !category.isEmpty()) && (elementId != null && !elementId.isEmpty())) {
             return factRepository.findByElementIdAndCategoryAndCreatedAt(elementId, category, startDate, endDate);
         }
-        if (tenantId != null && "".equals(category) && elementId.isEmpty()) {
+        if (tenantId != null && (category == null || category.isEmpty()) && (elementId == null || elementId.isEmpty())) {
             return factRepository.findByTenantIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(tenantId, startDate, endDate);
         }
-        if (tenantId != null && "".equals(category) && !elementId.isEmpty()) {
+        if (tenantId != null && (category == null || category.isEmpty()) && (elementId != null && !elementId.isEmpty())) {
             return factRepository.findByTenantIdAndElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(tenantId, elementId, startDate, endDate);
         }
-        if (tenantId != null && !"".equals(category) && elementId.isEmpty()) {
+        if (tenantId != null && (category != null && !category.isEmpty()) && (elementId == null || elementId.isEmpty())) {
             return factRepository.findByTenantIdAndCategoryAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(tenantId, category, startDate, endDate);
         }
-        if (tenantId != null && !"".equals(category) && !"".equals(elementId)) {
+        if (tenantId != null && (category != null && !category.isEmpty()) && (elementId != null && !elementId.isEmpty())) {
             return factRepository.findByTenantIdAndCategoryAndElementIdAndCreatedAt(tenantId, category, elementId, startDate, endDate);
         }
         return new HashSet<>();
     }
 
     public Collection<T> getCombinationsWithoutDates(Long tenantId, String category, String elementId) {
-        if (tenantId == null && "".equals(category) && "".equals(elementId)) {
+        if (tenantId == null && (category == null || category.isEmpty()) && "".equals(elementId)) {
             return factRepository.findAll();
         }
-        if (tenantId == null && "".equals(category) && !"".equals(elementId)) {
+        if (tenantId == null && (category == null || category.isEmpty()) && (elementId != null && !elementId.isEmpty())) {
             return factRepository.findByElementId(elementId);
         }
-        if (tenantId == null && !"".equals(category) && "".equals(elementId)) {
+        if (tenantId == null && (category != null && !category.isEmpty()) && (elementId == null || elementId.isEmpty())) {
             return factRepository.findByCategory(category);
         }
-        if (tenantId == null && !"".equals(category) && !"".equals(elementId)) {
+        if (tenantId == null && (category != null && !category.isEmpty()) && (elementId != null && !elementId.isEmpty())) {
             return factRepository.findByElementIdAndCategory(elementId, category);
         }
-        if (tenantId != null && "".equals(category) && "".equals(elementId)) {
+        if (tenantId != null && (category == null || category.isEmpty()) && (elementId == null || elementId.isEmpty())) {
             return factRepository.findByTenantId(tenantId);
         }
-        if (tenantId != null && "".equals(category) && !"".equals(elementId)) {
+        if (tenantId != null && (category == null || category.isEmpty()) && (elementId != null && !elementId.isEmpty())) {
             return factRepository.findByTenantIdAndElementId(tenantId, elementId);
         }
-        if (tenantId != null && !"".equals(category) && "".equals(elementId)) {
+        if (tenantId != null && (category != null && !category.isEmpty()) && (elementId == null || elementId.isEmpty())) {
             return factRepository.findByTenantIdAndCategory(tenantId, category);
         }
-        if (tenantId != null && !"".equals(category) && !"".equals(elementId)) {
+        if (tenantId != null && (category != null && !category.isEmpty()) && (elementId != null && !elementId.isEmpty())) {
             return factRepository.findByTenantIdAndCategoryAndElementId(tenantId, category, elementId);
         }
         return new HashSet<>();
@@ -150,18 +151,18 @@ public class PivotViewProvider<E, T extends Fact<E>> {
         }
         xml.append("\t</FacetCategories>\n");
         tenantIds.forEach(tenantId -> {
-            xml.append("\n\t\t<Item Id=\"").append(tenantId).append("\" Img=\"#2")
-                    .append("\n#4\" Href=\"/usmo\" Name=\"").append(tenantId).append("\">").
+            xml.append("\n\t\t<Item Id=\"").append(tenantId).append("\" Img=\"#2\"")
+                    .append(" Href=\"/usmo\" Name=\"").append(tenantId).append("\">").
                     append("\n\t\t\t<Facets>\n");
             facts.stream().filter(fact -> fact.getTenantId() == tenantId).forEach(fact -> {
                 xml.append("\t\t\t\t<Facet Name=\"").append(fact.getCategory()).append("\">\n");
                 xml.append("\t\t\t\t\t<Number Value=\"").append(fact.getValue()).append("\"/>\n");
                 xml.append("\t\t\t\t</Facet>\n");
             });
-            xml.append("\t\t</Facets>\n\t\t</Item>\n");
+            xml.append("\t\t\t</Facets>\n\t\t</Item>\n");
         });
-        xml.append("\n\t</Items>");
-        xml.append("\n</Collection>");
+        xml.append("\t</Items>\n");
+        xml.append("</Collection>");
         return xml.toString();
     }
 
@@ -182,8 +183,8 @@ public class PivotViewProvider<E, T extends Fact<E>> {
         xml.append("\t</FacetCategories>\n");
         xml.append("\t<Items ImgBase=\"").append("./dz_haagse_passage/haagse_passage.dzc").append("\">\n");
         tenantIds.forEach(tenantId -> {
-            xml.append("\n\t\t<Item Id=\"").append(tenantId).append("\" Img=\"#2")
-                    .append("\n#4\" Href=\"/usmo\" Name=\"").append(tenantId).append("\">").
+            xml.append("\n\t\t<Item Id=\"").append(tenantId).append("\" Img=\"#2\"")
+                    .append(" Href=\"/usmo\" Name=\"").append(tenantId).append("\">").
                     append("\n\t\t\t<Facets>\n");
             facts.stream().filter(fact -> fact.getTenantId() == tenantId).forEach(fact -> {
                 FormRunnerValue formRunnerValue = new FormRunnerValue();
@@ -196,10 +197,10 @@ public class PivotViewProvider<E, T extends Fact<E>> {
                 xml.append("\t\t\t\t\t<Number Value=\"").append(formRunnerValue.getScore()).append("\"/>\n");
                 xml.append("\t\t\t\t</Facet>\n");
             });
-            xml.append("\t\t</Facets>\n\t\t</Item>\n");
+            xml.append("\t\t\t</Facets>\n\t\t</Item>\n");
         });
-        xml.append("\n\t</Items>");
-        xml.append("\n</Collection>");
+        xml.append("\t</Items>\n");
+        xml.append("</Collection>");
         return xml.toString();
     }
 
