@@ -28,7 +28,7 @@ public class PivotViewServices {
     @ApiOperation(value = "Get facts by params")
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(value = "", produces = MediaType.APPLICATION_XML_VALUE)
-    public StringBuilder getFacts(
+    public String getFacts(
             @ApiParam(value = "tenantId", required = false) @RequestParam(value = "tenantId", required = false) Long tenantId,
             @ApiParam(value = "category", required = false) @RequestParam(value = "category", required = false) String category,
             @ApiParam(value = "elementId", required = false) @RequestParam(value = "elementId", required = false) String elementId,

@@ -1,5 +1,6 @@
 package com.biit.factmanager.core.providers;
 
+import com.biit.factmanager.core.providers.exceptions.FactNotFoundException;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.persistence.entities.FormRunnerValue;
@@ -17,32 +18,34 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
-public class PivotViewProvider<T> {
-    private final FactRepository factRepository;
+public class PivotViewProvider<E, T extends Fact<E>> {
+    private final FactRepository<E, T> factRepository;
 
     @Autowired
-    public PivotViewProvider(FactRepository factRepository) {
+    public PivotViewProvider(FactRepository<E, T> factRepository) {
         this.factRepository = factRepository;
     }
 
-    public String getCase(Long tenantId, String category, String elementId, LocalDateTime startDate, LocalDateTime endDate, Integer lastDays) {
-        Collection<Fact<T>> facts = new ArrayList<>();
+    public String getCase(Long tenantId, String category, String elementId, LocalDateTime startDate, LocalDateTime endDate, Integer lastDays) throws
+            FactNotFoundException {
+        Collection<T> facts = new ArrayList<>();
         if (startDate != null && endDate != null && lastDays == null) {
-            getAllCombinations(tenantId, category, elementId, startDate, endDate);
+            facts = getAllCombinations(tenantId, category, elementId, startDate, endDate);
         }
         if (startDate == null && endDate == null && lastDays != null) {
             final LocalDateTime localStartDate = LocalDateTime.now().minusDays(lastDays);
             final LocalDateTime localEndDate = LocalDateTime.now();
-            getAllCombinations(tenantId, category, elementId, localStartDate, localEndDate);
+            facts = getAllCombinations(tenantId, category, elementId, localStartDate, localEndDate);
         }
         if (startDate == null && endDate == null && lastDays == null) {
-            getCombinationsWithoutDates(tenantId, category, elementId);
+            facts = getCombinationsWithoutDates(tenantId, category, elementId);
         }
         if (tenantId == null && "".equals(category) && "".equals(elementId) && startDate == null && endDate == null && lastDays == null) {
             facts = getAll();
         }
         try {
-            getFormRunnerValueFromJson(facts.stream().findFirst().get());
+            getFormRunnerValueFromJson(facts.stream().findFirst().orElseThrow(() ->
+                    new FactNotFoundException(this.getClass(), "No facts for the selected filter")));
             return xmlFromFormrunnerFact(facts);
         } catch (JsonProcessingException e) {
             return xmlFromFact(facts);
@@ -52,90 +55,90 @@ public class PivotViewProvider<T> {
         return xmlFromFact(facts);
     }
 
-    public void getAllCombinations(Long tenantId, String category, String elementId, LocalDateTime startDate, LocalDateTime endDate) {
-        Collection facts = new ArrayList<>();
-        if (tenantId == null && "".equals(category) && "".equals(elementId)) {
-            facts = factRepository.findByCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(startDate, endDate);
+    public Collection<T> getAllCombinations(Long tenantId, String category, String elementId, LocalDateTime startDate, LocalDateTime endDate) {
+        if (tenantId == null && "".equals(category) && elementId.isEmpty()) {
+            return factRepository.findByCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(startDate, endDate);
         }
-        if (tenantId == null && "".equals(category) && !"".equals(elementId)) {
-            facts = factRepository.findByElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(elementId, startDate, endDate);
+        if (tenantId == null && "".equals(category) && !elementId.isEmpty()) {
+            return factRepository.findByElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(elementId, startDate, endDate);
         }
-        if (tenantId == null && !"".equals(category) && "".equals(elementId)) {
-            facts = factRepository.findByCategoryAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(category, startDate, endDate);
+        if (tenantId == null && !"".equals(category) && elementId.isEmpty()) {
+            return factRepository.findByCategoryAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(category, startDate, endDate);
         }
-        if (tenantId == null && !"".equals(category) && !"".equals(elementId)) {
-            facts = factRepository.findByElementIdAndCategoryAndCreatedAt(elementId, category, startDate, endDate);
+        if (tenantId == null && !"".equals(category) && !elementId.isEmpty()) {
+            return factRepository.findByElementIdAndCategoryAndCreatedAt(elementId, category, startDate, endDate);
         }
-        if (tenantId != null && "".equals(category) && "".equals(elementId)) {
-            facts = factRepository.findByTenantIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(tenantId, startDate, endDate);
+        if (tenantId != null && "".equals(category) && elementId.isEmpty()) {
+            return factRepository.findByTenantIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(tenantId, startDate, endDate);
         }
-        if (tenantId != null && "".equals(category) && !"".equals(elementId)) {
-            facts = factRepository.findByTenantIdAndElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(tenantId, elementId, startDate, endDate);
+        if (tenantId != null && "".equals(category) && !elementId.isEmpty()) {
+            return factRepository.findByTenantIdAndElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(tenantId, elementId, startDate, endDate);
         }
-        if (tenantId != null && !"".equals(category) && "".equals(elementId)) {
-            facts = factRepository.findByTenantIdAndCategoryAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(tenantId, category, startDate, endDate);
-        }
-        if (tenantId != null && !"".equals(category) && !"".equals(elementId)) {
-            facts = factRepository.findByTenantIdAndCategoryAndElementIdAndCreatedAt(tenantId, category, elementId, startDate, endDate);
-        }
-    }
-
-    public void getCombinationsWithoutDates(Long tenantId, String category, String elementId) {
-        Collection<T> facts = new ArrayList<>();
-        if (tenantId == null && "".equals(category) && "".equals(elementId)) {
-            facts = (Collection<T>) factRepository.findAll();
-        }
-        if (tenantId == null && "".equals(category) && !"".equals(elementId)) {
-            facts = factRepository.findByElementId(elementId);
-        }
-        if (tenantId == null && !"".equals(category) && "".equals(elementId)) {
-            facts = factRepository.findByCategory(category);
-        }
-        if (tenantId == null && !"".equals(category) && !"".equals(elementId)) {
-            facts = factRepository.findByElementIdAndCategory(elementId, category);
-        }
-        if (tenantId != null && "".equals(category) && "".equals(elementId)) {
-            facts = factRepository.findByTenantId(tenantId);
-        }
-        if (tenantId != null && "".equals(category) && !"".equals(elementId)) {
-            facts = factRepository.findByTenantIdAndElementId(tenantId, elementId);
-        }
-        if (tenantId != null && !"".equals(category) && "".equals(elementId)) {
-            facts = factRepository.findByTenantIdAndCategory(tenantId, category);
+        if (tenantId != null && !"".equals(category) && elementId.isEmpty()) {
+            return factRepository.findByTenantIdAndCategoryAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(tenantId, category, startDate, endDate);
         }
         if (tenantId != null && !"".equals(category) && !"".equals(elementId)) {
-            facts = factRepository.findByTenantIdAndCategoryAndElementId(tenantId, category, elementId);
+            return factRepository.findByTenantIdAndCategoryAndElementIdAndCreatedAt(tenantId, category, elementId, startDate, endDate);
         }
+        return new HashSet<>();
     }
 
-    public Collection<Fact<T>> getAll() {
-        return (Collection<Fact<T>>) factRepository.findAll();
+    public Collection<T> getCombinationsWithoutDates(Long tenantId, String category, String elementId) {
+        if (tenantId == null && "".equals(category) && "".equals(elementId)) {
+            return factRepository.findAll();
+        }
+        if (tenantId == null && "".equals(category) && !"".equals(elementId)) {
+            return factRepository.findByElementId(elementId);
+        }
+        if (tenantId == null && !"".equals(category) && "".equals(elementId)) {
+            return factRepository.findByCategory(category);
+        }
+        if (tenantId == null && !"".equals(category) && !"".equals(elementId)) {
+            return factRepository.findByElementIdAndCategory(elementId, category);
+        }
+        if (tenantId != null && "".equals(category) && "".equals(elementId)) {
+            return factRepository.findByTenantId(tenantId);
+        }
+        if (tenantId != null && "".equals(category) && !"".equals(elementId)) {
+            return factRepository.findByTenantIdAndElementId(tenantId, elementId);
+        }
+        if (tenantId != null && !"".equals(category) && "".equals(elementId)) {
+            return factRepository.findByTenantIdAndCategory(tenantId, category);
+        }
+        if (tenantId != null && !"".equals(category) && !"".equals(elementId)) {
+            return factRepository.findByTenantIdAndCategoryAndElementId(tenantId, category, elementId);
+        }
+        return new HashSet<>();
     }
 
-    public Collection<Fact<T>> getBetweenDates(LocalDateTime startDate, LocalDateTime endDate) {
+    public Collection<T> getAll() {
+        return factRepository.findAll();
+    }
+
+    public Collection<T> getBetweenDates(LocalDateTime startDate, LocalDateTime endDate) {
         return factRepository.findByCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(
                 startDate, endDate);
     }
 
-    public Collection<Fact<T>> getAfterDate(LocalDateTime date) {
+    public Collection<T> getAfterDate(LocalDateTime date) {
         return factRepository.findByCreatedAtGreaterThan(date);
     }
 
-    public Collection<Fact<T>> getBeforeDate(LocalDateTime date) {
+    public Collection<T> getBeforeDate(LocalDateTime date) {
         return factRepository.findByCreatedAtLessThan(date);
     }
 
-    public Collection<Fact<T>> getLastXDays(Integer days) {
+    public Collection<T> getLastXDays(Integer days) {
         final LocalDateTime dateBefore = LocalDateTime.now().minusDays(days);
         final LocalDateTime dateToday = LocalDateTime.now();
         return getBetweenDates(dateBefore, dateToday);
     }
 
-    public String xmlFromFact(Collection<Fact<T>> facts) {
+    public String xmlFromFact(Collection<T> facts) {
         final StringBuilder xml = new StringBuilder();
         final Set<String> categories = new HashSet<>();
         final Set<Long> tenantIds = new HashSet<>();
-        for (final Fact<T> fact : facts) {
+        for (final T fact : facts) {
             categories.add(fact.getCategory());
             tenantIds.add(fact.getTenantId());
         }
@@ -162,11 +165,11 @@ public class PivotViewProvider<T> {
         return xml.toString();
     }
 
-    public String xmlFromFormrunnerFact(Collection<Fact<T>> facts) throws IOException {
+    public String xmlFromFormrunnerFact(Collection<T> facts) throws IOException {
         final StringBuilder xml = new StringBuilder();
         final Set<String> categories = new HashSet<>();
         final Set<Long> tenantIds = new HashSet<>();
-        for (final Fact<T> fact : facts) {
+        for (final T fact : facts) {
             categories.add(fact.getCategory());
             tenantIds.add(fact.getTenantId());
         }
