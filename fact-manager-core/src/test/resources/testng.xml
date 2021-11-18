@@ -4,10 +4,12 @@
         <groups>
             <run>
                 <include name="facts"/>
+                <include name="pivotViewExporter"/>
             </run>
         </groups>
         <classes>
             <class name="com.biit.factmanager.test.FactsTests"/>
+            <class name="com.biit.factmanager.test.PivotViewExporterTest"/>
         </classes>
     </test>
 </suite>

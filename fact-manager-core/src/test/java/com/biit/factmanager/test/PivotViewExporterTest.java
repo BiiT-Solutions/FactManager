@@ -6,6 +6,7 @@ import com.biit.factmanager.persistence.entities.FormRunnerFact;
 import com.biit.factmanager.persistence.repositories.FormRunnerFactRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.InvalidJsonException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,8 +30,8 @@ import java.util.Set;
 
 @SpringBootTest
 @Rollback(value = false)
-@Test(groups = {"pivotViewServices"})
-public class PivotViewServicesTest extends AbstractTestNGSpringContextTests {
+@Test(groups = {"pivotViewExporter"})
+public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
 
     private static final String FACT_EXAMINATION_NAME = "examination_name";
     private static final Long FACT_ID = 1L;
@@ -34,7 +39,7 @@ public class PivotViewServicesTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private FormRunnerFactRepository formrunnerFactRepository;
 
-    private List<FormRunnerFact> formRunnerFacts = new ArrayList<>();
+    private final List<FormRunnerFact> formRunnerFacts = new ArrayList<>();
 
     @BeforeClass
     public void populate() {
@@ -42,7 +47,7 @@ public class PivotViewServicesTest extends AbstractTestNGSpringContextTests {
             FormRunnerFact formrunnerFact = new FormRunnerFact();
             formrunnerFact.setCategory("category" + i);
             formrunnerFact.setElementId("elementId" + i);
-            formrunnerFact.setValue("0."+i);
+            formrunnerFact.setValue("0." + i);
             formRunnerFacts.add(formrunnerFact);
             formrunnerFactRepository.save(formrunnerFact);
         }
@@ -57,16 +62,8 @@ public class PivotViewServicesTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(formrunnerFactRepository.count(), existingValues + 1);
     }
 
-    @Test(dependsOnMethods = "xmlFromFact")
-    public void removeFact() {
-        for (FormRunnerFact fact : formRunnerFacts) {
-            formrunnerFactRepository.delete(fact);
-        }
-        Assert.assertEquals(formrunnerFactRepository.count(), 0);
-    }
-
     @Test(dependsOnMethods = "addFact")
-    public void xmlFromFormrunnerFact() throws IOException {
+    public void xmlFromFormRunnerFact() {
         final StringBuilder xml = new StringBuilder();
         final Set<String> categories = new HashSet<>();
         final Set<Long> tenantIds = new HashSet<>();
@@ -96,7 +93,7 @@ public class PivotViewServicesTest extends AbstractTestNGSpringContextTests {
                     e.printStackTrace();
                 }
                 xml.append("\t\t    <Facet Name=\"").append(formRunnerValue.getCategory()).append("\">\n");
-                    xml.append("\t\t       <Number Value=\"").append(formRunnerValue.getScore()).append("\"/>\n");
+                xml.append("\t\t       <Number Value=\"").append(formRunnerValue.getScore()).append("\"/>\n");
                 xml.append("\t\t    </Facet>\n");
             });
             xml.append("\t\t</Facets>\n\t      </Item>\n");
@@ -151,5 +148,10 @@ public class PivotViewServicesTest extends AbstractTestNGSpringContextTests {
         for (FormRunnerFact fact : formRunnerFacts) {
             formrunnerFactRepository.delete(fact);
         }
+    }
+
+    private String readFile(String file) throws IOException, InvalidJsonException, URISyntaxException {
+        return new String(Files.readAllBytes(Paths.get(getClass().getClassLoader()
+                .getResource(file).toURI())));
     }
 }

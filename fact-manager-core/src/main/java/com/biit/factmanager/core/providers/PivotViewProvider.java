@@ -1,5 +1,6 @@
 package com.biit.factmanager.core.providers;
 
+import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.persistence.entities.FormRunnerValue;
 import com.biit.factmanager.persistence.repositories.FactRepository;
@@ -24,7 +25,7 @@ public class PivotViewProvider<T> {
         this.factRepository = factRepository;
     }
 
-    public StringBuilder getCase(Long tenantId, String category, String elementId, LocalDateTime startDate, LocalDateTime endDate, Integer lastDays) {
+    public String getCase(Long tenantId, String category, String elementId, LocalDateTime startDate, LocalDateTime endDate, Integer lastDays) {
         Collection<Fact<T>> facts = new ArrayList<>();
         if (startDate != null && endDate != null && lastDays == null) {
             getAllCombinations(tenantId, category, elementId, startDate, endDate);
@@ -46,7 +47,7 @@ public class PivotViewProvider<T> {
         } catch (JsonProcessingException e) {
             return xmlFromFact(facts);
         } catch (IOException e) {
-            e.printStackTrace();
+            FactManagerLogger.errorMessage(this.getClass(), e);
         }
         return xmlFromFact(facts);
     }
@@ -80,9 +81,9 @@ public class PivotViewProvider<T> {
     }
 
     public void getCombinationsWithoutDates(Long tenantId, String category, String elementId) {
-        Collection facts = new ArrayList<>();
+        Collection<T> facts = new ArrayList<>();
         if (tenantId == null && "".equals(category) && "".equals(elementId)) {
-            facts = (Collection) factRepository.findAll();
+            facts = (Collection<T>) factRepository.findAll();
         }
         if (tenantId == null && "".equals(category) && !"".equals(elementId)) {
             facts = factRepository.findByElementId(elementId);
@@ -130,7 +131,7 @@ public class PivotViewProvider<T> {
         return getBetweenDates(dateBefore, dateToday);
     }
 
-    public StringBuilder xmlFromFact(Collection<Fact<T>> facts) {
+    public String xmlFromFact(Collection<Fact<T>> facts) {
         final StringBuilder xml = new StringBuilder();
         final Set<String> categories = new HashSet<>();
         final Set<Long> tenantIds = new HashSet<>();
@@ -140,63 +141,63 @@ public class PivotViewProvider<T> {
         }
         xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
         xml.append("<Collection xmlns=\"http://schemas.microsoft.com/collection/metadata/2009\" SchemaVersion=\"1.0\" Name=\"FMS\">\n");
-        xml.append("   <FacetCategories>\n");
+        xml.append("\t<FacetCategories>\n");
         for (final String category : categories) {
-            xml.append("      <FacetCategory Name=\"").append(category).append("\" Type=\"Number\" />\n");
+            xml.append("\t\t<FacetCategory Name=\"").append(category).append("\" Type=\"Number\" />\n");
         }
-        xml.append("   </FacetCategories>\n");
+        xml.append("\t</FacetCategories>\n");
         tenantIds.forEach(tenantId -> {
-            xml.append("\n\n\t     <Item Id=\"").append(tenantId).append("\" Img=\"#2")
+            xml.append("\n\t\t<Item Id=\"").append(tenantId).append("\" Img=\"#2")
                     .append("\n#4\" Href=\"/usmo\" Name=\"").append(tenantId).append("\">").
-                    append("\n\t\t <Facets>\n");
+                    append("\n\t\t\t<Facets>\n");
             facts.stream().filter(fact -> fact.getTenantId() == tenantId).forEach(fact -> {
-                xml.append("\t\t    <Facet Name=\"").append(fact.getCategory()).append("\">\n");
-                xml.append("\t\t       <Number Value=\"").append(fact.getValue()).append("\"/>\n");
-                xml.append("\t\t    </Facet>\n");
+                xml.append("\t\t\t\t<Facet Name=\"").append(fact.getCategory()).append("\">\n");
+                xml.append("\t\t\t\t\t<Number Value=\"").append(fact.getValue()).append("\"/>\n");
+                xml.append("\t\t\t\t</Facet>\n");
             });
-            xml.append("\t\t</Facets>\n\t      </Item>\n");
+            xml.append("\t\t</Facets>\n\t\t</Item>\n");
         });
-        xml.append("\n\n   </Items>");
+        xml.append("\n\t</Items>");
         xml.append("\n</Collection>");
-        return xml;
+        return xml.toString();
     }
 
-    public StringBuilder xmlFromFormrunnerFact(Collection<Fact<T>> facts) throws IOException {
+    public String xmlFromFormrunnerFact(Collection<Fact<T>> facts) throws IOException {
         final StringBuilder xml = new StringBuilder();
         final Set<String> categories = new HashSet<>();
         final Set<Long> tenantIds = new HashSet<>();
-        for (final Fact fact : facts) {
+        for (final Fact<T> fact : facts) {
             categories.add(fact.getCategory());
             tenantIds.add(fact.getTenantId());
         }
         xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
         xml.append("<Collection xmlns=\"http://schemas.microsoft.com/collection/metadata/2009\" SchemaVersion=\"1.0\" Name=\"FMS\">\n");
-        xml.append("   <FacetCategories>\n");
+        xml.append("\t<FacetCategories>\n");
         for (final String category : categories) {
-            xml.append("      <FacetCategory Name=\"").append(category).append("\" Type=\"Number\" />\n");
+            xml.append("\t\t<FacetCategory Name=\"").append(category).append("\" Type=\"Number\" />\n");
         }
-        xml.append("   </FacetCategories>\n");
-        xml.append("  <Items ImgBase=\"").append("./dz_haagse_passage/haagse_passage.dzc").append("\">\n");
+        xml.append("\t</FacetCategories>\n");
+        xml.append("\t<Items ImgBase=\"").append("./dz_haagse_passage/haagse_passage.dzc").append("\">\n");
         tenantIds.forEach(tenantId -> {
-            xml.append("\n\n\t     <Item Id=\"").append(tenantId).append("\" Img=\"#2")
+            xml.append("\n\t\t<Item Id=\"").append(tenantId).append("\" Img=\"#2")
                     .append("\n#4\" Href=\"/usmo\" Name=\"").append(tenantId).append("\">").
-                    append("\n\t\t <Facets>\n");
+                    append("\n\t\t\t<Facets>\n");
             facts.stream().filter(fact -> fact.getTenantId() == tenantId).forEach(fact -> {
                 FormRunnerValue formRunnerValue = new FormRunnerValue();
                 try {
                     formRunnerValue = getFormRunnerValueFromJson(fact);
                 } catch (JsonProcessingException e) {
-                    e.printStackTrace();
+                    FactManagerLogger.errorMessage(this.getClass(), e);
                 }
-                xml.append("\t\t    <Facet Name=\"").append(formRunnerValue.getCategory()).append("\">\n");
-                xml.append("\t\t       <Number Value=\"").append(formRunnerValue.getScore()).append("\"/>\n");
-                xml.append("\t\t    </Facet>\n");
+                xml.append("\t\t\t\t<Facet Name=\"").append(formRunnerValue.getCategory()).append("\">\n");
+                xml.append("\t\t\t\t\t<Number Value=\"").append(formRunnerValue.getScore()).append("\"/>\n");
+                xml.append("\t\t\t\t</Facet>\n");
             });
-            xml.append("\t\t</Facets>\n\t      </Item>\n");
+            xml.append("\t\t</Facets>\n\t\t</Item>\n");
         });
-        xml.append("\n\n   </Items>");
+        xml.append("\n\t</Items>");
         xml.append("\n</Collection>");
-        return xml;
+        return xml.toString();
     }
 
     private FormRunnerValue getFormRunnerValueFromJson(Fact fact) throws JsonProcessingException {

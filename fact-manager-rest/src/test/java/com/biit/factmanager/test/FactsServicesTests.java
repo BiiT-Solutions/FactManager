@@ -39,8 +39,8 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(factServices.getFacts(null, FACT_EXAMINATION_NAME, null).size(), 0);
         // Save 2 empty facts
         // Save 2 empty facts
-        facts.add(new FormRunnerFact());
-        facts.add(new FormRunnerFact());
+        facts.add(new FormRunnerFact(FACT_EXAMINATION_NAME));
+        facts.add(new FormRunnerFact(FACT_EXAMINATION_NAME));
         Assert.assertEquals(facts.size(), 2);
         facts = factServices.addFactList(facts, null);
         // 2 saved + the one added at the beginning
@@ -49,12 +49,12 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
 
     @Test(dependsOnMethods = "addFacts")
     public void removeFact() {
-        Assert.assertEquals(factServices.getFacts(null, "", null).size(), 2);
+        Assert.assertEquals(factServices.getFacts(null, FACT_EXAMINATION_NAME, null).size(), 2);
         Assert.assertNotNull(facts);
         for (FormRunnerFact fact : facts) {
             factServices.deleteFact(fact, null);
         }
-        Assert.assertEquals(factServices.getFacts(null, null, null).size(), 0);
+        Assert.assertEquals(factServices.getFacts(null, FACT_EXAMINATION_NAME, null).size(), 0);
     }
 
 
@@ -63,7 +63,6 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
         if (facts != null) {
             for (FormRunnerFact fact : facts) {
                 factServices.deleteFact(fact, null);
-                System.out.println("deleted fact ");
             }
         }
     }

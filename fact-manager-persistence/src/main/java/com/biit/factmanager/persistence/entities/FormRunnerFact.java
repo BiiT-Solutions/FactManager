@@ -18,6 +18,11 @@ public class FormRunnerFact extends Fact<FormRunnerValue> {
         formRunnerValue = new FormRunnerValue();
     }
 
+    public FormRunnerFact(String elementId) {
+        formRunnerValue = new FormRunnerValue();
+        setElementId(elementId);
+    }
+
     @Override
     public void setCreatedAt(LocalDateTime localDateTime) {
         super.setCreatedAt(localDateTime);
