@@ -22,9 +22,11 @@ public abstract class Fact<Value> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    //Organization Id
     @Column(name = "tenant_id")
     private long tenantId;
 
+    // Tag
     @Column(name = "category")
     private String category;
 
@@ -32,6 +34,7 @@ public abstract class Fact<Value> {
     @Convert(converter = StringCryptoConverter.class)
     private String value;
 
+    // Id of the entity on the fact
     @Column(name = "element_id")
     @Convert(converter = StringCryptoConverter.class)
     private String elementId;

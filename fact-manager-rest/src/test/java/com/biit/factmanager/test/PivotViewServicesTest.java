@@ -2,8 +2,8 @@ package com.biit.factmanager.test;
 
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.persistence.entities.FormRunnerValue;
-import com.biit.factmanager.persistence.entities.FormrunnerFact;
-import com.biit.factmanager.persistence.repositories.FormrunnerFactRepository;
+import com.biit.factmanager.persistence.entities.FormRunnerFact;
+import com.biit.factmanager.persistence.repositories.FormRunnerFactRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONException;
@@ -32,18 +32,18 @@ public class PivotViewServicesTest extends AbstractTestNGSpringContextTests {
     private static final Long FACT_ID = 1L;
 
     @Autowired
-    private FormrunnerFactRepository formrunnerFactRepository;
+    private FormRunnerFactRepository formrunnerFactRepository;
 
-    private List<FormrunnerFact> formrunnerFacts = new ArrayList<>();
+    private List<FormRunnerFact> formRunnerFacts = new ArrayList<>();
 
     @BeforeClass
     public void populate() {
         for (int i = 0; i < 10; i++) {
-            FormrunnerFact formrunnerFact = new FormrunnerFact();
+            FormRunnerFact formrunnerFact = new FormRunnerFact();
             formrunnerFact.setCategory("category" + i);
             formrunnerFact.setElementId("elementId" + i);
             formrunnerFact.setValue("0."+i);
-            formrunnerFacts.add(formrunnerFact);
+            formRunnerFacts.add(formrunnerFact);
             formrunnerFactRepository.save(formrunnerFact);
         }
     }
@@ -51,15 +51,15 @@ public class PivotViewServicesTest extends AbstractTestNGSpringContextTests {
     @Test
     public void addFact() {
         long existingValues = formrunnerFactRepository.count();
-        FormrunnerFact formrunnerFact = new FormrunnerFact();
-        formrunnerFacts.add(formrunnerFact);
+        FormRunnerFact formrunnerFact = new FormRunnerFact();
+        formRunnerFacts.add(formrunnerFact);
         formrunnerFactRepository.save(formrunnerFact);
         Assert.assertEquals(formrunnerFactRepository.count(), existingValues + 1);
     }
 
     @Test(dependsOnMethods = "xmlFromFact")
     public void removeFact() {
-        for (FormrunnerFact fact : formrunnerFacts) {
+        for (FormRunnerFact fact : formRunnerFacts) {
             formrunnerFactRepository.delete(fact);
         }
         Assert.assertEquals(formrunnerFactRepository.count(), 0);
@@ -70,7 +70,7 @@ public class PivotViewServicesTest extends AbstractTestNGSpringContextTests {
         final StringBuilder xml = new StringBuilder();
         final Set<String> categories = new HashSet<>();
         final Set<Long> tenantIds = new HashSet<>();
-        for (final FormrunnerFact fact : formrunnerFacts) {
+        for (final FormRunnerFact fact : formRunnerFacts) {
             categories.add(fact.getCategory());
             tenantIds.add(fact.getTenantId());
         }
@@ -86,7 +86,7 @@ public class PivotViewServicesTest extends AbstractTestNGSpringContextTests {
             xml.append("\n\n\t     <Item Id=\"").append(tenantId).append("\" Img=\"#2")
                     .append("\n#4\" Href=\"/usmo\" Name=\"").append(tenantId).append("\">").
                     append("\n\t\t <Facets>\n");
-            formrunnerFacts.stream().filter(fact -> fact.getTenantId() == tenantId).forEach(fact -> {
+            formRunnerFacts.stream().filter(fact -> fact.getTenantId() == tenantId).forEach(fact -> {
                 FormRunnerValue formRunnerValue = new FormRunnerValue();
                 try {
                     formRunnerValue = getFormRunnerValueFromJson(fact);
@@ -110,7 +110,7 @@ public class PivotViewServicesTest extends AbstractTestNGSpringContextTests {
         final StringBuilder xml = new StringBuilder();
         final Set<String> categories = new HashSet<>();
         final Set<Long> tenantIds = new HashSet<>();
-        for (final FormrunnerFact fact : formrunnerFacts) {
+        for (final FormRunnerFact fact : formRunnerFacts) {
             categories.add(fact.getCategory());
             tenantIds.add(fact.getTenantId());
         }
@@ -125,7 +125,7 @@ public class PivotViewServicesTest extends AbstractTestNGSpringContextTests {
             xml.append("\n\n\t     <Item Id=\"").append(tenantId).append("\" Img=\"#2")
                     .append("\n#4\" Href=\"/usmo\" Name=\"").append(tenantId).append("\">").
                     append("\n\t\t <Facets>\n");
-            formrunnerFacts.stream().filter(fact -> fact.getTenantId() == tenantId).forEach(fact -> {
+            formRunnerFacts.stream().filter(fact -> fact.getTenantId() == tenantId).forEach(fact -> {
                 xml.append("\t\t    <Facet Name=\"").append(fact.getCategory()).append("\">\n");
                 xml.append("\t\t       <Number Value=\"").append(fact.getValue()).append("\"/>\n");
                 xml.append("\t\t    </Facet>\n");
@@ -148,7 +148,7 @@ public class PivotViewServicesTest extends AbstractTestNGSpringContextTests {
 
     @AfterClass
     public void cleanUp() {
-        for (FormrunnerFact fact : formrunnerFacts) {
+        for (FormRunnerFact fact : formRunnerFacts) {
             formrunnerFactRepository.delete(fact);
         }
     }

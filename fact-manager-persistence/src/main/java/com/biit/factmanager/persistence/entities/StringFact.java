@@ -20,5 +20,7 @@ public class StringFact extends Fact<StringValue> {
         return stringValue.getString();
     }
 
-    public void setString(String string) { stringValue.setString(string); }
+    public void setString(String string) {
+        stringValue.setString(string);
+    }
 }

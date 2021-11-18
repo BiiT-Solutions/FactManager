@@ -1,8 +1,7 @@
 package com.biit.factmanager.test;
 
-import com.biit.factmanager.persistence.entities.FormrunnerFact;
-import com.biit.factmanager.persistence.enums.Level;
-import com.biit.factmanager.persistence.repositories.FormrunnerFactRepository;
+import com.biit.factmanager.persistence.entities.FormRunnerFact;
+import com.biit.factmanager.persistence.repositories.FormRunnerFactRepository;
 import com.biit.factmanager.rest.api.FactServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,14 +19,14 @@ import java.util.List;
 public class FactsServicesTests extends AbstractTestNGSpringContextTests {
 
     private static final String FACT_EXAMINATION_NAME = "examination_name";
-    private static final Long FACT_ID = 1L;
 
     @Autowired
     private FactServices factServices;
 
-    private FormrunnerFactRepository formrunnerFactRepository;
+    @Autowired
+    private FormRunnerFactRepository formrunnerFactRepository;
 
-    private List<FormrunnerFact> facts = new ArrayList<>();
+    private List<FormRunnerFact> facts = new ArrayList<>();
 
 
     @BeforeClass
@@ -37,32 +36,32 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void addFacts() {
-        // One fact is added by default to test
-        Assert.assertEquals(factServices.getFacts(FACT_ID, FACT_EXAMINATION_NAME, Level.COMPANY, null).size(), 1);
+        Assert.assertEquals(factServices.getFacts(null, FACT_EXAMINATION_NAME, null).size(), 0);
         // Save 2 empty facts
-        FormrunnerFact fact = new FormrunnerFact();
-        formrunnerFactRepository.save(fact);
-        Assert.assertNotNull(facts);
+        // Save 2 empty facts
+        facts.add(new FormRunnerFact());
+        facts.add(new FormRunnerFact());
         Assert.assertEquals(facts.size(), 2);
+        facts = factServices.addFactList(facts, null);
         // 2 saved + the one added at the beginning
-        Assert.assertEquals(factServices.getFacts(FACT_ID, FACT_EXAMINATION_NAME, null, null).size(), 3);
+        Assert.assertEquals(factServices.getFacts(null, FACT_EXAMINATION_NAME, null).size(), 2);
     }
 
     @Test(dependsOnMethods = "addFacts")
     public void removeFact() {
-        Assert.assertEquals(factServices.getFacts(FACT_ID, "", null, null).size(), 3);
+        Assert.assertEquals(factServices.getFacts(null, "", null).size(), 2);
         Assert.assertNotNull(facts);
-        for (FormrunnerFact fact : facts) {
+        for (FormRunnerFact fact : facts) {
             factServices.deleteFact(fact, null);
         }
-        Assert.assertEquals(factServices.getFacts(FACT_ID, null, null, null).size(), 1);
+        Assert.assertEquals(factServices.getFacts(null, null, null).size(), 0);
     }
 
 
     @AfterClass
     public void cleanDatabase() {
         if (facts != null) {
-            for (FormrunnerFact fact : facts) {
+            for (FormRunnerFact fact : facts) {
                 factServices.deleteFact(fact, null);
                 System.out.println("deleted fact ");
             }

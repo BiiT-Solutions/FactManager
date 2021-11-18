@@ -14,6 +14,7 @@ import org.testng.annotations.Test;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 @SpringBootTest
 @Test(groups = "factRepository")
@@ -37,38 +38,37 @@ public class StringFactRepositoryTests extends AbstractTransactionalTestNGSpring
         Assert.assertEquals(stringFactRepository.count(), 1);
     }
 
-    @Test
+    @Test(dependsOnMethods = "createStringFact")
     private void readFact() {
         StringFact stringFact = new StringFact();
         stringFact.setElementId(FACT_ELEMENT_ID);
         stringFactRepository.save(stringFact);
-        Assert.assertEquals(stringFactRepository.findByElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
-                (FACT_ELEMENT_ID, FACT_TIME_PAST, FACT_TIME_FUTURE).contains(stringFact), true);
+        Assert.assertTrue(stringFactRepository.findByElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
+                (FACT_ELEMENT_ID, FACT_TIME_PAST, FACT_TIME_FUTURE).contains(stringFact));
     }
 
-    @Test
+    @Test(dependsOnMethods = "createStringFact")
     private void updateStringFact() throws Exception {
         StringFact stringFact = new StringFact();
         stringFact.setString(STRING_FACT);
         StringFact savedStringFact = stringFactRepository.save(stringFact);
-        Assert.assertEquals(((StringFact) stringFactRepository.findById(savedStringFact.getId()).get()).getString(), STRING_FACT);
-        stringFactRepository.findById(savedStringFact.getId()).get().setValue(STRING_FACT_UPDATED);
-        Assert.assertEquals((stringFactRepository.findById(savedStringFact.getId()).get()).getValue(), STRING_FACT_UPDATED);
+        Assert.assertEquals((stringFactRepository.findById(savedStringFact.getId()).orElseThrow(Exception::new)).getString(), STRING_FACT);
+        stringFactRepository.findById(savedStringFact.getId()).orElseThrow(Exception::new).setValue(STRING_FACT_UPDATED);
+        Assert.assertEquals((stringFactRepository.findById(savedStringFact.getId()).orElseThrow(Exception::new)).getValue(), STRING_FACT_UPDATED);
     }
 
-    @Test
+    @Test(dependsOnMethods = {"createStringFact", "updateStringFact", "readFact"})
     private void deleteStringFact() {
-        Assert.assertEquals(stringFactRepository.count(), 1);
-        Collection<Fact<StringValue>> stringFacts = (Collection<Fact<StringValue>>) stringFactRepository.findAll();
-        stringFactRepository.delete((Fact<StringValue>) stringFacts.toArray()[0]);
-        Assert.assertEquals(stringFactRepository.count(), 0);
+        Assert.assertEquals(stringFactRepository.count(), 3);
+        List<StringFact> stringFacts = stringFactRepository.findAll();
+        Assert.assertEquals(stringFacts.size(), 3);
+        stringFactRepository.delete(stringFacts.get(0));
+        Assert.assertEquals(stringFactRepository.count(), 2);
     }
 
     @AfterClass
     private void clean() {
         stringFactRepository.findAll().
-                forEach(stringValueFact -> {
-                    stringFactRepository.delete(stringValueFact);
-                });
+                forEach(stringValueFact -> stringFactRepository.delete(stringValueFact));
     }
 }

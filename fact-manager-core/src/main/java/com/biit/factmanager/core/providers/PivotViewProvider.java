@@ -35,7 +35,7 @@ public class PivotViewProvider<T> {
             getAllCombinations(tenantId, category, elementId, localStartDate, localEndDate);
         }
         if (startDate == null && endDate == null && lastDays == null) {
-            getCombinationsWithoutDates(tenantId,category,elementId);
+            getCombinationsWithoutDates(tenantId, category, elementId);
         }
         if (tenantId == null && "".equals(category) && "".equals(elementId) && startDate == null && endDate == null && lastDays == null) {
             facts = getAll();
@@ -57,7 +57,7 @@ public class PivotViewProvider<T> {
             facts = factRepository.findByCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(startDate, endDate);
         }
         if (tenantId == null && "".equals(category) && !"".equals(elementId)) {
-            facts = factRepository.findByElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(elementId,startDate,endDate);
+            facts = factRepository.findByElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(elementId, startDate, endDate);
         }
         if (tenantId == null && !"".equals(category) && "".equals(elementId)) {
             facts = factRepository.findByCategoryAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(category, startDate, endDate);

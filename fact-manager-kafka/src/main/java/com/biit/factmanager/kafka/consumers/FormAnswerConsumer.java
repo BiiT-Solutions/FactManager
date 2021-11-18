@@ -1,9 +1,9 @@
 package com.biit.factmanager.kafka.consumers;
 
-import com.biit.factmanager.core.providers.FormrunnerFactProvider;
+import com.biit.factmanager.core.providers.FormRunnerFactProvider;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.configuration.FactManagerConfigurationReader;
-import com.biit.factmanager.persistence.entities.FormrunnerFact;
+import com.biit.factmanager.persistence.entities.FormRunnerFact;
 import com.biit.kafkaclient.KafkaConsumerClient;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -21,13 +21,13 @@ import java.util.function.Consumer;
 public class FormAnswerConsumer extends KafkaConsumerClient {
 
     @Autowired
-    private FormrunnerFactProvider factProvider;
+    private FormRunnerFactProvider factProvider;
 
     private static final String TOPIC_NAME = "FormAnswer";
     // private static final List<Fact> CLASS_TYPE = new ArrayList<>();
 
     public FormAnswerConsumer() {
-        super(FormrunnerFact.class);
+        super(FormRunnerFact.class);
         new Thread(() -> { // Start async and capture errors in the case there is no kafka running
             try {
                 // Uncomment if you want to override standard kafka properties
@@ -45,7 +45,7 @@ public class FormAnswerConsumer extends KafkaConsumerClient {
     private Consumer getConsumer() {
         return (x) -> {
             FactManagerLogger.debug(this.getClass().getName(), "FormAnswer event to save " + x.toString());
-            final FormrunnerFact savedFact = factProvider.add((FormrunnerFact) x);
+            final FormRunnerFact savedFact = factProvider.add((FormRunnerFact) x);
             FactManagerLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
         };
     }
@@ -67,7 +67,7 @@ public class FormAnswerConsumer extends KafkaConsumerClient {
     private Consumer getConsumer2() {
         return (x) -> {
             FactManagerLogger.debug(this.getClass().getName(), "Event consumed1 " + x.toString());
-            final List<FormrunnerFact> facts = (ArrayList<FormrunnerFact>) x;
+            final List<FormRunnerFact> facts = (ArrayList<FormRunnerFact>) x;
             FactManagerLogger.debug(this.getClass().getName(), "Event consumed2 " + facts.toString());
             FactManagerLogger.debug(this.getClass().getName(), "Event consumed3 " + x.toString());
             /*while (facts.iterator().hasNext()){
@@ -87,7 +87,7 @@ public class FormAnswerConsumer extends KafkaConsumerClient {
             }*/
             facts.forEach(fact -> {
                 FactManagerLogger.debug(this.getClass().getName(), "fact to save " + fact.toString());
-                final FormrunnerFact savedFact = factProvider.add((FormrunnerFact) fact);
+                final FormRunnerFact savedFact = factProvider.add((FormRunnerFact) fact);
                 FactManagerLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
             });
 
