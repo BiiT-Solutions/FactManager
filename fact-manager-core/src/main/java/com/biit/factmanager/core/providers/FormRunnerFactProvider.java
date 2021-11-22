@@ -28,11 +28,11 @@ public class FormRunnerFactProvider {
         return formRunnerFactRepository.findAll();
     }
 
-    public Collection<FormRunnerFact> getFiltered(String category, String elementId) {
-        if (elementId != null && category != null) {
-            return formRunnerFactRepository.findByElementIdAndCategory(elementId, category);
-        } else if (category != null) {
-            return formRunnerFactRepository.findByCategory(category);
+    public Collection<FormRunnerFact> getFiltered(String group, String elementId) {
+        if (elementId != null && group != null) {
+            return formRunnerFactRepository.findByElementIdAndGroup(elementId, group);
+        } else if (group != null) {
+            return formRunnerFactRepository.findByGroup(group);
         } else if (elementId != null) {
             return formRunnerFactRepository.findByElementId(elementId);
         }

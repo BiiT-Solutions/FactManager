@@ -20,9 +20,9 @@ import java.time.LocalDateTime;
 public class FormRunnerFactRepositoryTests extends AbstractTransactionalTestNGSpringContextTests {
 
     private static final String FACT_TENANT_ID = "1";
-    private static final long FACT_PATIENT_ID = 2;
+    private static final long FACT_EXAMINATION_ID = 2;
     private static final long FACT_COMPANY_ID = 3;
-    private static final long FACT_ORGANIZATION_ID = 4;
+    private static final long FACT_PATIENT_ID = 4;
     private static final long FACT_PROFESSIONAL_ID = 5;
     private static final String FACT_EXAMINATION_NAME = "test";
     private static final String FACT_ELEMENT_ID = "elementId";
@@ -42,14 +42,14 @@ public class FormRunnerFactRepositoryTests extends AbstractTransactionalTestNGSp
         FormRunnerFact createdAtAfterAndElementIdAndCategory = new FormRunnerFact();
 
         createdAtBeforeAndTenantIdAndCategory.setTenantId(FACT_TENANT_ID);
-        createdAtBeforeAndTenantIdAndCategory.setCategory(FACT_CATEGORY);
+        createdAtBeforeAndTenantIdAndCategory.setGroup(FACT_CATEGORY);
         createdAtBeforeAndTenantIdAndCategory.setCreatedAt(FACT_DATE_BEFORE);
         createdAtNowAndTenantIdAndElementId.setCreatedAt(FACT_DATE_AFTER);
         createdAtNowAndTenantIdAndElementId.setTenantId(FACT_TENANT_ID);
         createdAtNowAndTenantIdAndElementId.setElementId(FACT_ELEMENT_ID);
         createdAtAfterAndElementIdAndCategory.setCreatedAt(FACT_DATE_AFTER);
         createdAtAfterAndElementIdAndCategory.setElementId(FACT_ELEMENT_ID);
-        createdAtAfterAndElementIdAndCategory.setCategory(FACT_CATEGORY);
+        createdAtAfterAndElementIdAndCategory.setGroup(FACT_CATEGORY);
 
         formRunnerFactRepository.save(createdAtBeforeAndTenantIdAndCategory);
         formRunnerFactRepository.save(createdAtNowAndTenantIdAndElementId);
@@ -64,9 +64,9 @@ public class FormRunnerFactRepositoryTests extends AbstractTransactionalTestNGSp
     @Test(dependsOnMethods = "getAllAtTheBeginning")
     private void addFact() {
         FormRunnerFact factToSave = new FormRunnerFact();
-        factToSave.setCategory(FACT_EXAMINATION_NAME);
-        factToSave.setElementId(FACT_PATIENT_ID + "");
-        factToSave.setTenantId(FACT_ORGANIZATION_ID + "");
+        factToSave.setGroup(FACT_EXAMINATION_NAME);
+        factToSave.setElementId(FACT_EXAMINATION_ID + "");
+        factToSave.setTenantId(FACT_PATIENT_ID + "");
 
         FormRunnerValue formRunnerValue = new FormRunnerValue();
         formRunnerValue.setCompanyId(FACT_COMPANY_ID);
@@ -81,11 +81,11 @@ public class FormRunnerFactRepositoryTests extends AbstractTransactionalTestNGSp
     @Test(dependsOnMethods = "addFact")
     private void getFilteredFacts() {
         Assert.assertEquals(formRunnerFactRepository.count(), 3);
-        Assert.assertEquals((long) formRunnerFactRepository.findByTenantIdAndCategoryAndCreatedAt
+        Assert.assertEquals((long) formRunnerFactRepository.findByTenantIdAndGroupAndCreatedAt
                 (FACT_TENANT_ID, FACT_CATEGORY, FACT_DATE_BEFORE.minusDays(1), FACT_DATE_AFTER).size(), 1);
         Assert.assertEquals((long) formRunnerFactRepository.findByTenantIdAndElementIdAndCreatedAt
                 (FACT_TENANT_ID, FACT_ELEMENT_ID, FACT_DATE_BEFORE, FACT_DATE_AFTER).size(), 1);
-        Assert.assertEquals((long) formRunnerFactRepository.findByElementIdAndCategoryAndCreatedAt
+        Assert.assertEquals((long) formRunnerFactRepository.findByElementIdAndGroupAndCreatedAt
                 (FACT_ELEMENT_ID, FACT_CATEGORY, FACT_DATE_NOW, FACT_DATE_AFTER.plusDays(1)).size(), 1);
     }
 

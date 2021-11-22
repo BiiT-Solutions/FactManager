@@ -17,6 +17,24 @@ public class StringFact extends Fact<StringValue> {
         this.stringValue = new StringValue();
     }
 
+    @Override
+    public String getPivotViewerTag() {
+        return "String";
+    }
+
+    @Override
+    public String getPivotViewerValue() {
+        if (stringValue != null) {
+            return stringValue.getString();
+        }
+        return null;
+    }
+
+    @Override
+    public Integer getPivotViewerImageIndex() {
+        return 1;
+    }
+
     public String getString() {
         return stringValue.getString();
     }

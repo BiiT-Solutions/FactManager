@@ -27,16 +27,16 @@ public class FactServices {
     }
 
     @ApiOperation(value = "Get all facts", notes = "Id requires a level to be set. Parameters:\n"
-            + "Category: Tag of the event\n"
-            + "Category: Tag of the event\n")
+            + "Group: grouping option of the event\n"
+            + "ElementId: Id of the event\n")
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<FormRunnerFact> getFacts(
-            @ApiParam(value = "Category", required = false) @RequestParam(value = "category", required = false) String category,
-            @ApiParam(value = "ExaminationName", required = false) @RequestParam(value = "elementId", required = false) String elementId,
+            @ApiParam(value = "Group", required = false) @RequestParam(value = "group", required = false) String group,
+            @ApiParam(value = "ElementId", required = false) @RequestParam(value = "elementId", required = false) String elementId,
             HttpServletRequest httpRequest) {
         FactManagerLogger.info(this.getClass().getName(), "Get all facts");
-        return formrunnerFactProvider.getFiltered(category, elementId);
+        return formrunnerFactProvider.getFiltered(group, elementId);
     }
 
     @ApiOperation(value = "Adds a new fact", notes = "Parameters:\n"

@@ -12,9 +12,9 @@ import java.util.Collection;
 @Repository
 @Transactional
 public interface FormRunnerFactRepository extends FactRepository<FormRunnerValue, FormRunnerFact> {
-    @Query("SELECT f FROM FormRunnerFact f WHERE (:tenantId is null or f.tenantId = :tenantId) and (:category is null or f.category = :category)" +
+    @Query("SELECT f FROM FormRunnerFact f WHERE (:tenantId is null or f.tenantId = :tenantId) and (:group is null or f.group = :group)" +
             "and (:startDate is null or f.createdAt >= :startDate) and (:endDate is null or f.createdAt <= :endDate)")
-    Collection<FormRunnerFact> findByTenantIdAndCategoryAndCreatedAt(String tenantId, String category, LocalDateTime startDate, LocalDateTime endDate);
+    Collection<FormRunnerFact> findByTenantIdAndGroupAndCreatedAt(String tenantId, String group, LocalDateTime startDate, LocalDateTime endDate);
 
     @Query("SELECT f FROM  FormRunnerFact f WHERE (:tenantId is null or f.tenantId = :tenantId) and (:elementId is null or f.elementId = :elementId)" +
             "and (:startDate is null or f.createdAt >= :startDate) and (:endDate is null or f.createdAt <= :endDate)")

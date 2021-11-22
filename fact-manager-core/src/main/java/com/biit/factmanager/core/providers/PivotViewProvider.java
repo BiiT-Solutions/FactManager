@@ -3,14 +3,10 @@ package com.biit.factmanager.core.providers;
 import com.biit.factmanager.core.providers.exceptions.FactNotFoundException;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
-import com.biit.factmanager.persistence.entities.values.FormRunnerValue;
 import com.biit.factmanager.persistence.repositories.FactRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -23,99 +19,63 @@ public class PivotViewProvider<E, T extends Fact<E>> {
         this.factRepository = factRepository;
     }
 
-    public String getCase(Long tenantId, String tag, String category, String elementId, LocalDateTime startDate, LocalDateTime endDate, Integer lastDays) throws
+    public String getCase(String organizationId, String tenantId, String tag, String group, String elementId, LocalDateTime startDate,
+                          LocalDateTime endDate, Integer lastDays) throws
             FactNotFoundException {
         Collection<T> facts;
         if (lastDays == null) {
-            facts = getAll(tenantId, tag, category, elementId, startDate, endDate);
+            facts = getAll(organizationId, tenantId, tag, group, elementId, startDate, endDate);
         } else {
             final LocalDateTime localStartDate = LocalDateTime.now().minusDays(lastDays);
             final LocalDateTime localEndDate = LocalDateTime.now();
-            facts = getAll(tenantId, tag, category, elementId, localStartDate, localEndDate);
+            facts = getAll(organizationId, tenantId, tag, group, elementId, localStartDate, localEndDate);
         }
-        try {
-            return xmlFromFormRunnerFact(facts);
-        } catch (IOException e) {
-            FactManagerLogger.errorMessage(this.getClass(), e);
-        }
-        return xmlFromFact(facts);
+        return xmlFromTenants(facts);
     }
 
-    public Collection<T> getAll(Long tenantId, String tag, String category, String elementId, LocalDateTime startDate, LocalDateTime endDate) {
-        return factRepository.findBy(tenantId, tag, category, elementId, startDate, endDate);
+    public Collection<T> getAll(String organizationId, String tenantId, String tag, String group, String elementId, LocalDateTime startDate,
+                                LocalDateTime endDate) {
+        return factRepository.findBy(organizationId, tenantId, tag, group, elementId, startDate, endDate);
     }
 
-    public String xmlFromFact(Collection<T> facts) {
+    public String xmlFromTenants(Collection<T> facts) {
         final StringBuilder xml = new StringBuilder();
-        final List<String> categories = new ArrayList<>();
-        final List<String> tenantIds = new ArrayList<>();
+        final Set<String> elementsByItem = new LinkedHashSet<>();
+        final Map<String, Collection<T>> tenantsIds = new HashMap<>();
         for (final T fact : facts) {
-            categories.add(fact.getCategory());
-            tenantIds.add(fact.getTenantId());
+            elementsByItem.add(fact.getPivotViewerTag());
+            tenantsIds.computeIfAbsent(fact.getTenantId(), k -> new ArrayList<>());
+            tenantsIds.get(fact.getTenantId()).add(fact);
         }
         xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-        xml.append("<Collection xmlns=\"http://schemas.microsoft.com/collection/metadata/2009\" SchemaVersion=\"1.0\" Name=\"FMS\">\n");
-        xml.append("\t<FacetCategories>\n");
-        for (final String category : categories) {
-            xml.append("\t\t<FacetCategory Name=\"").append(category).append("\" Type=\"Number\"/>\n");
+        xml.append("<Collection xmlns=\"http://schemas.microsoft.com/collection/metadata/2009\" SchemaVersion=\"1.0\" Name=\"FactManager\">\n");
+        xml.append("    <FacetCategories>\n");
+        for (final String elementByItem : elementsByItem) {
+            xml.append("        <FacetCategory Name=\"").append(elementByItem).append("\" Type=\"Number\"/>\n");
         }
-        xml.append("\t</FacetCategories>\n");
-        tenantIds.forEach(tenantId -> {
-            xml.append("\n\t\t<Item Id=\"").append(tenantId).append("\" Img=\"#2\"")
-                    .append(" Href=\"/usmo\" Name=\"").append(tenantId).append("\">").
-                    append("\n\t\t\t<Facets>\n");
-            facts.stream().filter(fact -> fact.getTenantId().equals(tenantId)).forEach(fact -> {
-                xml.append("\t\t\t\t<Facet Name=\"").append(fact.getCategory()).append("\">\n");
-                xml.append("\t\t\t\t\t<Number Value=\"").append(fact.getValue()).append("\"/>\n");
-                xml.append("\t\t\t\t</Facet>\n");
-            });
-            xml.append("\t\t\t</Facets>\n\t\t</Item>\n");
+        xml.append("    </FacetCategories>\n");
+        xml.append("    <Items ImgBase=\"").append("./factManager/fact_manager.dzc").append("\">\n");
+        tenantsIds.keySet().forEach(tenantId -> {
+            try {
+                //Get tenant information from any fact.
+                final T oneFact = tenantsIds.get(tenantId).stream().findFirst().orElseThrow(() ->
+                        new FactNotFoundException(this.getClass(), "No facts for tenant '" + tenantId + "'."));
+                xml.append("        <Item Id=\"").append(oneFact.getPivotViewerValueItemId()).append("\" Img=\"" + oneFact.getPivotViewerImageIndex() + "\"")
+                        .append(" Href=\"/usmo\" Name=\"").append(oneFact.getPivotViewerValueItemName()).append("\">\n");
+                xml.append("            <Facets>\n");
+                tenantsIds.get(tenantId).forEach(fact -> {
+                    xml.append("                <Facet Name=\"").append(fact.getPivotViewerTag()).append("\">\n");
+                    xml.append("                    <Number Value=\"").append(fact.getPivotViewerValue()).append("\"/>\n");
+                    xml.append("                </Facet>\n");
+                });
+                xml.append("            </Facets>\n");
+                xml.append("        </Item>\n");
+            } catch (FactNotFoundException e) {
+                FactManagerLogger.warning(this.getClass().getName(), "No facts defined for tenantId '" + tenantId + "'.");
+            }
         });
-        xml.append("\t</Items>\n");
-        xml.append("</Collection>");
+        xml.append("    </Items>\n");
+        xml.append("</Collection>\n");
         return xml.toString();
-    }
-
-    public String xmlFromFormRunnerFact(Collection<T> facts) throws IOException {
-        final StringBuilder xml = new StringBuilder();
-        final Set<String> categories = new HashSet<>();
-        final Set<String> tenantIds = new HashSet<>();
-        for (final T fact : facts) {
-            categories.add(fact.getCategory());
-            tenantIds.add(fact.getTenantId());
-        }
-        xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-        xml.append("<Collection xmlns=\"http://schemas.microsoft.com/collection/metadata/2009\" SchemaVersion=\"1.0\" Name=\"FMS\">\n");
-        xml.append("\t<FacetCategories>\n");
-        for (final String category : categories) {
-            xml.append("\t\t<FacetCategory Name=\"").append(category).append("\" Type=\"Number\" />\n");
-        }
-        xml.append("\t</FacetCategories>\n");
-        xml.append("\t<Items ImgBase=\"").append("./dz_haagse_passage/haagse_passage.dzc").append("\">\n");
-        tenantIds.forEach(tenantId -> {
-            xml.append("\n\t\t<Item Id=\"").append(tenantId).append("\" Img=\"#2\"")
-                    .append(" Href=\"/usmo\" Name=\"").append(tenantId).append("\">").
-                    append("\n\t\t\t<Facets>\n");
-            facts.stream().filter(fact -> fact.getTenantId().equals(tenantId)).forEach(fact -> {
-                FormRunnerValue formRunnerValue = new FormRunnerValue();
-                try {
-                    formRunnerValue = getFormRunnerValueFromJson(fact);
-                } catch (JsonProcessingException e) {
-                    FactManagerLogger.errorMessage(this.getClass(), e);
-                }
-                xml.append("\t\t\t\t<Facet Name=\"").append(formRunnerValue.getCategory()).append("\">\n");
-                xml.append("\t\t\t\t\t<Number Value=\"").append(formRunnerValue.getScore()).append("\"/>\n");
-                xml.append("\t\t\t\t</Facet>\n");
-            });
-            xml.append("\t\t\t</Facets>\n\t\t</Item>\n");
-        });
-        xml.append("\t</Items>\n");
-        xml.append("</Collection>");
-        return xml.toString();
-    }
-
-    private FormRunnerValue getFormRunnerValueFromJson(Fact fact) throws JsonProcessingException {
-        final ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(fact.getValue(), FormRunnerValue.class);
     }
 }

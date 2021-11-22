@@ -2,6 +2,7 @@ package com.biit.factmanager.persistence.entities;
 
 import com.biit.database.encryption.StringCryptoConverter;
 import com.biit.factmanager.persistence.entities.exceptions.FactValueInvalidException;
+import com.biit.factmanager.persistence.entities.exceptions.ValueAlreadySet;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -16,22 +17,25 @@ import java.time.LocalDateTime;
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = "type")
 @Primary
 @Table(name = "facts")
-public abstract class Fact<Value> {
+public abstract class Fact<Value> implements IPivotViewerData {
     private static final int MAX_JSON_LENGTH = 100000;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    //Organization Id
+    @Column(name = "organization_id")
+    private String organizationId;
+
+    //Patient Id
     @Column(name = "tenant_id")
     private String tenantId;
 
     @Column(name = "tag")
     private String tag;
 
-    @Column(name = "category")
-    private String category;
+    @Column(name = "grouping")
+    private String group;
 
     @Column(name = "value", length = MAX_JSON_LENGTH)
     @Convert(converter = StringCryptoConverter.class)
@@ -49,12 +53,12 @@ public abstract class Fact<Value> {
         setCreatedAt(LocalDateTime.now());
     }
 
-    public String getCategory() {
-        return category;
+    public String getGroup() {
+        return group;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setGroup(String group) {
+        this.group = group;
     }
 
     public String getValue() {
@@ -62,6 +66,9 @@ public abstract class Fact<Value> {
     }
 
     protected void setValue(String value) {
+        if (this.value != null) {
+            throw new ValueAlreadySet();
+        }
         this.value = value;
     }
 
@@ -79,6 +86,14 @@ public abstract class Fact<Value> {
 
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    public String getOrganizationId() {
+        return organizationId;
+    }
+
+    public void setOrganizationId(String organizationId) {
+        this.organizationId = organizationId;
     }
 
     public String getElementId() {
@@ -103,6 +118,16 @@ public abstract class Fact<Value> {
 
     protected void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    @Override
+    public String getPivotViewerValueItemId() {
+        return tenantId;
+    }
+
+    @Override
+    public String getPivotViewerValueItemName() {
+        return tenantId;
     }
 
     public void setEntity(Value entity) {

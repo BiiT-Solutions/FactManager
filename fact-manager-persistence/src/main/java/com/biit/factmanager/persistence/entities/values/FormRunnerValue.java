@@ -5,6 +5,8 @@ public class FormRunnerValue {
 
     private String xpath;
 
+    private String patientName;
+
     private Double score;
 
     private String question;
@@ -72,5 +74,13 @@ public class FormRunnerValue {
 
     public void setCompanyId(Long companyId) {
         this.companyId = companyId;
+    }
+
+    public String getPatientName() {
+        return patientName;
+    }
+
+    public void setPatientName(String patientName) {
+        this.patientName = patientName;
     }
 }

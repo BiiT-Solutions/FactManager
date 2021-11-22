@@ -41,30 +41,43 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
 
     @BeforeClass
     public void populate() {
-        for (int i = 0; i < 10; i++) {
-            FormRunnerFact formrunnerFact = new FormRunnerFact();
-            formrunnerFact.setCategory("category" + i);
-            formrunnerFact.setElementId("elementId" + i);
-            formrunnerFact.setTag("tag-" + i);
+        //5 Patients
+        for (int patient = 0; patient < 5; patient++) {
+            // 2 Examinations
+            for (int examination = 0; examination < 2; examination++) {
+                // Each Examination with 10 questions
+                for (int question = 0; question < 10; question++) {
+                    FormRunnerFact formrunnerFact = new FormRunnerFact();
+                    formrunnerFact.setGroup("examination" + examination);
+                    formrunnerFact.setElementId("examinationId" + examination);
+                    formrunnerFact.setTag("tag");
+                    formrunnerFact.setTenantId("p" + patient);
 
-            FormRunnerValue formRunnerValue = new FormRunnerValue();
-            formrunnerFact.setEntity(new FormRunnerValue());
+                    FormRunnerValue formRunnerValue = new FormRunnerValue();
+                    formRunnerValue.setQuestion(String.format("Question_%s_%s", examination, question));
+                    formRunnerValue.setScore(Double.parseDouble("0." + question));
+                    formRunnerValue.setPatientName("Patient" + patient);
+                    formrunnerFact.setEntity(formRunnerValue);
 
-            formRunnerFacts.add(formrunnerFact);
-            formrunnerFactRepository.save(formrunnerFact);
+                    formrunnerFact = formrunnerFactRepository.save(formrunnerFact);
+                    formRunnerFacts.add(formrunnerFact);
+                }
+            }
         }
+        //Set Item image (score).
+
     }
 
     @Test
     public void xmlFromFormRunnerFact() throws IOException, URISyntaxException {
-        Assert.assertEquals(pivotViewProvider.xmlFromFact(formRunnerFacts), readFile("pivotviewer/formRunnerFacts.xml"));
+        Assert.assertEquals(pivotViewProvider.xmlFromTenants(formRunnerFacts), readFile("pivotviewer/formRunnerFacts.xml"));
     }
 
     private FormRunnerValue getFormRunnerValueFromJson(Fact<FormRunnerValue> fact) throws JsonProcessingException, JSONException {
         ObjectMapper objectMapper = new ObjectMapper();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("score", fact.getValue());
-        jsonObject.put("category", fact.getCategory());
+        jsonObject.put("group", fact.getGroup());
         return objectMapper.readValue(jsonObject.toString(), FormRunnerValue.class);
     }
 
