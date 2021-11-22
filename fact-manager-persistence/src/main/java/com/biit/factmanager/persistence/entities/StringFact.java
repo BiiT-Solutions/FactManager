@@ -9,6 +9,7 @@ import javax.persistence.Transient;
 @Entity
 @DiscriminatorValue("StringFact")
 public class StringFact extends Fact<StringValue> {
+
     @Transient
     private final StringValue stringValue;
 

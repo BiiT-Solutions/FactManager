@@ -33,7 +33,7 @@ public class StringFactRepositoryTests extends AbstractTransactionalTestNGSpring
     private void createStringFact() {
         Assert.assertEquals(stringFactRepository.count(), 0);
         StringFact stringFact = new StringFact();
-        stringFact.setValue(STRING_FACT);
+        stringFact.setString(STRING_FACT);
         stringFactRepository.save(stringFact);
         Assert.assertEquals(stringFactRepository.count(), 1);
     }
@@ -53,8 +53,10 @@ public class StringFactRepositoryTests extends AbstractTransactionalTestNGSpring
         stringFact.setString(STRING_FACT);
         StringFact savedStringFact = stringFactRepository.save(stringFact);
         Assert.assertEquals((stringFactRepository.findById(savedStringFact.getId()).orElseThrow(Exception::new)).getString(), STRING_FACT);
-        stringFactRepository.findById(savedStringFact.getId()).orElseThrow(Exception::new).setValue(STRING_FACT_UPDATED);
-        Assert.assertEquals((stringFactRepository.findById(savedStringFact.getId()).orElseThrow(Exception::new)).getValue(), STRING_FACT_UPDATED);
+        StringFact updatedStringFact = stringFactRepository.findById(savedStringFact.getId()).orElseThrow(Exception::new);
+        updatedStringFact.setString(STRING_FACT_UPDATED);
+        stringFactRepository.save(updatedStringFact);
+        Assert.assertEquals((stringFactRepository.findById(savedStringFact.getId()).orElseThrow(Exception::new)).getString(), STRING_FACT_UPDATED);
     }
 
     @Test(dependsOnMethods = {"createStringFact", "updateStringFact", "readFact"})

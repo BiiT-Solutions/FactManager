@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Collection xmlns="http://schemas.microsoft.com/collection/metadata/2009" SchemaVersion="1.0" Name="">
+    <FacetCategories>
+        <FacetCategory Name="category0" Type="Number"/>
+        <FacetCategory Name="category1" Type="Number"/>
+        <FacetCategory Name="category2" Type="Number"/>
+        <FacetCategory Name="category3" Type="Number"/>
+        <FacetCategory Name="category4" Type="Number"/>
+        <FacetCategory Name="category5" Type="Number"/>
+        <FacetCategory Name="category6" Type="Number"/>
+        <FacetCategory Name="category7" Type="Number"/>
+        <FacetCategory Name="category8" Type="Number"/>
+        <FacetCategory Name="category9" Type="Number"/>
+    </FacetCategories>
+    <Items ImgBase="./factManager/fact_manager.dzc">
+        <Item Id="0" Img="#2" Href="/usmo" Name="0">
+            <Facets>
+                <Facet Name="category0">
+                    <Number Value="0.0"/>
+                </Facet>
+                <Facet Name="category1">
+                    <Number Value="0.1"/>
+                </Facet>
+                <Facet Name="category2">
+                    <Number Value="0.2"/>
+                </Facet>
+                <Facet Name="category3">
+                    <Number Value="0.3"/>
+                </Facet>
+                <Facet Name="category4">
+                    <Number Value="0.4"/>
+                </Facet>
+                <Facet Name="category5">
+                    <Number Value="0.5"/>
+                </Facet>
+                <Facet Name="category6">
+                    <Number Value="0.6"/>
+                </Facet>
+                <Facet Name="category7">
+                    <Number Value="0.7"/>
+                </Facet>
+                <Facet Name="category8">
+                    <Number Value="0.8"/>
+                </Facet>
+                <Facet Name="category9">
+                    <Number Value="0.9"/>
+                </Facet>
+            </Facets>
+        </Item>
+    </Items>
+</Collection>

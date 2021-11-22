@@ -2,6 +2,7 @@ package com.biit.factmanager.persistence.entities;
 
 import com.biit.database.encryption.StringCryptoConverter;
 import com.biit.factmanager.persistence.entities.exceptions.FactValueInvalidException;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,9 +25,11 @@ public abstract class Fact<Value> {
 
     //Organization Id
     @Column(name = "tenant_id")
-    private long tenantId;
+    private String tenantId;
 
-    // Tag
+    @Column(name = "tag")
+    private String tag;
+
     @Column(name = "category")
     private String category;
 
@@ -58,7 +61,7 @@ public abstract class Fact<Value> {
         return value == null ? "" : value;
     }
 
-    public void setValue(String value) {
+    protected void setValue(String value) {
         this.value = value;
     }
 
@@ -70,11 +73,11 @@ public abstract class Fact<Value> {
         this.id = id;
     }
 
-    public long getTenantId() {
+    public String getTenantId() {
         return tenantId;
     }
 
-    public void setTenantId(long tenantId) {
+    public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
     }
 
@@ -90,13 +93,21 @@ public abstract class Fact<Value> {
         return createdAt;
     }
 
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
     protected void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
     public void setEntity(Value entity) {
         try {
-            setValue(new ObjectMapper().writeValueAsString(entity));
+            setValue(new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).writeValueAsString(entity));
         } catch (JsonProcessingException e) {
             throw new FactValueInvalidException(e);
         }
@@ -104,7 +115,7 @@ public abstract class Fact<Value> {
 
     public Value getEntity() {
         try {
-            return new ObjectMapper().readValue(getValue(), new TypeReference<Value>() {
+            return new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).readValue(getValue(), new TypeReference<Value>() {
             });
         } catch (JsonProcessingException e) {
             throw new FactValueInvalidException(e);

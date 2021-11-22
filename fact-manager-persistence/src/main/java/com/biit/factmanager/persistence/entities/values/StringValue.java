@@ -3,6 +3,14 @@ package com.biit.factmanager.persistence.entities.values;
 public class StringValue {
     private String string;
 
+    public StringValue() {
+
+    }
+
+    public StringValue(String value) {
+        setString(value);
+    }
+
     public String getString() {
         return string;
     }

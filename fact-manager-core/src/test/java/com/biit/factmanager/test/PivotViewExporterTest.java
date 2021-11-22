@@ -2,7 +2,7 @@ package com.biit.factmanager.test;
 
 import com.biit.factmanager.core.providers.PivotViewProvider;
 import com.biit.factmanager.persistence.entities.Fact;
-import com.biit.factmanager.persistence.entities.FormRunnerValue;
+import com.biit.factmanager.persistence.entities.values.FormRunnerValue;
 import com.biit.factmanager.persistence.entities.FormRunnerFact;
 import com.biit.factmanager.persistence.repositories.FormRunnerFactRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,13 +21,10 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @SpringBootTest
 @Rollback(value = false)
@@ -48,45 +45,27 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
             FormRunnerFact formrunnerFact = new FormRunnerFact();
             formrunnerFact.setCategory("category" + i);
             formrunnerFact.setElementId("elementId" + i);
-            formrunnerFact.setValue("0." + i);
+            formrunnerFact.setTag("tag-" + i);
+
+            FormRunnerValue formRunnerValue = new FormRunnerValue();
+            formrunnerFact.setEntity(new FormRunnerValue());
+
             formRunnerFacts.add(formrunnerFact);
             formrunnerFactRepository.save(formrunnerFact);
         }
     }
 
     @Test
-    public void addFact() {
-        long existingValues = formrunnerFactRepository.count();
-        FormRunnerFact formrunnerFact = new FormRunnerFact();
-        formRunnerFacts.add(formrunnerFact);
-        formrunnerFactRepository.save(formrunnerFact);
-        Assert.assertEquals(formrunnerFactRepository.count(), existingValues + 1);
+    public void xmlFromFormRunnerFact() throws IOException, URISyntaxException {
+        Assert.assertEquals(pivotViewProvider.xmlFromFact(formRunnerFacts), readFile("pivotviewer/formRunnerFacts.xml"));
     }
 
-    @Test(dependsOnMethods = "addFact")
-    public void xmlFromFormRunnerFact() {
-        System.out.println(pivotViewProvider.xmlFromFact(formRunnerFacts));
-
-    }
-
-    public void xmlFromFact() {
-        final StringBuilder xml = new StringBuilder();
-        final Set<String> categories = new HashSet<>();
-        final Set<Long> tenantIds = new HashSet<>();
-        for (final FormRunnerFact fact : formRunnerFacts) {
-            categories.add(fact.getCategory());
-            tenantIds.add(fact.getTenantId());
-        }
-
-    }
-
-    private FormRunnerValue getFormRunnerValueFromJson(Fact fact) throws JsonProcessingException, JSONException {
+    private FormRunnerValue getFormRunnerValueFromJson(Fact<FormRunnerValue> fact) throws JsonProcessingException, JSONException {
         ObjectMapper objectMapper = new ObjectMapper();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("score", fact.getValue());
         jsonObject.put("category", fact.getCategory());
-        FormRunnerValue formRunnerValue = objectMapper.readValue(jsonObject.toString(), FormRunnerValue.class);
-        return formRunnerValue;
+        return objectMapper.readValue(jsonObject.toString(), FormRunnerValue.class);
     }
 
     @AfterClass

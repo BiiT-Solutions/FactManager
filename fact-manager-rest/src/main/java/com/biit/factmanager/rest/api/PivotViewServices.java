@@ -30,6 +30,7 @@ public class PivotViewServices {
     @GetMapping(value = "", produces = MediaType.APPLICATION_XML_VALUE)
     public String getFacts(
             @ApiParam(value = "tenantId", required = false) @RequestParam(value = "tenantId", required = false) Long tenantId,
+            @ApiParam(value = "tag", required = false) @RequestParam(value = "tag", required = false) String tag,
             @ApiParam(value = "category", required = false) @RequestParam(value = "category", required = false) String category,
             @ApiParam(value = "elementId", required = false) @RequestParam(value = "elementId", required = false) String elementId,
             @ApiParam(value = "startDate", required = false) @RequestParam(value = "startDate", required = false) LocalDateTime startDate,
@@ -38,7 +39,7 @@ public class PivotViewServices {
             HttpServletRequest httpRequest
     ) {
         FactManagerLogger.info(this.getClass().getName(), "Get facts by params");
-        return pivotViewProvider.getCase(tenantId, category, elementId, startDate, endDate, lastDays);
+        return pivotViewProvider.getCase(tenantId, tag, category, elementId, startDate, endDate, lastDays);
     }
 
 
