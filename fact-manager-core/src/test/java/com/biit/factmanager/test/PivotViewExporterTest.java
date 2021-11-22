@@ -45,7 +45,6 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
         for (int patient = 0; patient < 5; patient++) {
             // 2 Examinations
             for (int examination = 1; examination < 3; examination++) {
-                // Each examination 2 categories
                 String formXpath = "/";
                 //Set form scores (image index).
                 FormRunnerFact formFormRunnerFact = new FormRunnerFact();
@@ -53,7 +52,7 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
                 formFormRunnerFact.setElementId("examinationId" + examination);
                 formFormRunnerFact.setTenantId("p" + patient);
 
-                //Categories scores has not question field filled up.
+                //Forms scores has not question field filled up.
                 FormRunnerValue formFormRunnerValue = new FormRunnerValue();
                 formFormRunnerValue.setScore((double) examination);
                 formFormRunnerValue.setXpath(formXpath);
@@ -62,6 +61,7 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
                 formFormRunnerFact = formrunnerFactRepository.save(formFormRunnerFact);
                 formRunnerFacts.add(formFormRunnerFact);
 
+                // Each examination 2 categories
                 for (int category = 1; category < 3; category++) {
                     String categoryXpath = formXpath + "category" + category + "/";
                     //Set category.
