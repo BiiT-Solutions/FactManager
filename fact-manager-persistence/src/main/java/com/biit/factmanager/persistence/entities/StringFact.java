@@ -31,7 +31,7 @@ public class StringFact extends Fact<StringValue> {
     }
 
     @Override
-    public Integer getPivotViewerImageIndex() {
+    public Integer getPivotViewerItemImageIndex() {
         return 1;
     }
 

@@ -11,6 +11,8 @@ public class FormRunnerValue {
 
     private String question;
 
+    private String parent;
+
     private String examinationVersion;
 
     private Long professionalId;
@@ -50,6 +52,14 @@ public class FormRunnerValue {
 
     public void setQuestion(String question) {
         this.question = question;
+    }
+
+    public String getParent() {
+        return parent;
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
     }
 
     public String getExaminationVersion() {

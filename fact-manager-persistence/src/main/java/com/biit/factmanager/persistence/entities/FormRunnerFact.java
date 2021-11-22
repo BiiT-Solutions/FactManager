@@ -66,7 +66,7 @@ public class FormRunnerFact extends Fact<FormRunnerValue> {
     }
 
     @Override
-    public String getPivotViewerValueItemName() {
+    public String getPivotViewerItemName() {
         if (getFormRunnerValue() != null && getFormRunnerValue().getPatientName() != null) {
             return getFormRunnerValue().getPatientName();
         }
@@ -74,8 +74,10 @@ public class FormRunnerFact extends Fact<FormRunnerValue> {
     }
 
     @Override
-    public Integer getPivotViewerImageIndex() {
-        if (getFormRunnerValue() != null && getFormRunnerValue().getScore() != null) {
+    public Integer getPivotViewerItemImageIndex() {
+        //Form scores that has the score, check by xpath.
+        if (getFormRunnerValue() != null && (getFormRunnerValue().getXpath() == null || getFormRunnerValue().getXpath().length() < 2)
+                && getFormRunnerValue().getScore() != null) {
             return getFormRunnerValue().getScore().intValue();
         }
         return null;

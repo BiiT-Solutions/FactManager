@@ -44,28 +44,65 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
         //5 Patients
         for (int patient = 0; patient < 5; patient++) {
             // 2 Examinations
-            for (int examination = 0; examination < 2; examination++) {
-                // Each Examination with 10 questions
-                for (int question = 0; question < 10; question++) {
-                    FormRunnerFact formrunnerFact = new FormRunnerFact();
-                    formrunnerFact.setGroup("examination" + examination);
-                    formrunnerFact.setElementId("examinationId" + examination);
-                    formrunnerFact.setTag("tag");
-                    formrunnerFact.setTenantId("p" + patient);
+            for (int examination = 1; examination < 3; examination++) {
+                // Each examination 2 categories
+                String formXpath = "/";
+                //Set form scores (image index).
+                FormRunnerFact formFormRunnerFact = new FormRunnerFact();
+                formFormRunnerFact.setGroup("examination" + examination);
+                formFormRunnerFact.setElementId("examinationId" + examination);
+                formFormRunnerFact.setTenantId("p" + patient);
 
-                    FormRunnerValue formRunnerValue = new FormRunnerValue();
-                    formRunnerValue.setQuestion(String.format("Question_%s_%s", examination, question));
-                    formRunnerValue.setScore(Double.parseDouble("0." + question));
-                    formRunnerValue.setPatientName("Patient" + patient);
-                    formrunnerFact.setEntity(formRunnerValue);
+                //Categories scores has not question field filled up.
+                FormRunnerValue formFormRunnerValue = new FormRunnerValue();
+                formFormRunnerValue.setScore((double) examination);
+                formFormRunnerValue.setXpath(formXpath);
+                formFormRunnerValue.setPatientName("Patient" + patient);
+                formFormRunnerFact.setEntity(formFormRunnerValue);
+                formFormRunnerFact = formrunnerFactRepository.save(formFormRunnerFact);
+                formRunnerFacts.add(formFormRunnerFact);
 
-                    formrunnerFact = formrunnerFactRepository.save(formrunnerFact);
-                    formRunnerFacts.add(formrunnerFact);
+                for (int category = 1; category < 3; category++) {
+                    String categoryXpath = formXpath + "category" + category + "/";
+                    //Set category.
+                    FormRunnerFact categoryFormRunnerFact = new FormRunnerFact();
+                    categoryFormRunnerFact.setGroup("examination" + examination);
+                    categoryFormRunnerFact.setElementId("examinationId" + examination);
+                    categoryFormRunnerFact.setTenantId("p" + patient);
+
+                    //Categories scores has not question field filled up.
+                    FormRunnerValue categoryFormRunnerValue = new FormRunnerValue();
+                    categoryFormRunnerValue.setScore((double) category);
+                    categoryFormRunnerValue.setParent("form");
+                    categoryFormRunnerValue.setXpath(categoryXpath);
+                    categoryFormRunnerValue.setPatientName("Patient" + patient);
+                    categoryFormRunnerFact.setEntity(categoryFormRunnerValue);
+
+                    categoryFormRunnerFact = formrunnerFactRepository.save(categoryFormRunnerFact);
+                    formRunnerFacts.add(categoryFormRunnerFact);
+                    // Each Examination with 10 questions
+                    for (int question = 0; question < 10; question++) {
+                        String questionXpath = categoryXpath + String.format("Question_%s_%s_%s", examination, category, question) + "/";
+                        FormRunnerFact questionFormRunnerFact = new FormRunnerFact();
+                        questionFormRunnerFact.setGroup("examination" + examination);
+                        questionFormRunnerFact.setElementId("examinationId" + examination);
+                        questionFormRunnerFact.setTag("tag");
+                        questionFormRunnerFact.setTenantId("p" + patient);
+
+                        FormRunnerValue questionFormRunnerValue = new FormRunnerValue();
+                        questionFormRunnerValue.setQuestion(String.format("Question_%s_%s_%s", examination, category, question));
+                        questionFormRunnerValue.setParent("category" + category);
+                        questionFormRunnerValue.setScore(Double.parseDouble("0." + question));
+                        questionFormRunnerValue.setXpath(questionXpath);
+                        questionFormRunnerValue.setPatientName("Patient" + patient);
+                        questionFormRunnerFact.setEntity(questionFormRunnerValue);
+
+                        questionFormRunnerFact = formrunnerFactRepository.save(questionFormRunnerFact);
+                        formRunnerFacts.add(questionFormRunnerFact);
+                    }
                 }
             }
         }
-        //Set Item image (score).
-
     }
 
     @Test

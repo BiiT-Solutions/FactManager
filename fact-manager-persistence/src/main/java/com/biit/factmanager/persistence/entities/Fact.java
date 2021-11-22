@@ -126,7 +126,7 @@ public abstract class Fact<Value> implements IPivotViewerData {
     }
 
     @Override
-    public String getPivotViewerValueItemName() {
+    public String getPivotViewerItemName() {
         return tenantId;
     }
 

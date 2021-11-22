@@ -8,7 +8,7 @@ public interface IPivotViewerData {
 
     String getPivotViewerValueItemId();
 
-    String getPivotViewerValueItemName();
+    String getPivotViewerItemName();
 
-    Integer getPivotViewerImageIndex();
+    Integer getPivotViewerItemImageIndex();
 }

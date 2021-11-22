@@ -42,10 +42,14 @@ public class PivotViewProvider<E, T extends Fact<E>> {
         final StringBuilder xml = new StringBuilder();
         final Set<String> elementsByItem = new LinkedHashSet<>();
         final Map<String, Collection<T>> tenantsIds = new HashMap<>();
+        final Map<String, Integer> imageIndexes = new HashMap<>();
         for (final T fact : facts) {
             elementsByItem.add(fact.getPivotViewerTag());
             tenantsIds.computeIfAbsent(fact.getTenantId(), k -> new ArrayList<>());
             tenantsIds.get(fact.getTenantId()).add(fact);
+            if (fact.getPivotViewerItemImageIndex() != null) {
+                imageIndexes.put(fact.getTenantId(), fact.getPivotViewerItemImageIndex());
+            }
         }
         xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
         xml.append("<Collection xmlns=\"http://schemas.microsoft.com/collection/metadata/2009\" SchemaVersion=\"1.0\" Name=\"FactManager\">\n");
@@ -57,16 +61,19 @@ public class PivotViewProvider<E, T extends Fact<E>> {
         xml.append("    <Items ImgBase=\"").append("./factManager/fact_manager.dzc").append("\">\n");
         tenantsIds.keySet().forEach(tenantId -> {
             try {
-                //Get tenant information from any fact.
-                final T oneFact = tenantsIds.get(tenantId).stream().findFirst().orElseThrow(() ->
-                        new FactNotFoundException(this.getClass(), "No facts for tenant '" + tenantId + "'."));
-                xml.append("        <Item Id=\"").append(oneFact.getPivotViewerValueItemId()).append("\" Img=\"" + oneFact.getPivotViewerImageIndex() + "\"")
-                        .append(" Href=\"/usmo\" Name=\"").append(oneFact.getPivotViewerValueItemName()).append("\">\n");
+                //Get item information from form fact.
+                final T scoreFacts = tenantsIds.get(tenantId).stream().filter(f -> f.getPivotViewerItemImageIndex() != null).findAny().orElseThrow(() ->
+                        new FactNotFoundException(this.getClass(), "No facts for tenant '" + tenantId + "' with score."));
+                xml.append("        <Item Id=\"").append(scoreFacts.getPivotViewerValueItemId()).append("\" Img=\"")
+                        .append(imageIndexes.get(tenantId)).append("\"")
+                        .append(" Href=\"/usmo\" Name=\"").append(scoreFacts.getPivotViewerItemName()).append("\">\n");
                 xml.append("            <Facets>\n");
                 tenantsIds.get(tenantId).forEach(fact -> {
-                    xml.append("                <Facet Name=\"").append(fact.getPivotViewerTag()).append("\">\n");
-                    xml.append("                    <Number Value=\"").append(fact.getPivotViewerValue()).append("\"/>\n");
-                    xml.append("                </Facet>\n");
+                    if (fact.getPivotViewerTag() != null) {
+                        xml.append("                <Facet Name=\"").append(fact.getPivotViewerTag()).append("\">\n");
+                        xml.append("                    <Number Value=\"").append(fact.getPivotViewerValue()).append("\"/>\n");
+                        xml.append("                </Facet>\n");
+                    }
                 });
                 xml.append("            </Facets>\n");
                 xml.append("        </Item>\n");

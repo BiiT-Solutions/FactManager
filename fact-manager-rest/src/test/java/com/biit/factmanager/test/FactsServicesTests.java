@@ -39,17 +39,21 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(factServices.getFacts(null, FACT_EXAMINATION_NAME, null).size(), 0);
         // Save 2 empty facts
         // Save 2 empty facts
-        facts.add(new FormRunnerFact());
-        facts.add(new FormRunnerFact());
+        FormRunnerFact formRunnerFact = new FormRunnerFact();
+        formRunnerFact.setGroup(FACT_EXAMINATION_NAME);
+        facts.add(formRunnerFact);
+        formRunnerFact = new FormRunnerFact();
+        formRunnerFact.setGroup(FACT_EXAMINATION_NAME);
+        facts.add(formRunnerFact);
         Assert.assertEquals(facts.size(), 2);
         facts = factServices.addFactList(facts, null);
         // 2 saved + the one added at the beginning
-        Assert.assertEquals(factServices.getFacts(null, FACT_EXAMINATION_NAME, null).size(), 2);
+        Assert.assertEquals(factServices.getFacts(FACT_EXAMINATION_NAME, null, null).size(), 2);
     }
 
     @Test(dependsOnMethods = "addFacts")
     public void removeFact() {
-        Assert.assertEquals(factServices.getFacts(null, FACT_EXAMINATION_NAME, null).size(), 2);
+        Assert.assertEquals(factServices.getFacts(FACT_EXAMINATION_NAME, null, null).size(), 2);
         Assert.assertNotNull(facts);
         for (FormRunnerFact fact : facts) {
             factServices.deleteFact(fact, null);
