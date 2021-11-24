@@ -19,7 +19,7 @@ public class FormRunnerFactProvider {
         this.formRunnerFactRepository = formRunnerFactRepository;
     }
 
-    public FormRunnerFact get(Integer factId) {
+    public FormRunnerFact get(Long factId) {
         return formRunnerFactRepository.findById(factId).orElseThrow(
                 () -> new FactNotFoundException(this.getClass(), "No fact with id '" + factId + "' found."));
     }

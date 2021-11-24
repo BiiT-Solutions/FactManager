@@ -22,7 +22,7 @@ public abstract class Fact<Value> implements IPivotViewerData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "organization_id")
     private String organizationId;
@@ -72,11 +72,11 @@ public abstract class Fact<Value> implements IPivotViewerData {
         this.value = value;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

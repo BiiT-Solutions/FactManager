@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
-public interface FactRepository<E, T extends Fact<E>> extends JpaRepository<T, Integer> {
+public interface FactRepository<E, T extends Fact<E>> extends JpaRepository<T, Long> {
 
     Collection<T> findByElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
             (String elementId, LocalDateTime startDate, LocalDateTime endDate);
