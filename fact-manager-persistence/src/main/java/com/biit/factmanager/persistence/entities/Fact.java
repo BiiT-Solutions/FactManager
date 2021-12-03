@@ -10,7 +10,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Primary;
 
 import javax.persistence.*;
+import java.lang.reflect.ParameterizedType;
 import java.time.LocalDateTime;
+import java.util.Map;
+
+/**
+ * A Generic Fact with basic classification.
+ *
+ * @param <Value> All facts values must be composed only by primitive parameters.
+ */
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -31,15 +39,20 @@ public abstract class Fact<Value> implements IPivotViewerData {
     @Column(name = "tenant_id")
     private String tenantId;
 
+    // Kafka Tag
     @Column(name = "tag")
     private String tag;
 
-    @Column(name = "grouping")
+    //Group is reserved by h2
+    @Column(name = "group_by")
     private String group;
 
-    @Column(name = "value", length = MAX_JSON_LENGTH)
-    @Convert(converter = StringCryptoConverter.class)
-    private String value;
+    //@Column(name = "value", length = MAX_JSON_LENGTH)
+    //@Convert(converter = HashMapConverter.class)
+    @ElementCollection
+    @CollectionTable(name = "parameters", joinColumns = @JoinColumn(name = "parameters_id", referencedColumnName = "id"))
+    @Column(name = "entity")
+    private Map<String, String> value;
 
     // Id of the entity on the fact
     @Column(name = "element_id")
@@ -61,14 +74,11 @@ public abstract class Fact<Value> implements IPivotViewerData {
         this.group = group;
     }
 
-    public String getValue() {
-        return value == null ? "" : value;
+    protected Map<String, String> getValue() {
+        return value;
     }
 
-    protected void setValue(String value) {
-        if (this.value != null) {
-            throw new ValueAlreadySet();
-        }
+    protected void setValue(Map<String, String> value) {
         this.value = value;
     }
 
@@ -116,7 +126,7 @@ public abstract class Fact<Value> implements IPivotViewerData {
         this.tag = tag;
     }
 
-    protected void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -131,19 +141,14 @@ public abstract class Fact<Value> implements IPivotViewerData {
     }
 
     public void setEntity(Value entity) {
-        try {
-            setValue(new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).writeValueAsString(entity));
-        } catch (JsonProcessingException e) {
-            throw new FactValueInvalidException(e);
-        }
+        setValue(new ObjectMapper().convertValue(entity, Map.class));
     }
 
     public Value getEntity() {
-        try {
-            return new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).readValue(getValue(), new TypeReference<Value>() {
-            });
-        } catch (JsonProcessingException e) {
-            throw new FactValueInvalidException(e);
-        }
+        return new ObjectMapper().convertValue(getValue(), (Class<Value>)
+                ((ParameterizedType) getClass()
+                        .getGenericSuperclass())
+                        .getActualTypeArguments()[0]);
+
     }
 }

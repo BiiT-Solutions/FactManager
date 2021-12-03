@@ -45,11 +45,6 @@ public class FormRunnerFact extends Fact<FormRunnerValue> {
     }
 
     @Override
-    public void setCreatedAt(LocalDateTime localDateTime) {
-        super.setCreatedAt(localDateTime);
-    }
-
-    @Override
     public String getPivotViewerTag() {
         if (getFormRunnerValue() != null && getFormRunnerValue().getQuestion() != null) {
             return getFormRunnerValue().getQuestion();

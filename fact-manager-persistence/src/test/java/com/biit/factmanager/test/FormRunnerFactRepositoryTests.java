@@ -13,6 +13,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 @SpringBootTest
 @Test(groups = "factRepository")
@@ -75,8 +76,17 @@ public class FormRunnerFactRepositoryTests extends AbstractTransactionalTestNGSp
 
         FormRunnerFact fact = formRunnerFactRepository.save(factToSave);
         Assert.assertEquals(formRunnerFactRepository.count(), 4);
-        formRunnerFactRepository.delete(fact);
+
+
     }
+
+    @Test(dependsOnMethods = "addFact")
+    private void searchFactByValueParameters() {
+        Collection<FormRunnerFact> facts = formRunnerFactRepository.findByValue(FACT_COMPANY_ID + "");
+
+        facts.forEach(formRunnerFact -> formRunnerFactRepository.delete(formRunnerFact));
+    }
+
 
     @Test(dependsOnMethods = "addFact")
     private void getFilteredFacts() {

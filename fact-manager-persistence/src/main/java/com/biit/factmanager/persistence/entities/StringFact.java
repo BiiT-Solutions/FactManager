@@ -24,10 +24,7 @@ public class StringFact extends Fact<StringValue> {
 
     @Override
     public String getPivotViewerValue() {
-        if (stringValue != null) {
-            return stringValue.getString();
-        }
-        return null;
+        return getString();
     }
 
     @Override
@@ -36,10 +33,15 @@ public class StringFact extends Fact<StringValue> {
     }
 
     public String getString() {
-        return stringValue.getString();
+        StringValue stringValue = getEntity();
+        if (stringValue != null) {
+            return stringValue.getString();
+        }
+        return null;
     }
 
     public void setString(String string) {
         stringValue.setString(string);
+        setEntity(stringValue);
     }
 }
