@@ -37,7 +37,7 @@ public interface FactRepository<E, T extends Fact<E>> extends JpaRepository<T, L
 
     Collection<T> findByElementIdAndGroup(String elementId, String group);
 
-    @Query("SELECT f FROM Fact f WHERE :value in (VALUE(f.value))")
+    //@Query("SELECT f FROM Fact f WHERE :value in (VALUE(f.value))")
     //@Query("SELECT f FROM Fact f where value = :value")
     Collection<T> findByValue(String value);
 }

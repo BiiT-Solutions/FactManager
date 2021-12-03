@@ -10,15 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Primary;
 
 import javax.persistence.*;
-import java.lang.reflect.ParameterizedType;
 import java.time.LocalDateTime;
-import java.util.Map;
-
-/**
- * A Generic Fact with basic classification.
- *
- * @param <Value> All facts values must be composed only by primitive parameters.
- */
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -39,20 +31,15 @@ public abstract class Fact<Value> implements IPivotViewerData {
     @Column(name = "tenant_id")
     private String tenantId;
 
-    // Kafka Tag
     @Column(name = "tag")
     private String tag;
 
-    //Group is reserved by h2
-    @Column(name = "group_by")
+    @Column(name = "grouping")
     private String group;
 
-    //@Column(name = "value", length = MAX_JSON_LENGTH)
-    //@Convert(converter = HashMapConverter.class)
-    @ElementCollection
-    @CollectionTable(name = "parameters", joinColumns = @JoinColumn(name = "parameters_id", referencedColumnName = "id"))
-    @Column(name = "entity")
-    private Map<String, String> value;
+    @Column(name = "value", length = MAX_JSON_LENGTH)
+    @Convert(converter = StringCryptoConverter.class)
+    private String value;
 
     // Id of the entity on the fact
     @Column(name = "element_id")
@@ -74,11 +61,14 @@ public abstract class Fact<Value> implements IPivotViewerData {
         this.group = group;
     }
 
-    protected Map<String, String> getValue() {
-        return value;
+    public String getValue() {
+        return value == null ? "" : value;
     }
 
-    protected void setValue(Map<String, String> value) {
+    protected void setValue(String value) {
+        if (this.value != null) {
+            throw new ValueAlreadySet();
+        }
         this.value = value;
     }
 
@@ -141,14 +131,19 @@ public abstract class Fact<Value> implements IPivotViewerData {
     }
 
     public void setEntity(Value entity) {
-        setValue(new ObjectMapper().convertValue(entity, Map.class));
+        try {
+            setValue(new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).writeValueAsString(entity));
+        } catch (JsonProcessingException e) {
+            throw new FactValueInvalidException(e);
+        }
     }
 
     public Value getEntity() {
-        return new ObjectMapper().convertValue(getValue(), (Class<Value>)
-                ((ParameterizedType) getClass()
-                        .getGenericSuperclass())
-                        .getActualTypeArguments()[0]);
-
+        try {
+            return new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).readValue(getValue(), new TypeReference<Value>() {
+            });
+        } catch (JsonProcessingException e) {
+            throw new FactValueInvalidException(e);
+        }
     }
 }
