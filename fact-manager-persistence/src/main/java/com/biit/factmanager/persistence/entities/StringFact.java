@@ -1,6 +1,7 @@
 package com.biit.factmanager.persistence.entities;
 
 import com.biit.factmanager.persistence.entities.values.StringValue;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -43,5 +44,10 @@ public class StringFact extends Fact<StringValue> {
     public void setString(String string) {
         stringValue.setString(string);
         setEntity(stringValue);
+    }
+
+    @Override
+    protected TypeReference<StringValue> getJsonParser() {
+        return new TypeReference<StringValue>(){};
     }
 }

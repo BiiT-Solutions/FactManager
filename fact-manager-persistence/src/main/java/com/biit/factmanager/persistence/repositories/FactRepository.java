@@ -37,7 +37,15 @@ public interface FactRepository<E, T extends Fact<E>> extends JpaRepository<T, L
 
     Collection<T> findByElementIdAndGroup(String elementId, String group);
 
-    //@Query("SELECT f FROM Fact f WHERE :value in (VALUE(f.value))")
-    //@Query("SELECT f FROM Fact f where value = :value")
-    Collection<T> findByValue(String value);
+    @Query("SELECT f FROM FormRunnerFact f WHERE (:tenantId is null or f.tenantId = :tenantId) and (:group is null or f.group = :group)" +
+            "and (:startDate is null or f.createdAt >= :startDate) and (:endDate is null or f.createdAt <= :endDate)")
+    Collection<T> findByTenantIdAndGroupAndCreatedAt(String tenantId, String group, LocalDateTime startDate, LocalDateTime endDate);
+
+    @Query("SELECT f FROM  FormRunnerFact f WHERE (:tenantId is null or f.tenantId = :tenantId) and (:elementId is null or f.elementId = :elementId)" +
+            "and (:startDate is null or f.createdAt >= :startDate) and (:endDate is null or f.createdAt <= :endDate)")
+    Collection<T> findByTenantIdAndElementIdAndCreatedAt(String tenantId, String elementId, LocalDateTime startDate, LocalDateTime endDate);
+
+
+    @Query("SELECT f FROM Fact f WHERE f.value LIKE %?1%")
+    Collection<T> findByValueParameter(String value);
 }

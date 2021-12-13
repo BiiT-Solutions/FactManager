@@ -1,8 +1,8 @@
 package com.biit.factmanager.test;
 
 import com.biit.factmanager.persistence.entities.FormRunnerFact;
+import com.biit.factmanager.persistence.repositories.FactRepository;
 import com.biit.factmanager.persistence.entities.values.FormRunnerValue;
-import com.biit.factmanager.persistence.repositories.FormRunnerFactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
@@ -33,7 +33,7 @@ public class FormRunnerFactRepositoryTests extends AbstractTransactionalTestNGSp
     private static final LocalDateTime FACT_DATE_NOW = LocalDateTime.now();
 
     @Autowired
-    private FormRunnerFactRepository formRunnerFactRepository;
+    private FactRepository<FormRunnerValue, FormRunnerFact> formRunnerFactRepository;
 
 
     @BeforeClass
@@ -80,16 +80,16 @@ public class FormRunnerFactRepositoryTests extends AbstractTransactionalTestNGSp
 
     }
 
-/*    @Test(dependsOnMethods = "addFact")
-    private void searchFactByValueParameters() {
-        Collection<FormRunnerFact> facts = formRunnerFactRepository.findByValue(FACT_COMPANY_ID + "");
-        facts.forEach(formRunnerFact -> formRunnerFactRepository.delete(formRunnerFact));
-    }*/
-
-
     @Test(dependsOnMethods = "addFact")
+    private void searchFactByValueParameters() {
+        Collection<FormRunnerFact> facts = formRunnerFactRepository.findByValueParameter(FACT_COMPANY_ID + "");
+        facts.forEach(formRunnerFact -> formRunnerFactRepository.delete(formRunnerFact));
+    }
+
+
+    @Test(dependsOnMethods = "searchFactByValueParameters")
     private void getFilteredFacts() {
-        Assert.assertEquals(formRunnerFactRepository.count(), 4);
+        Assert.assertEquals(formRunnerFactRepository.count(), 3);
         Assert.assertEquals((long) formRunnerFactRepository.findByTenantIdAndGroupAndCreatedAt
                 (FACT_TENANT_ID, FACT_CATEGORY, FACT_DATE_BEFORE.minusDays(1), FACT_DATE_AFTER).size(), 1);
         Assert.assertEquals((long) formRunnerFactRepository.findByTenantIdAndElementIdAndCreatedAt
@@ -101,19 +101,19 @@ public class FormRunnerFactRepositoryTests extends AbstractTransactionalTestNGSp
     @Test(dependsOnMethods = "getFilteredFacts")
     private void factBetweenDates() {
         Assert.assertEquals(formRunnerFactRepository.findByCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
-                (LocalDateTime.now().minusDays(21), LocalDateTime.now().plusDays(21)).size(), 4);
+                (LocalDateTime.now().minusDays(21), LocalDateTime.now().plusDays(21)).size(), 3);
     }
 
     @Test(dependsOnMethods = "factBetweenDates")
     private void factBeforeDate() {
         Assert.assertEquals(formRunnerFactRepository.findByCreatedAtLessThan
-                (LocalDateTime.now().plusDays(21)).size(), 4);
+                (LocalDateTime.now().plusDays(21)).size(), 3);
     }
 
     @Test(dependsOnMethods = "factBeforeDate")
     private void factAfterDate() {
         Assert.assertEquals(formRunnerFactRepository.findByCreatedAtGreaterThan
-                (FACT_DATE_NOW).size(), 3);
+                (FACT_DATE_NOW).size(), 2);
     }
 
     @AfterClass

@@ -1,7 +1,8 @@
 package com.biit.factmanager.test;
 
-import com.biit.factmanager.core.providers.FormRunnerFactProvider;
+import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.persistence.entities.FormRunnerFact;
+import com.biit.factmanager.persistence.entities.values.FormRunnerValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -15,7 +16,7 @@ import org.testng.annotations.Test;
 public class FactsTests extends AbstractTestNGSpringContextTests {
 
     @Autowired
-    private FormRunnerFactProvider formrunnerFactProvider;
+    private FactProvider<FormRunnerValue, FormRunnerFact> factProvider;
 
     private FormRunnerFact fact = null;
 
@@ -27,17 +28,17 @@ public class FactsTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void addFact() {
-        Assert.assertEquals(formrunnerFactProvider.count(), 0);
-        fact = formrunnerFactProvider.add(new FormRunnerFact());
+        Assert.assertEquals(factProvider.count(), 0);
+        fact = factProvider.save(new FormRunnerFact());
         Assert.assertNotNull(fact);
-        Assert.assertEquals(formrunnerFactProvider.count(), 1);
+        Assert.assertEquals(factProvider.count(), 1);
     }
 
 
     @AfterClass
     public void cleanDatabase() {
         if (fact != null) {
-            formrunnerFactProvider.delete(fact);
+            factProvider.delete(fact);
         }
     }
 }

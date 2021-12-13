@@ -2,6 +2,8 @@ package com.biit.factmanager.persistence.entities;
 
 
 import com.biit.factmanager.persistence.entities.values.FormRunnerValue;
+import com.biit.factmanager.persistence.entities.values.StringValue;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -23,6 +25,7 @@ public class FormRunnerFact extends Fact<FormRunnerValue> {
     private FormRunnerValue formRunnerValue;
 
     public FormRunnerFact() {
+        super();
         formRunnerValue = new FormRunnerValue();
     }
 
@@ -42,6 +45,12 @@ public class FormRunnerFact extends Fact<FormRunnerValue> {
     public void setEntity(FormRunnerValue entity) {
         formRunnerValue = entity;
         super.setEntity(entity);
+    }
+
+    @Override
+    protected TypeReference<FormRunnerValue> getJsonParser() {
+        return new TypeReference<FormRunnerValue>() {
+        };
     }
 
     @Override

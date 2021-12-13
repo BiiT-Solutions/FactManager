@@ -1,9 +1,10 @@
 package com.biit.factmanager.rest.api;
 
-import com.biit.factmanager.core.providers.FormRunnerFactProvider;
+import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.persistence.entities.FormRunnerFact;
+import com.biit.factmanager.persistence.entities.values.FormRunnerValue;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,11 @@ import java.util.List;
 @RestController
 public class FactServices {
 
-    private final FormRunnerFactProvider formrunnerFactProvider;
+    private final FactProvider<FormRunnerValue, FormRunnerFact> formRunnerFactProvider;
 
     @Autowired
-    public FactServices(FormRunnerFactProvider formrunnerFactProvider) {
-        this.formrunnerFactProvider = formrunnerFactProvider;
+    public FactServices(FactProvider<FormRunnerValue, FormRunnerFact> formRunnerFactProvider) {
+        this.formRunnerFactProvider = formRunnerFactProvider;
     }
 
     @ApiOperation(value = "Get all facts", notes = "Id requires a level to be set. Parameters:\n"
@@ -36,7 +37,7 @@ public class FactServices {
             @ApiParam(value = "ElementId", required = false) @RequestParam(value = "elementId", required = false) String elementId,
             HttpServletRequest httpRequest) {
         FactManagerLogger.info(this.getClass().getName(), "Get all facts");
-        return formrunnerFactProvider.getFiltered(group, elementId);
+        return formRunnerFactProvider.getFiltered(group, elementId);
     }
 
     @ApiOperation(value = "Adds a new fact", notes = "Parameters:\n"
@@ -46,7 +47,7 @@ public class FactServices {
     public Fact addFact(@ApiParam(value = "Notification Request", required = true) @RequestBody FormRunnerFact fact,
                         HttpServletRequest httpRequest) {
         FactManagerLogger.info(this.getClass().getName(), "Add fact");
-        return formrunnerFactProvider.add(fact);
+        return formRunnerFactProvider.save(fact);
     }
 
     @ApiOperation(value = "Save a list of facts", notes = "Parameters:\n"
@@ -56,7 +57,7 @@ public class FactServices {
     public List<FormRunnerFact> addFactList(@ApiParam(value = "Notification Request", required = true) @RequestBody List<FormRunnerFact> facts,
                                             HttpServletRequest httpRequest) {
         FactManagerLogger.debug(this.getClass().getName(), "Saving a list of facts '{}'.", facts);
-        return formrunnerFactProvider.save(facts);
+        return formRunnerFactProvider.save(facts);
     }
 
     @ApiOperation(value = "Deletes a fact", notes = "Parameters:\n"
@@ -66,7 +67,7 @@ public class FactServices {
     public void deleteFact(@ApiParam(value = "Fact entity", required = true) @RequestBody FormRunnerFact fact,
                            HttpServletRequest httpRequest) {
         FactManagerLogger.info(this.getClass().getName(), "Remove fact");
-        formrunnerFactProvider.delete(fact);
+        formRunnerFactProvider.delete(fact);
     }
 
 

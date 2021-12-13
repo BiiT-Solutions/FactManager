@@ -34,6 +34,7 @@ public abstract class Fact<Value> implements IPivotViewerData {
     @Column(name = "tag")
     private String tag;
 
+    //Examination Name
     @Column(name = "grouping")
     private String group;
 
@@ -66,9 +67,6 @@ public abstract class Fact<Value> implements IPivotViewerData {
     }
 
     protected void setValue(String value) {
-        if (this.value != null) {
-            throw new ValueAlreadySet();
-        }
         this.value = value;
     }
 
@@ -138,10 +136,11 @@ public abstract class Fact<Value> implements IPivotViewerData {
         }
     }
 
+    protected abstract TypeReference<Value> getJsonParser();
+
     public Value getEntity() {
         try {
-            return new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).readValue(getValue(), new TypeReference<Value>() {
-            });
+            return new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).readValue(getValue(), getJsonParser());
         } catch (JsonProcessingException e) {
             throw new FactValueInvalidException(e);
         }

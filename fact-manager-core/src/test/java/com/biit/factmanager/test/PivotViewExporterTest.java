@@ -1,10 +1,10 @@
 package com.biit.factmanager.test;
 
+import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.core.providers.PivotViewProvider;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.persistence.entities.values.FormRunnerValue;
 import com.biit.factmanager.persistence.entities.FormRunnerFact;
-import com.biit.factmanager.persistence.repositories.FormRunnerFactRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.InvalidJsonException;
@@ -32,7 +32,7 @@ import java.util.List;
 public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
-    private FormRunnerFactRepository formrunnerFactRepository;
+    private FactProvider<FormRunnerValue, FormRunnerFact> factProvider;
 
     @Autowired
     private PivotViewProvider<FormRunnerValue, FormRunnerFact> pivotViewProvider;
@@ -58,7 +58,7 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
                 formFormRunnerValue.setXpath(formXpath);
                 formFormRunnerValue.setPatientName("Patient" + patient);
                 formFormRunnerFact.setEntity(formFormRunnerValue);
-                formFormRunnerFact = formrunnerFactRepository.save(formFormRunnerFact);
+                formFormRunnerFact = factProvider.save(formFormRunnerFact);
                 formRunnerFacts.add(formFormRunnerFact);
 
                 // Each examination 2 categories
@@ -78,7 +78,7 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
                     categoryFormRunnerValue.setPatientName("Patient" + patient);
                     categoryFormRunnerFact.setEntity(categoryFormRunnerValue);
 
-                    categoryFormRunnerFact = formrunnerFactRepository.save(categoryFormRunnerFact);
+                    categoryFormRunnerFact = factProvider.save(categoryFormRunnerFact);
                     formRunnerFacts.add(categoryFormRunnerFact);
                     // Each Examination with 10 questions
                     for (int question = 0; question < 10; question++) {
@@ -97,7 +97,7 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
                         questionFormRunnerValue.setPatientName("Patient" + patient);
                         questionFormRunnerFact.setEntity(questionFormRunnerValue);
 
-                        questionFormRunnerFact = formrunnerFactRepository.save(questionFormRunnerFact);
+                        questionFormRunnerFact = factProvider.save(questionFormRunnerFact);
                         formRunnerFacts.add(questionFormRunnerFact);
                     }
                 }
@@ -121,7 +121,7 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
     @AfterClass
     public void cleanUp() {
         for (FormRunnerFact fact : formRunnerFacts) {
-            formrunnerFactRepository.delete(fact);
+            factProvider.delete(fact);
         }
     }
 

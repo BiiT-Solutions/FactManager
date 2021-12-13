@@ -2,39 +2,42 @@ package com.biit.factmanager.core.providers;
 
 import com.biit.factmanager.core.providers.exceptions.FactNotFoundException;
 import com.biit.factmanager.logger.FactManagerLogger;
+import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.persistence.entities.FormRunnerFact;
-import com.biit.factmanager.persistence.repositories.FormRunnerFactRepository;
+import com.biit.factmanager.persistence.repositories.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Service
-public class FormRunnerFactProvider {
-    private final FormRunnerFactRepository formRunnerFactRepository;
+public class FactProvider<E, T extends Fact<E>> {
+    private final FactRepository<E, T> factRepository;
 
 
     @Autowired
-    public FormRunnerFactProvider(FormRunnerFactRepository formRunnerFactRepository) {
-        this.formRunnerFactRepository = formRunnerFactRepository;
+    public FactProvider(FactRepository<E, T> factRepository) {
+        this.factRepository = factRepository;
     }
 
-    public FormRunnerFact get(Long factId) {
-        return formRunnerFactRepository.findById(factId).orElseThrow(
+    public T get(Long factId) {
+        return factRepository.findById(factId).orElseThrow(
                 () -> new FactNotFoundException(this.getClass(), "No fact with id '" + factId + "' found."));
     }
 
-    public Collection<FormRunnerFact> getAll() {
-        return formRunnerFactRepository.findAll();
+    public Collection<T> getAll() {
+        return factRepository.findAll();
     }
 
-    public Collection<FormRunnerFact> getFiltered(String group, String elementId) {
+    public Collection<T> getFiltered(String group, String elementId) {
         if (elementId != null && group != null) {
-            return formRunnerFactRepository.findByElementIdAndGroup(elementId, group);
+            return factRepository.findByElementIdAndGroup(elementId, group);
         } else if (group != null) {
-            return formRunnerFactRepository.findByGroup(group);
+            return factRepository.findByGroup(group);
         } else if (elementId != null) {
-            return formRunnerFactRepository.findByElementId(elementId);
+            return factRepository.findByElementId(elementId);
         }
 
         return getAll();
@@ -48,8 +51,8 @@ public class FormRunnerFactProvider {
      * @return the saved entity; will never be {@literal null}.
      * @throws IllegalArgumentException in case the given {@literal entity} is {@literal null}.
      */
-    public FormRunnerFact add(FormRunnerFact fact) {
-        return formRunnerFactRepository.save(fact);
+    public T save(T fact) {
+        return factRepository.save(fact);
     }
 
     /**
@@ -60,22 +63,22 @@ public class FormRunnerFactProvider {
      * @return the List of saved entitis; will never be {@literal null}.
      * @throws IllegalArgumentException in case the given {@literal entity} is {@literal null}.
      */
-    public List<FormRunnerFact> save(List<FormRunnerFact> facts) {
-        final List<FormRunnerFact> savedFacts = new ArrayList<>();
-        for (final FormRunnerFact fact : facts) {
-            final FormRunnerFact savedFact = add(fact);
+    public List<T> save(List<T> facts) {
+        final List<T> savedFacts = new ArrayList<>();
+        for (final T fact : facts) {
+            final T savedFact = save(fact);
             savedFacts.add(savedFact);
             FactManagerLogger.debug(this.getClass().getName(), "Saved fact '{}'.", fact);
         }
         return savedFacts;
     }
 
-    public FormRunnerFact update(FormRunnerFact fact) {
-        return formRunnerFactRepository.save(fact);
+    public T update(T fact) {
+        return factRepository.save(fact);
     }
 
-    public void delete(FormRunnerFact fact) {
-        formRunnerFactRepository.delete(fact);
+    public void delete(T fact) {
+        factRepository.delete(fact);
     }
 
     /**
@@ -84,7 +87,7 @@ public class FormRunnerFactProvider {
      * @return the number of entities.
      */
     public long count() {
-        return formRunnerFactRepository.count();
+        return factRepository.count();
     }
 
 }

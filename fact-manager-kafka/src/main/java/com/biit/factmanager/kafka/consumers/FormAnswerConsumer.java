@@ -1,9 +1,10 @@
 package com.biit.factmanager.kafka.consumers;
 
-import com.biit.factmanager.core.providers.FormRunnerFactProvider;
+import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.configuration.FactManagerConfigurationReader;
 import com.biit.factmanager.persistence.entities.FormRunnerFact;
+import com.biit.factmanager.persistence.entities.values.FormRunnerValue;
 import com.biit.kafkaclient.KafkaConsumerClient;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -21,7 +22,7 @@ import java.util.function.Consumer;
 public class FormAnswerConsumer extends KafkaConsumerClient {
 
     @Autowired
-    private FormRunnerFactProvider factProvider;
+    private FactProvider<FormRunnerValue, FormRunnerFact> factProvider;
 
     private static final String TOPIC_NAME = "FormAnswer";
     // private static final List<Fact> CLASS_TYPE = new ArrayList<>();
@@ -45,7 +46,7 @@ public class FormAnswerConsumer extends KafkaConsumerClient {
     private Consumer getConsumer() {
         return (x) -> {
             FactManagerLogger.debug(this.getClass().getName(), "FormAnswer event to save " + x.toString());
-            final FormRunnerFact savedFact = factProvider.add((FormRunnerFact) x);
+            final FormRunnerFact savedFact = factProvider.save((FormRunnerFact) x);
             FactManagerLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
         };
     }
@@ -87,7 +88,7 @@ public class FormAnswerConsumer extends KafkaConsumerClient {
             }*/
             facts.forEach(fact -> {
                 FactManagerLogger.debug(this.getClass().getName(), "fact to save " + fact.toString());
-                final FormRunnerFact savedFact = factProvider.add((FormRunnerFact) fact);
+                final FormRunnerFact savedFact = factProvider.save((FormRunnerFact) fact);
                 FactManagerLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
             });
 
