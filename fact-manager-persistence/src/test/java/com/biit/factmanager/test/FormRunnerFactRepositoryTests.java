@@ -33,7 +33,7 @@ public class FormRunnerFactRepositoryTests extends AbstractTransactionalTestNGSp
     private static final LocalDateTime FACT_DATE_NOW = LocalDateTime.now();
 
     @Autowired
-    private FactRepository<FormRunnerValue, FormRunnerFact> formRunnerFactRepository;
+    private FactRepository<FormRunnerFact> formRunnerFactRepository;
 
 
     @BeforeClass

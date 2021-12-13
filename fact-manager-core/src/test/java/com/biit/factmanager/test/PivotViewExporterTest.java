@@ -32,10 +32,10 @@ import java.util.List;
 public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
-    private FactProvider<FormRunnerValue, FormRunnerFact> factProvider;
+    private FactProvider<FormRunnerFact> factProvider;
 
     @Autowired
-    private PivotViewProvider<FormRunnerValue, FormRunnerFact> pivotViewProvider;
+    private PivotViewProvider<FormRunnerFact> pivotViewProvider;
 
     private final List<FormRunnerFact> formRunnerFacts = new ArrayList<>();
 

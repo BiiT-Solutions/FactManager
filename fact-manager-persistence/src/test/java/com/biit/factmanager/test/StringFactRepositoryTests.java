@@ -2,7 +2,6 @@ package com.biit.factmanager.test;
 
 import com.biit.factmanager.persistence.entities.StringFact;
 import com.biit.factmanager.persistence.repositories.FactRepository;
-import com.biit.factmanager.persistence.entities.values.StringValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
@@ -25,7 +24,7 @@ public class StringFactRepositoryTests extends AbstractTransactionalTestNGSpring
     private static final LocalDateTime FACT_TIME_PAST = LocalDateTime.now().minusDays(1);
 
     @Autowired
-    private FactRepository<StringValue, StringFact> stringFactRepository;
+    private FactRepository<StringFact> stringFactRepository;
 
     @Test
     private void createStringFact() {

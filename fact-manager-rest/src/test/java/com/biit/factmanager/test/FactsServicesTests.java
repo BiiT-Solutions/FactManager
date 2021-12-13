@@ -2,7 +2,6 @@ package com.biit.factmanager.test;
 
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.persistence.entities.FormRunnerFact;
-import com.biit.factmanager.persistence.entities.values.FormRunnerValue;
 import com.biit.factmanager.rest.api.FactServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,7 +24,7 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
     private FactServices factServices;
 
     @Autowired
-    private FactProvider<FormRunnerValue, FormRunnerFact> formRunnerFactRepository;
+    private FactProvider<FormRunnerFact> formRunnerFactRepository;
 
     private List<FormRunnerFact> facts = new ArrayList<>();
 

@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
-public class PivotViewProvider<E, T extends Fact<E>> {
-    private final FactRepository<E, T> factRepository;
+public class PivotViewProvider<T extends Fact<?>> {
+    private final FactRepository<T> factRepository;
 
     @Autowired
-    public PivotViewProvider(FactRepository<E, T> factRepository) {
+    public PivotViewProvider(FactRepository<T> factRepository) {
         this.factRepository = factRepository;
     }
 

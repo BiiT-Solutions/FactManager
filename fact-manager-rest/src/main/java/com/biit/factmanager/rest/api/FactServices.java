@@ -20,10 +20,10 @@ import java.util.List;
 @RestController
 public class FactServices {
 
-    private final FactProvider<FormRunnerValue, FormRunnerFact> formRunnerFactProvider;
+    private final FactProvider<FormRunnerFact> formRunnerFactProvider;
 
     @Autowired
-    public FactServices(FactProvider<FormRunnerValue, FormRunnerFact> formRunnerFactProvider) {
+    public FactServices(FactProvider<FormRunnerFact> formRunnerFactProvider) {
         this.formRunnerFactProvider = formRunnerFactProvider;
     }
 

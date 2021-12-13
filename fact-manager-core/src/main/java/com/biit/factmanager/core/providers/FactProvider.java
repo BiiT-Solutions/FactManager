@@ -3,7 +3,6 @@ package com.biit.factmanager.core.providers;
 import com.biit.factmanager.core.providers.exceptions.FactNotFoundException;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
-import com.biit.factmanager.persistence.entities.FormRunnerFact;
 import com.biit.factmanager.persistence.repositories.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,12 +12,12 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
-public class FactProvider<E, T extends Fact<E>> {
-    private final FactRepository<E, T> factRepository;
+public class FactProvider<T extends Fact<?>> {
+    private final FactRepository<T> factRepository;
 
 
     @Autowired
-    public FactProvider(FactRepository<E, T> factRepository) {
+    public FactProvider(FactRepository<T> factRepository) {
         this.factRepository = factRepository;
     }
 
