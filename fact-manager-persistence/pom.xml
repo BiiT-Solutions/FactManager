@@ -28,7 +28,7 @@
         <dependency>
             <groupId>com.biit</groupId>
             <artifactId>database-encryptor</artifactId>
-            <version>[0.1,0.2)</version>
+            <version>${biit-database-encryptor.version}</version>
         </dependency>
 
         <dependency>

@@ -38,6 +38,7 @@
         <!-- BiiT Dependencies -->
         <biit-common-utils.version>[1.1,1.2)</biit-common-utils.version>
         <kafka-client.version>[1.0,1.1)</kafka-client.version>
+        <biit-database-encryptor.version>[0.2,0.3)</biit-database-encryptor.version>
     </properties>
 
     <distributionManagement>

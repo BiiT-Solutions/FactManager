@@ -33,7 +33,7 @@ public class StringFact extends Fact<StringValue> {
     }
 
     public String getString() {
-        StringValue stringValue = getEntity();
+        final StringValue stringValue = getEntity();
         if (stringValue != null) {
             return stringValue.getString();
         }
