@@ -2,7 +2,6 @@ package com.biit.factmanager.persistence.entities;
 
 import com.biit.database.encryption.StringCryptoConverter;
 import com.biit.factmanager.persistence.entities.exceptions.FactValueInvalidException;
-import com.biit.factmanager.persistence.entities.exceptions.ValueAlreadySet;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

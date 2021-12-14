@@ -1,13 +1,16 @@
 package com.biit.factmanager.core.providers;
 
 import com.biit.factmanager.core.providers.exceptions.FactNotFoundException;
+import com.biit.factmanager.core.providers.exceptions.InvalidParameterException;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.persistence.repositories.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -31,15 +34,18 @@ public class FactProvider<T extends Fact<?>> {
     }
 
     public Collection<T> getFiltered(String group, String elementId) {
-        if (elementId != null && group != null) {
-            return factRepository.findByElementIdAndGroup(elementId, group);
-        } else if (group != null) {
-            return factRepository.findByGroup(group);
-        } else if (elementId != null) {
-            return factRepository.findByElementId(elementId);
-        }
+        return factRepository.findByElementIdAndGroup(elementId, group);
+    }
 
-        return getAll();
+    public Collection<T> getByValueParameter(Object... pairParameterValues) {
+        if (pairParameterValues.length % 2 == 1) {
+            throw new InvalidParameterException(this.getClass(), "Parameters '" + Arrays.toString(pairParameterValues) + "' must be even.");
+        }
+        final Pair<String, Object>[] pairs = new Pair[pairParameterValues.length / 2];
+        for (int i = 0; i < pairParameterValues.length; i += 2) {
+            pairs[i] = Pair.of(pairParameterValues[i].toString(), pairParameterValues[i + 1]);
+        }
+        return factRepository.findByValueParameters(pairs);
     }
 
     /**

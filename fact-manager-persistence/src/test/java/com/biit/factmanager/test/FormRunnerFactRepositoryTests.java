@@ -1,10 +1,11 @@
 package com.biit.factmanager.test;
 
 import com.biit.factmanager.persistence.entities.FormRunnerFact;
-import com.biit.factmanager.persistence.repositories.FactRepository;
 import com.biit.factmanager.persistence.entities.values.FormRunnerValue;
+import com.biit.factmanager.persistence.repositories.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.util.Pair;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.testng.Assert;
@@ -25,6 +26,9 @@ public class FormRunnerFactRepositoryTests extends AbstractTransactionalTestNGSp
     private static final long FACT_COMPANY_ID = 3;
     private static final long FACT_PATIENT_ID = 4;
     private static final long FACT_PROFESSIONAL_ID = 5;
+    private static final String FACT_QUESTION = "Question";
+    private static final String FACT_QUESTION_2 = "Question2";
+    private static final String FACT_ANSWER = "Answer";
     private static final String FACT_EXAMINATION_NAME = "test";
     private static final String FACT_ELEMENT_ID = "elementId";
     private static final String FACT_CATEGORY = "category";
@@ -63,7 +67,7 @@ public class FormRunnerFactRepositoryTests extends AbstractTransactionalTestNGSp
     }
 
     @Test(dependsOnMethods = "getAllAtTheBeginning")
-    private void addFact() {
+    private void addFactsWithValues() {
         FormRunnerFact factToSave = new FormRunnerFact();
         factToSave.setGroup(FACT_EXAMINATION_NAME);
         factToSave.setElementId(FACT_EXAMINATION_ID + "");
@@ -72,24 +76,66 @@ public class FormRunnerFactRepositoryTests extends AbstractTransactionalTestNGSp
         FormRunnerValue formRunnerValue = new FormRunnerValue();
         formRunnerValue.setCompanyId(FACT_COMPANY_ID);
         formRunnerValue.setProfessionalId(FACT_PROFESSIONAL_ID);
+        formRunnerValue.setQuestion(FACT_QUESTION);
+        formRunnerValue.setAnswer(FACT_ANSWER);
         factToSave.setEntity(formRunnerValue);
 
-        FormRunnerFact fact = formRunnerFactRepository.save(factToSave);
+        formRunnerFactRepository.save(factToSave);
         Assert.assertEquals(formRunnerFactRepository.count(), 4);
 
+        factToSave = new FormRunnerFact();
+        factToSave.setGroup(FACT_EXAMINATION_NAME);
+        factToSave.setElementId(FACT_EXAMINATION_ID + "");
+        factToSave.setTenantId(FACT_PATIENT_ID + "");
+
+        formRunnerValue = new FormRunnerValue();
+        formRunnerValue.setCompanyId(FACT_COMPANY_ID);
+        formRunnerValue.setProfessionalId(FACT_PROFESSIONAL_ID);
+        formRunnerValue.setQuestion(FACT_QUESTION_2);
+        formRunnerValue.setAnswer(FACT_ANSWER);
+        factToSave.setEntity(formRunnerValue);
+
+        formRunnerFactRepository.save(factToSave);
+        Assert.assertEquals(formRunnerFactRepository.count(), 5);
 
     }
 
-    @Test(dependsOnMethods = "addFact")
-    private void searchFactByValueParameters() {
-        Collection<FormRunnerFact> facts = formRunnerFactRepository.findByValueParameter(FACT_COMPANY_ID + "");
-        facts.forEach(formRunnerFact -> formRunnerFactRepository.delete(formRunnerFact));
+    @Test(dependsOnMethods = "addFactsWithValues")
+    private void searchFactByValueCompany() {
+        Collection<FormRunnerFact> facts = formRunnerFactRepository.findByValueParameters(Pair.of("companyId", FACT_COMPANY_ID));
+        Assert.assertEquals(facts.size(), 2);
+    }
+
+    @Test(dependsOnMethods = "searchFactByValueCompany")
+    private void searchFactByValueQuestion() {
+        Collection<FormRunnerFact> facts = formRunnerFactRepository.findByValueParameters(Pair.of("question", FACT_QUESTION));
+        Assert.assertEquals(facts.size(), 1);
+    }
+
+    @Test(dependsOnMethods = "searchFactByValueCompany")
+    private void searchFactByValueAnswer() {
+        Collection<FormRunnerFact> facts = formRunnerFactRepository.findByValueParameters(Pair.of("answer", FACT_ANSWER));
+        Assert.assertEquals(facts.size(), 2);
+    }
+
+    @Test(dependsOnMethods = "searchFactByValueCompany")
+    private void searchFactByValueQuestionAndAnswer() {
+        Collection<FormRunnerFact> facts = formRunnerFactRepository.findByValueParameters(Pair.of("question", FACT_QUESTION),
+                Pair.of("answer", FACT_ANSWER));
+        Assert.assertEquals(facts.size(), 1);
+    }
+
+    @Test(dependsOnMethods = "searchFactByValueCompany")
+    private void searchFactByInvalidValueQuestionAndAnswer() {
+        Collection<FormRunnerFact> facts = formRunnerFactRepository.findByValueParameters(Pair.of("questionA", FACT_QUESTION),
+                Pair.of("answer", FACT_ANSWER));
+        Assert.assertEquals(facts.size(), 0);
     }
 
 
-    @Test(dependsOnMethods = "searchFactByValueParameters")
+    @Test(dependsOnMethods = "addFactsWithValues")
     private void getFilteredFacts() {
-        Assert.assertEquals(formRunnerFactRepository.count(), 3);
+        Assert.assertEquals(formRunnerFactRepository.count(), 5);
         Assert.assertEquals((long) formRunnerFactRepository.findByTenantIdAndGroupAndCreatedAt
                 (FACT_TENANT_ID, FACT_CATEGORY, FACT_DATE_BEFORE.minusDays(1), FACT_DATE_AFTER).size(), 1);
         Assert.assertEquals((long) formRunnerFactRepository.findByTenantIdAndElementIdAndCreatedAt
@@ -101,19 +147,19 @@ public class FormRunnerFactRepositoryTests extends AbstractTransactionalTestNGSp
     @Test(dependsOnMethods = "getFilteredFacts")
     private void factBetweenDates() {
         Assert.assertEquals(formRunnerFactRepository.findByCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
-                (LocalDateTime.now().minusDays(21), LocalDateTime.now().plusDays(21)).size(), 3);
+                (LocalDateTime.now().minusDays(21), LocalDateTime.now().plusDays(21)).size(), 5);
     }
 
     @Test(dependsOnMethods = "factBetweenDates")
     private void factBeforeDate() {
         Assert.assertEquals(formRunnerFactRepository.findByCreatedAtLessThan
-                (LocalDateTime.now().plusDays(21)).size(), 3);
+                (LocalDateTime.now().plusDays(21)).size(), 5);
     }
 
     @Test(dependsOnMethods = "factBeforeDate")
     private void factAfterDate() {
         Assert.assertEquals(formRunnerFactRepository.findByCreatedAtGreaterThan
-                (FACT_DATE_NOW).size(), 2);
+                (FACT_DATE_NOW).size(), 4);
     }
 
     @AfterClass

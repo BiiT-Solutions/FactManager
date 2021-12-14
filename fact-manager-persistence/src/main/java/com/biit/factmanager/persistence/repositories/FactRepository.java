@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
-public interface FactRepository<T extends Fact<?>> extends JpaRepository<T, Long> {
+public interface FactRepository<T extends Fact<?>> extends JpaRepository<T, Long>, CustomFactRepository<T> {
 
     Collection<T> findByElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
             (String elementId, LocalDateTime startDate, LocalDateTime endDate);
@@ -35,6 +35,8 @@ public interface FactRepository<T extends Fact<?>> extends JpaRepository<T, Long
 
     Collection<T> findByGroup(String group);
 
+    @Query("SELECT f FROM Fact f WHERE (:elementId is null or f.elementId = : elementId) OR " +
+            "(:group is null or f.group = : group)")
     Collection<T> findByElementIdAndGroup(String elementId, String group);
 
     @Query("SELECT f FROM FormRunnerFact f WHERE (:tenantId is null or f.tenantId = :tenantId) and (:group is null or f.group = :group)" +
@@ -44,8 +46,4 @@ public interface FactRepository<T extends Fact<?>> extends JpaRepository<T, Long
     @Query("SELECT f FROM  FormRunnerFact f WHERE (:tenantId is null or f.tenantId = :tenantId) and (:elementId is null or f.elementId = :elementId)" +
             "and (:startDate is null or f.createdAt >= :startDate) and (:endDate is null or f.createdAt <= :endDate)")
     Collection<T> findByTenantIdAndElementIdAndCreatedAt(String tenantId, String elementId, LocalDateTime startDate, LocalDateTime endDate);
-
-
-    @Query("SELECT f FROM Fact f WHERE f.value LIKE %?1%")
-    Collection<T> findByValueParameter(String value);
 }
