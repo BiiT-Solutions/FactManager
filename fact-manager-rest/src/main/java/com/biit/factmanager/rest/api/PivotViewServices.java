@@ -11,18 +11,18 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.BadRequestException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RequestMapping(value = "/pivotView")
 @RestController
 public class PivotViewServices {
 
-    private final FactServices factServices;
     private final PivotViewProvider pivotViewProvider;
 
     @Autowired
-    public PivotViewServices(FactServices factServices, PivotViewProvider pivotViewProvider) {
-        this.factServices = factServices;
+    public PivotViewServices(PivotViewProvider pivotViewProvider) {
         this.pivotViewProvider = pivotViewProvider;
     }
 
@@ -39,9 +39,18 @@ public class PivotViewServices {
             @ApiParam(value = "startDate", required = false) @RequestParam(value = "startDate", required = false) LocalDateTime startDate,
             @ApiParam(value = "endDate", required = false) @RequestParam(value = "endDate", required = false) LocalDateTime endDate,
             @ApiParam(value = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
-            @ApiParam(value = "parameters", required = false) @RequestParam(value = "parameters", required = false) Pair<String, Object>... valueParameters) {
-        FactManagerLogger.info(this.getClass().getName(), "Get facts by params");
-        return pivotViewProvider.get(organizationId, tenantId, tag, group, elementId, startDate, endDate, lastDays);
+            @ApiParam(value = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters) {
+
+        if (valueParameters.size() % 2 == 1) {
+            throw new BadRequestException("Invalid number of parameters.");
+        }
+
+        final Pair<String, Object>[] pairs = new Pair[valueParameters.size() / 2];
+        for (int i = 0; i < valueParameters.size(); i += 2) {
+            pairs[i] = Pair.of(valueParameters.get(i), valueParameters.get(i + 1));
+        }
+
+        return pivotViewProvider.get(organizationId, tenantId, tag, group, elementId, startDate, endDate, lastDays, pairs);
     }
 
 

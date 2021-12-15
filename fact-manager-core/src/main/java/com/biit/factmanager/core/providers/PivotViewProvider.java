@@ -13,30 +13,16 @@ import java.util.*;
 
 @Service
 public class PivotViewProvider<T extends Fact<?>> {
-    private final FactRepository<T> factRepository;
+    private final FactProvider<T> factProvider;
 
     @Autowired
-    public PivotViewProvider(FactRepository<T> factRepository) {
-        this.factRepository = factRepository;
+    public PivotViewProvider(FactProvider<T> factProvider) {
+        this.factProvider = factProvider;
     }
 
     public String get(String organizationId, String tenantId, String tag, String group, String elementId, LocalDateTime startDate,
-                      LocalDateTime endDate, Integer lastDays, Pair<String, Object>... valueParameters) throws
-            FactNotFoundException {
-        Collection<T> facts;
-        if (lastDays == null) {
-            facts = getAll(organizationId, tenantId, tag, group, elementId, startDate, endDate, valueParameters);
-        } else {
-            final LocalDateTime localStartDate = LocalDateTime.now().minusDays(lastDays);
-            final LocalDateTime localEndDate = LocalDateTime.now();
-            facts = getAll(organizationId, tenantId, tag, group, elementId, localStartDate, localEndDate, valueParameters);
-        }
-        return xmlFormFacts(facts);
-    }
-
-    public Collection<T> getAll(String organizationId, String tenantId, String tag, String group, String elementId, LocalDateTime startDate,
-                                LocalDateTime endDate, Pair<String, Object>... valueParameters) {
-        return factRepository.findBy(organizationId, tenantId, tag, group, elementId, startDate, endDate, valueParameters);
+                      LocalDateTime endDate, Integer lastDays, Pair<String, Object>... valueParameters) {
+        return xmlFormFacts(factProvider.findBy(organizationId, tenantId, tag, group, elementId, startDate, endDate, lastDays, valueParameters));
     }
 
     public String xmlFormFacts(Collection<T> facts) {

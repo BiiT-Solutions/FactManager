@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,7 +30,7 @@ public class FactProvider<T extends Fact<?>> {
                 () -> new FactNotFoundException(this.getClass(), "No fact with id '" + factId + "' found."));
     }
 
-    public Collection<T> getAll() {
+    public List<T> getAll() {
         return factRepository.findAll();
     }
 
@@ -46,6 +47,28 @@ public class FactProvider<T extends Fact<?>> {
             pairs[i] = Pair.of(pairParameterValues[i].toString(), pairParameterValues[i + 1]);
         }
         return factRepository.findByValueParameters(pairs);
+    }
+
+    public Collection<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, LocalDateTime startDate,
+                                LocalDateTime endDate, Integer lastDays, Pair<String, Object>... valueParameters) {
+        if (lastDays == null) {
+            return findBy(organizationId, tenantId, tag, group, elementId, startDate, endDate, valueParameters);
+        } else {
+            return findBy(organizationId, tenantId, tag, group, elementId, lastDays, valueParameters);
+        }
+    }
+
+
+    public Collection<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, Integer lastDays,
+                                Pair<String, Object>... valueParameters) {
+        final LocalDateTime startDate = LocalDateTime.now().minusDays(lastDays);
+        final LocalDateTime endDate = LocalDateTime.now();
+        return factRepository.findBy(organizationId, tenantId, tag, group, elementId, startDate, endDate, valueParameters);
+    }
+
+    public Collection<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, LocalDateTime startDate,
+                                LocalDateTime endDate, Pair<String, Object>... valueParameters) {
+        return factRepository.findBy(organizationId, tenantId, tag, group, elementId, startDate, endDate, valueParameters);
     }
 
     /**
