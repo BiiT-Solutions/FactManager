@@ -19,8 +19,8 @@ public class PivotViewProvider<T extends Fact<?>> {
         this.factRepository = factRepository;
     }
 
-    public String getCase(String organizationId, String tenantId, String tag, String group, String elementId, LocalDateTime startDate,
-                          LocalDateTime endDate, Integer lastDays) throws
+    public String get(String organizationId, String tenantId, String tag, String group, String elementId, LocalDateTime startDate,
+                      LocalDateTime endDate, Integer lastDays) throws
             FactNotFoundException {
         Collection<T> facts;
         if (lastDays == null) {
@@ -30,7 +30,7 @@ public class PivotViewProvider<T extends Fact<?>> {
             final LocalDateTime localEndDate = LocalDateTime.now();
             facts = getAll(organizationId, tenantId, tag, group, elementId, localStartDate, localEndDate);
         }
-        return xmlFromTenants(facts);
+        return xmlFormFacts(facts);
     }
 
     public Collection<T> getAll(String organizationId, String tenantId, String tag, String group, String elementId, LocalDateTime startDate,
@@ -38,7 +38,7 @@ public class PivotViewProvider<T extends Fact<?>> {
         return factRepository.findBy(organizationId, tenantId, tag, group, elementId, startDate, endDate);
     }
 
-    public String xmlFromTenants(Collection<T> facts) {
+    public String xmlFormFacts(Collection<T> facts) {
         final StringBuilder xml = new StringBuilder();
         final Set<String> elementsByItem = new LinkedHashSet<>();
         final Map<String, Collection<T>> tenantsIds = new HashMap<>();

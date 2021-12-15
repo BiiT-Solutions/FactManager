@@ -12,7 +12,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -27,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
-@Rollback(value = false)
 @Test(groups = {"pivotViewExporter"})
 public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
 
@@ -107,7 +105,7 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void xmlFromFormRunnerFact() throws IOException, URISyntaxException {
-        Assert.assertEquals(pivotViewProvider.xmlFromTenants(formRunnerFacts), readFile("pivotviewer/formRunnerFacts.xml"));
+        Assert.assertEquals(pivotViewProvider.xmlFormFacts(formRunnerFacts), readFile("pivotviewer/formRunnerFacts.xml"));
     }
 
     private FormRunnerValue getFormRunnerValueFromJson(Fact<FormRunnerValue> fact) throws JsonProcessingException, JSONException {

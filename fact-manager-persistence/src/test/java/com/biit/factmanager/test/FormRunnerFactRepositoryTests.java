@@ -14,6 +14,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 
 @SpringBootTest
@@ -129,6 +130,20 @@ public class FormRunnerFactRepositoryTests extends AbstractTransactionalTestNGSp
     private void searchFactByInvalidValueQuestionAndAnswer() {
         Collection<FormRunnerFact> facts = formRunnerFactRepository.findByValueParameters(Pair.of("questionA", FACT_QUESTION),
                 Pair.of("answer", FACT_ANSWER));
+        Assert.assertEquals(facts.size(), 0);
+    }
+
+    @Test(dependsOnMethods = "searchFactByValueCompany")
+    private void searchFactByValueQuestionAndAnswerValidDate() {
+        Collection<FormRunnerFact> facts = formRunnerFactRepository.findBy(null, null, null, null, null, LocalDateTime.now().minus(1, ChronoUnit.HOURS),
+                LocalDateTime.now(), Pair.of("question", FACT_QUESTION), Pair.of("answer", FACT_ANSWER));
+        Assert.assertEquals(facts.size(), 1);
+    }
+
+    @Test(dependsOnMethods = "searchFactByValueCompany")
+    private void searchFactByValueQuestionAndAnswerInvalidDate() {
+        Collection<FormRunnerFact> facts = formRunnerFactRepository.findBy(null, null, null, null, null, LocalDateTime.now(),
+                LocalDateTime.now(), Pair.of("question", FACT_QUESTION), Pair.of("answer", FACT_ANSWER));
         Assert.assertEquals(facts.size(), 0);
     }
 

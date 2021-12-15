@@ -19,8 +19,8 @@ public interface FactRepository<T extends Fact<?>> extends JpaRepository<T, Long
             "and (:tag is null or f.tag = :tag) " +
             "and (:group is null or f.group = :group)  " +
             "and (:elementId is null or f.elementId = :elementId) " +
-            "and (:startDate is null or f.createdAt >= :startDate) a" +
-            "nd (:endDate is null or f.createdAt <= :endDate)")
+            "and (:startDate is null or f.createdAt >= :startDate) " +
+            "and (:endDate is null or f.createdAt <= :endDate)")
     Collection<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, LocalDateTime startDate, LocalDateTime endDate);
 
     Collection<T> findByCreatedAtLessThan(LocalDateTime createdAt);

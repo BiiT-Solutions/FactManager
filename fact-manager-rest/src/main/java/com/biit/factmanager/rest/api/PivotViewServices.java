@@ -40,7 +40,7 @@ public class PivotViewServices {
             HttpServletRequest httpRequest
     ) {
         FactManagerLogger.info(this.getClass().getName(), "Get facts by params");
-        return pivotViewProvider.getCase(organizationId, tenantId, tag, group, elementId, startDate, endDate, lastDays);
+        return pivotViewProvider.get(organizationId, tenantId, tag, group, elementId, startDate, endDate, lastDays);
     }
 
 
