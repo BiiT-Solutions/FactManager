@@ -5,6 +5,7 @@ import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.persistence.repositories.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,22 +21,22 @@ public class PivotViewProvider<T extends Fact<?>> {
     }
 
     public String get(String organizationId, String tenantId, String tag, String group, String elementId, LocalDateTime startDate,
-                      LocalDateTime endDate, Integer lastDays) throws
+                      LocalDateTime endDate, Integer lastDays, Pair<String, Object>... valueParameters) throws
             FactNotFoundException {
         Collection<T> facts;
         if (lastDays == null) {
-            facts = getAll(organizationId, tenantId, tag, group, elementId, startDate, endDate);
+            facts = getAll(organizationId, tenantId, tag, group, elementId, startDate, endDate, valueParameters);
         } else {
             final LocalDateTime localStartDate = LocalDateTime.now().minusDays(lastDays);
             final LocalDateTime localEndDate = LocalDateTime.now();
-            facts = getAll(organizationId, tenantId, tag, group, elementId, localStartDate, localEndDate);
+            facts = getAll(organizationId, tenantId, tag, group, elementId, localStartDate, localEndDate, valueParameters);
         }
         return xmlFormFacts(facts);
     }
 
     public Collection<T> getAll(String organizationId, String tenantId, String tag, String group, String elementId, LocalDateTime startDate,
-                                LocalDateTime endDate) {
-        return factRepository.findBy(organizationId, tenantId, tag, group, elementId, startDate, endDate);
+                                LocalDateTime endDate, Pair<String, Object>... valueParameters) {
+        return factRepository.findBy(organizationId, tenantId, tag, group, elementId, startDate, endDate, valueParameters);
     }
 
     public String xmlFormFacts(Collection<T> facts) {

@@ -108,14 +108,6 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(pivotViewProvider.xmlFormFacts(formRunnerFacts), readFile("pivotviewer/formRunnerFacts.xml"));
     }
 
-    private FormRunnerValue getFormRunnerValueFromJson(Fact<FormRunnerValue> fact) throws JsonProcessingException, JSONException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        JSONObject jsonObject = new JSONObject();
-        //jsonObject.put("score", fact.getValue());
-        jsonObject.put("group", fact.getGroup());
-        return objectMapper.readValue(jsonObject.toString(), FormRunnerValue.class);
-    }
-
     @AfterClass
     public void cleanUp() {
         for (FormRunnerFact fact : formRunnerFacts) {
