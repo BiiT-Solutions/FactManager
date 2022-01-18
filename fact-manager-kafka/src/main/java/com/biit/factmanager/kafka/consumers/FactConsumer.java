@@ -1,8 +1,6 @@
 package com.biit.factmanager.kafka.consumers;
 
-import com.biit.eventstructure.event.IKafkaStorable;
 import com.biit.factmanager.core.providers.FactProvider;
-import com.biit.factmanager.kafka.events.FactEvent;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.kafkaclient.KafkaConsumerClient;
@@ -15,7 +13,7 @@ import java.util.Collections;
 import java.util.Properties;
 import java.util.function.Consumer;
 
-public abstract class FactConsumer<V, T extends Fact<V>> extends KafkaConsumerClient<FactEvent> {
+public abstract class FactConsumer<V, T extends Fact<V>> extends KafkaConsumerClient<T> {
 
     private final FactProvider<T> factProvider;
 
@@ -43,8 +41,8 @@ public abstract class FactConsumer<V, T extends Fact<V>> extends KafkaConsumerCl
     @Value("${kafka.value.deserializer:}")
     private String kafkaValueDeserializer;
 
-    public FactConsumer(FactProvider<T> factProvider) {
-        super(FactEvent.class);
+    public FactConsumer(Class<T> clazz, FactProvider<T> factProvider) {
+        super(clazz);
         this.factProvider = factProvider;
     }
 
@@ -87,7 +85,7 @@ public abstract class FactConsumer<V, T extends Fact<V>> extends KafkaConsumerCl
         return result;
     }
 
-    protected Consumer<FactEvent> getConsumer() {
+    protected Consumer<T> getConsumer() {
         return (x) -> {
             FactManagerLogger.debug(this.getClass().getName(), "FormAnswer event to save " + x.toString());
             final Fact<V> savedFact = factProvider.save((T) x);

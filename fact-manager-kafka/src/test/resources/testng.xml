@@ -3,9 +3,11 @@
     <test name="FactManager" enabled="true" preserve-order="true">
         <groups>
             <run>
+                <exclude name="kafkaEvents"/>
             </run>
         </groups>
         <classes>
+            <class name="com.biit.factmanager.test.KafkaTests"></class>
         </classes>
     </test>
 </suite>

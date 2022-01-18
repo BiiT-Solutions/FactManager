@@ -72,6 +72,12 @@
             <version>5.4.2.Final</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.biit</groupId>
+            <artifactId>event-structure</artifactId>
+            <version>${event-structure.version}</version>
+        </dependency>
+
         <!-- Testing -->
         <dependency>
             <groupId>org.testng</groupId>

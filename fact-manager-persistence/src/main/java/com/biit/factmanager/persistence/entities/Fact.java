@@ -1,6 +1,7 @@
 package com.biit.factmanager.persistence.entities;
 
 import com.biit.database.encryption.StringCryptoConverter;
+import com.biit.eventstructure.event.IKafkaStorable;
 import com.biit.factmanager.persistence.entities.exceptions.FactValueInvalidException;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = "type")
 @Primary
 @Table(name = "facts")
-public abstract class Fact<Value> implements IPivotViewerData {
+public abstract class Fact<Value> implements IPivotViewerData, IKafkaStorable {
     private static final int MAX_JSON_LENGTH = 100000;
 
     @Id
@@ -143,5 +144,15 @@ public abstract class Fact<Value> implements IPivotViewerData {
         } catch (JsonProcessingException e) {
             throw new FactValueInvalidException(e);
         }
+    }
+
+    @Override
+    public String getEventId() {
+        return getElementId();
+    }
+
+    @Override
+    public LocalDateTime getCreationTime() {
+        return getCreatedAt();
     }
 }

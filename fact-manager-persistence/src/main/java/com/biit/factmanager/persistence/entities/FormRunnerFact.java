@@ -1,14 +1,13 @@
 package com.biit.factmanager.persistence.entities;
 
 
+import com.biit.eventstructure.event.IKafkaStorable;
 import com.biit.factmanager.persistence.entities.values.FormRunnerValue;
-import com.biit.factmanager.persistence.entities.values.StringValue;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
-import java.time.LocalDateTime;
 
 /**
  * Tag is from Kafka
@@ -19,7 +18,7 @@ import java.time.LocalDateTime;
  */
 @Entity
 @DiscriminatorValue("FormRunnerFact")
-public class FormRunnerFact extends Fact<FormRunnerValue> {
+public class FormRunnerFact extends Fact<FormRunnerValue> implements IKafkaStorable {
 
     @Transient
     private FormRunnerValue formRunnerValue;
@@ -86,6 +85,4 @@ public class FormRunnerFact extends Fact<FormRunnerValue> {
         }
         return null;
     }
-
-
 }
