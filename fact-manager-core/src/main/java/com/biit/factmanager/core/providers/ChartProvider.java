@@ -12,25 +12,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class BarChartProvider<T extends Fact<?>> {
+public class ChartProvider<T extends Fact<?>> {
     private final FactProvider<T> factProvider;
 
     @Autowired
-    public BarChartProvider(FactProvider<T> factProvider) {
+    public ChartProvider(FactProvider<T> factProvider) {
         this.factProvider = factProvider;
     }
 
-    //Method that will be called by endpoint (barChartServices)
     public String get(String organizationId, String tenantId, String tag, String group, String elementId,
-                      LocalDateTime startDate, LocalDateTime endDate, Integer lastDays, Pair<String,
+                      LocalDateTime startDate, LocalDateTime endDate, Integer lastDays, String type, Pair<String,
             Object>... valueParameters) {
         return htmlFromFacts(factProvider.findBy(organizationId, tenantId, tag, group, elementId,
-                startDate, endDate, lastDays, valueParameters));
+                startDate, endDate, lastDays, valueParameters), type);
     }
 
-    //html that is going to be displayed based on facts
-    public String htmlFromFacts(Collection<T> facts) {
-        final String type = "bar";
+    public String htmlFromFacts(Collection<T> facts, String type) {
         final StringBuilder html = new StringBuilder();
         html.append("<!DOCTYPE html>\n" +
                 "<html lang=\"en\">\n" +
@@ -64,9 +61,9 @@ public class BarChartProvider<T extends Fact<?>> {
 
         html.append("],\n" +
                 "              axes: {\n" +
-                "                data2: 'y2' // ADD\n" +
+                "                data2: 'y2'\n" +
                 "              },\n" +
-                "              type: '"+ type + "'\n" +
+                "              type: '" + type + "'\n" +
                 "},\n" +
                 "axis: {\n" +
                 "              y2: {\n" +
@@ -85,13 +82,11 @@ public class BarChartProvider<T extends Fact<?>> {
                 "    </body>\n" +
                 "</html>");
 
-
         return html.toString();
     }
 
-
     private List<String> getUniqueTenants(Collection<T> facts) {
-        List<String> tenantIds = new ArrayList<>();
+        final ArrayList<String> tenantIds = new ArrayList<>();
         facts.forEach(fact -> tenantIds.add(fact.getTenantId()));
         return tenantIds.stream().distinct().collect(Collectors.toList());
     }

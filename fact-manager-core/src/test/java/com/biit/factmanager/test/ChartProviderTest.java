@@ -1,6 +1,6 @@
 package com.biit.factmanager.test;
 
-import com.biit.factmanager.core.providers.BarChartProvider;
+import com.biit.factmanager.core.providers.ChartProvider;
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.persistence.entities.FormRunnerFact;
 import com.biit.factmanager.persistence.entities.values.FormRunnerValue;
@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
 
 @SpringBootTest
 @Test(groups = {"facts"})
-public class BarChartProviderTest {
+public class ChartProviderTest {
 
     @Autowired
     private FactProvider<FormRunnerFact> factProvider;
 
     @Autowired
-    private BarChartProvider<FormRunnerFact> barChartProvider;
+    private ChartProvider<FormRunnerFact> chartProvider;
 
     private final List<FormRunnerFact> formRunnerFacts = new ArrayList<>();
 
@@ -32,8 +32,8 @@ public class BarChartProviderTest {
                 FormRunnerFact formRunnerFact = new FormRunnerFact();
                 FormRunnerValue formRunnerValue = new FormRunnerValue();
 
-                formRunnerValue.setScore(Math.random());
-                formRunnerFact.setTenantId("persona " + j);
+                formRunnerValue.setScore((double) (i+j));
+                formRunnerFact.setTenantId("persona" + j);
                 formRunnerFact.setEntity(formRunnerValue);
 
                 formRunnerFacts.add(formRunnerFact);
@@ -65,7 +65,6 @@ public class BarChartProviderTest {
                 "            data: {\n" +
                 "              columns: [\n");
 
-        //setting data
         getUniqueTenants().forEach(tenant -> {
             html.append("[ '" + tenant + "'");
             formRunnerFacts.forEach(formRunnerFact -> {
@@ -78,11 +77,11 @@ public class BarChartProviderTest {
 
         html.append("],\n" +
                 "              axes: {\n" +
-                "                data2: 'y2' // ADD\n" +
+                "                data2: 'y2'\n" +
                 "              },\n" +
                 "              type: '"+ type + "'\n" +
                 "},\n" +
-                "axis: {\n" +
+                "   axis: {\n" +
                 "              y2: {\n" +
                 "                show: true,\n" +
                 "                label: {\n" +

@@ -1,6 +1,6 @@
 package com.biit.factmanager.rest.api;
 
-import com.biit.factmanager.core.providers.BarChartProvider;
+import com.biit.factmanager.core.providers.ChartProvider;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +19,15 @@ import java.util.List;
 public class ChartServices {
 
     @Autowired
-    BarChartProvider barChartProvider;
+    ChartProvider chartProvider;
 
-    public ChartServices(BarChartProvider barChartProvider) { this.barChartProvider = barChartProvider;}
+    public ChartServices(ChartProvider chartProvider) {
+        this.chartProvider = chartProvider;
+    }
 
     @ApiOperation(value = "Get facts by params")
     @ResponseStatus(value = HttpStatus.OK)
-    @PostMapping(value = "", produces = MediaType.APPLICATION_XML_VALUE)
+    @GetMapping(value = "", produces = MediaType.APPLICATION_XML_VALUE)
     public String getFacts(
             HttpServletRequest httpRequest,
             @ApiParam(value = "organizationId", required = false) @RequestParam(value = "organizationId", required = false) String organizationId,
@@ -36,7 +38,10 @@ public class ChartServices {
             @ApiParam(value = "startDate", required = false) @RequestParam(value = "startDate", required = false) LocalDateTime startDate,
             @ApiParam(value = "endDate", required = false) @RequestParam(value = "endDate", required = false) LocalDateTime endDate,
             @ApiParam(value = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
+            @ApiParam(value = "type", required = false) @RequestParam(value = "type", required = false) String type,
             @ApiParam(value = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters) {
+
+        System.out.println("Estoy en get de charts");
 
         if (valueParameters.size() % 2 == 1) {
             throw new BadRequestException("Invalid number of parameters.");
@@ -47,6 +52,6 @@ public class ChartServices {
             pairs[i] = Pair.of(valueParameters.get(i), valueParameters.get(i + 1));
         }
 
-        return barChartProvider.get(organizationId, tenantId, tag, group, elementId, startDate, endDate, lastDays, pairs);
+        return chartProvider.get(organizationId, tenantId, tag, group, elementId, startDate, endDate, lastDays, type, pairs);
     }
 }
