@@ -39,7 +39,6 @@ public class ChartProviderTest {
                 formRunnerFacts.add(formRunnerFact);
             }
         }
-
     }
 
     @Test
@@ -64,10 +63,10 @@ public class ChartProviderTest {
                 .append("columns: [\n");
 
         getUniqueTenants().forEach(tenant -> {
-            html.append("[ '" + tenant + "'");
+            html.append("[ '").append(tenant).append("'");
             formRunnerFacts.forEach(formRunnerFact -> {
                 if (formRunnerFact.getTenantId().compareTo(tenant) == 0) {
-                    html.append(", " + formRunnerFact.getEntity().getScore());
+                    html.append(", ").append(formRunnerFact.getEntity().getScore());
                 }
             });
             html.append("],\n");
