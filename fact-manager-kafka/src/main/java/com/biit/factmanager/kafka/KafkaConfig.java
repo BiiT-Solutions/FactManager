@@ -1,20 +1,17 @@
-package com.biit.factmanager.kafka.consumers;
+package com.biit.factmanager.kafka;
 
 import com.biit.factmanager.logger.FactManagerLogger;
-import com.biit.factmanager.persistence.entities.Fact;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-import org.springframework.kafka.core.ConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class FactConsumer<V, T extends Fact<V>> {
+@Service
+public class KafkaConfig {
     private static final String MAX_FETCH_SIZE = "20971520"; //20MB
 
     @Value("${kafka.topic:}")
@@ -41,7 +38,7 @@ public abstract class FactConsumer<V, T extends Fact<V>> {
     @Value("${kafka.value.deserializer:}")
     private String kafkaValueDeserializer;
 
-    protected ConsumerFactory<String, T> consumerFactory() {
+    public Map<String, Object> getProperties() {
         final Map<String, Object> props = new HashMap<>();
         if (kafkaBootstrapServers != null) {
             FactManagerLogger.debug(this.getClass().getName(), "Connecting to Kafka server '" + kafkaBootstrapServers + "'");
@@ -69,27 +66,7 @@ public abstract class FactConsumer<V, T extends Fact<V>> {
         }
         props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, MAX_FETCH_SIZE);
         props.put(ConsumerConfig.FETCH_MAX_BYTES_CONFIG, MAX_FETCH_SIZE);
-        return new DefaultKafkaConsumerFactory<>(props);
+        return props;
     }
 
-
-    public ConcurrentKafkaListenerContainerFactory<String, T> kafkaListenerContainerFactory() {
-        final ConcurrentKafkaListenerContainerFactory<String, T> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
-        return factory;
-    }
-
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, T> factsKafkaListenerContainerFactory() {
-        FactManagerLogger.debug(this.getClass().getName(), "Starting FactConsumer");
-        try {
-            return kafkaListenerContainerFactory();
-        } catch (Exception e) {
-            FactManagerLogger.errorMessage(this.getClass().getName(), "Error starting the FactConsumer");
-            FactManagerLogger.errorMessage(this.getClass().getName(), e.getMessage());
-        } finally {
-            FactManagerLogger.debug(this.getClass().getName(), "Started FactConsumer");
-        }
-        return null;
-    }
 }

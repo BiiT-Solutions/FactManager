@@ -7,5 +7,6 @@ import org.springframework.kafka.annotation.EnableKafka;
 
 @EnableKafka
 @Configuration
-public class FormAnswerConsumer extends FactConsumer<FormRunnerValue, FormRunnerFact> {
+public class FormAnswerConsumer2 extends FactConsumer<FormRunnerValue, FormRunnerFact> {
+
 }
