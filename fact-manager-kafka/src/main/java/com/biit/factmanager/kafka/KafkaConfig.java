@@ -4,6 +4,7 @@ import com.biit.factmanager.logger.FactManagerLogger;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -66,6 +67,9 @@ public class KafkaConfig {
         }
         props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, MAX_FETCH_SIZE);
         props.put(ConsumerConfig.FETCH_MAX_BYTES_CONFIG, MAX_FETCH_SIZE);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+        props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, FactDeserializer.class);
+        props.put(ErrorHandlingDeserializer.VALUE_FUNCTION, FailedFactDeserializer.class);
         return props;
     }
 
