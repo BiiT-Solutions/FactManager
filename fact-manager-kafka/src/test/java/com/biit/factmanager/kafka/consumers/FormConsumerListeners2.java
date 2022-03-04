@@ -23,7 +23,7 @@ public class FormConsumerListeners2<V, T extends Fact<V>> extends EventListener<
 
 
     @Override
-    @KafkaListener(topics = "${kafka.topic}", clientIdPrefix = "secondListener", containerFactory = "factsKafkaListenerContainerFactory")
+    @KafkaListener(topics = "${kafka.topic}", clientIdPrefix = "secondListener", containerFactory = "eventListenerContainerFactory")
     public void eventsListener(T fact) {
         FactManagerLogger.debug(this.getClass().getName(), "Fact event to save " + fact.toString());
         final Fact<V> savedFact = factProvider.save((T) fact);
