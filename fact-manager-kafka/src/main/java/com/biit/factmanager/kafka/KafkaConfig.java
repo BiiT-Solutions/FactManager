@@ -41,28 +41,28 @@ public class KafkaConfig {
 
     public Map<String, Object> getProperties() {
         final Map<String, Object> props = new HashMap<>();
-        if (kafkaBootstrapServers != null) {
+        if (kafkaBootstrapServers != null && !kafkaBootstrapServers.isEmpty()) {
             FactManagerLogger.debug(this.getClass().getName(), "Connecting to Kafka server '" + kafkaBootstrapServers + "'");
             props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers);
         }
-        if (kafkaClientId != null) {
+        if (kafkaClientId != null && !kafkaClientId.isEmpty()) {
             props.put(ConsumerConfig.CLIENT_ID_CONFIG, "ID" + kafkaClientId);
         } else {
             props.put(ConsumerConfig.CLIENT_ID_CONFIG, "ID" + Math.abs(new SecureRandom().nextInt(Integer.MAX_VALUE)));
         }
-        if (kafkaGroupId != null) {
+        if (kafkaGroupId != null && !kafkaGroupId.isEmpty()) {
             props.put(ConsumerConfig.GROUP_ID_CONFIG, "ID" + kafkaGroupId);
         }
-        if (kafkaKeyDeserializer != null) {
+        if (kafkaKeyDeserializer != null && !kafkaKeyDeserializer.isEmpty()) {
             props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, kafkaKeyDeserializer);
         }
-        if (kafkaValueDeserializer != null) {
+        if (kafkaValueDeserializer != null && !kafkaValueDeserializer.isEmpty()) {
             props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, kafkaValueDeserializer);
         }
-        if (kafkaKeySerializer != null) {
+        if (kafkaKeySerializer != null && !kafkaKeySerializer.isEmpty()) {
             props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, kafkaKeySerializer);
         }
-        if (kafkaValueSerializer != null) {
+        if (kafkaValueSerializer != null && !kafkaValueSerializer.isEmpty()) {
             props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, kafkaValueSerializer);
         }
         props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, MAX_FETCH_SIZE);

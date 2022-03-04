@@ -2,6 +2,7 @@ package com.biit.factmanager.kafka.producers;
 
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.kafka.KafkaConfig;
+import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -31,14 +32,17 @@ public abstract class FactProducer<V, T extends Fact<V>> {
             @Override
             public void onSuccess(SendResult<String, T> result) {
                 if (result != null) {
-                    System.out.println("Sent fact=[" + fact + "] with offset=[" + result.getRecordMetadata()
-                            .offset() + "]");
+                    FactManagerLogger.debug(this.getClass(), "Sent fact '{}' with offset '{}'.", fact,
+                            result.getRecordMetadata().offset());
+                } else {
+                    FactManagerLogger.warning(this.getClass(), "Sent fact '{}' with no result.", fact);
                 }
             }
 
             @Override
             public void onFailure(Throwable ex) {
-                System.out.println("Unable to send fact=[" + fact + "] due to: " + ex.getMessage());
+                FactManagerLogger.severe(this.getClass(), "\"Unable to send fact '{}' due to '{}'", fact,
+                        ex.getMessage());
             }
         });
     }

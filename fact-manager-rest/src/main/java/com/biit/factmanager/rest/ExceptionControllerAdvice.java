@@ -13,8 +13,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.ws.rs.BadRequestException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 @ControllerAdvice
 public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {

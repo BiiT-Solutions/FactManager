@@ -5,11 +5,13 @@ import com.biit.factmanager.kafka.KafkaConfig;
 import com.biit.factmanager.persistence.entities.FormRunnerFact;
 import com.biit.factmanager.persistence.entities.values.FormRunnerValue;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 
-//@EnableKafka
-//@Configuration
+@EnableKafka
+@Configuration
 public class FormAnswerProducer2 extends FactProducer<FormRunnerValue, FormRunnerFact> {
 
     private final KafkaConfig kafkaConfig;

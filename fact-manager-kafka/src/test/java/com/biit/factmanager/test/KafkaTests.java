@@ -9,14 +9,21 @@ import com.biit.factmanager.kafka.producers.FormAnswerProducer;
 import com.biit.factmanager.kafka.producers.FormAnswerProducer2;
 import com.biit.factmanager.persistence.entities.FormRunnerFact;
 import com.biit.factmanager.persistence.entities.values.FormRunnerValue;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
@@ -39,17 +46,20 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
 
     @Autowired
     private FormConsumerListeners<FormRunnerValue, FormRunnerFact> formConsumerListeners;
+
     @Autowired
     private FormConsumerListeners2<FormRunnerValue, FormRunnerFact> formConsumerListeners2;
 
-    //@Autowired
+    @Autowired
     private FormAnswerProducer2 formAnswerProducer2;
 
     @Autowired
     private FormAnswerConsumer formAnswerConsumer;
 
-    //@Autowired
+    @Autowired
     private FormAnswerConsumer2 formAnswerConsumer2;
+
+    private ObjectMapper objectMapper;
 
     private FormRunnerFact generateEvent(int value) {
         FormRunnerFact formRunnerFact = new FormRunnerFact();
@@ -58,6 +68,15 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         formRunnerValue.setAnswer(ANSWER + value);
         formRunnerFact.setEntity(formRunnerValue);
         return formRunnerFact;
+    }
+
+    private void compareSets(Set<?> set1, Set<?> set2) {
+        if (!set1.containsAll(set2)) {
+            throw new AssertionError("Expected sets to be equals. '" + set1.size() + "' <> '" + set2.size() + "'.");
+        }
+        if (!set2.containsAll(set1)) {
+            throw new AssertionError("Expected sets to be equals. '" + set1.size() + "' <> '" + set2.size() + "'.");
+        }
     }
 
     public FormRunnerFact generateEvent(int value, LocalDateTime minTimestamp, LocalDateTime maxTimestamp) {
@@ -73,6 +92,25 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         return formRunnerFact;
     }
 
+    private ObjectMapper getObjectMapper() {
+        if (objectMapper == null) {
+            final JavaTimeModule module = new JavaTimeModule();
+            LocalDateTimeDeserializer localDateTimeDeserializer = new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+            module.addDeserializer(LocalDateTime.class, localDateTimeDeserializer);
+            objectMapper = Jackson2ObjectMapperBuilder.json()
+                    .modules(module)
+                    .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                    .build();
+        }
+        return objectMapper;
+    }
+
+    public void checkDeserializer() throws JsonProcessingException {
+        String value = "{\"value\":\"{\\\"answer\\\":\\\"Answer: 0\\\",\\\"question\\\":\\\"Question? 0\\\"}\",\"createdAt\":\"03-03-2022 16:10:23\",\"entity\":{\"answer\":\"Answer: 0\",\"question\":\"Question? 0\"},\"createdAt\":\"03-03-2022 16:10:24\"}";
+        getObjectMapper().readValue(value, FormRunnerFact.class);
+        //No serialization exception found.
+    }
+
     public synchronized void factTest() throws InterruptedException {
         Set<FormRunnerFact> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
         Set<FormRunnerFact> producerEvents = new HashSet<>(EVENTS_QUANTITY);
@@ -85,8 +123,8 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
             formAnswerProducer.sendFact(generatedEvent);
         }
 
-        wait(getWaitingTime());
-        Assert.assertEquals(consumerEvents, producerEvents);
+        wait(consumerEvents);
+        compareSets(consumerEvents, producerEvents);
     }
 
     public synchronized void multipleProducerTest() throws InterruptedException {
@@ -104,7 +142,7 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         }
         producerEvents.addAll(producerEvents2);
         wait(getWaitingTime());
-        Assert.assertEquals(consumerEvents, producerEvents);
+        compareSets(consumerEvents, producerEvents);
     }
 
     public synchronized void multipleConsumerTest() throws InterruptedException {
@@ -147,6 +185,14 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
     }
 
     private int getWaitingTime() {
-        return 4 * EVENTS_QUANTITY > 2000 ? 4 * EVENTS_QUANTITY : 2000;
+        return EVENTS_QUANTITY * 40;
+    }
+
+    private void wait(Set<FormRunnerFact> consumerEvents) throws InterruptedException {
+        int i = 0;
+        do {
+            wait(1000);
+            i++;
+        } while (consumerEvents.isEmpty() && i < 5);
     }
 }
