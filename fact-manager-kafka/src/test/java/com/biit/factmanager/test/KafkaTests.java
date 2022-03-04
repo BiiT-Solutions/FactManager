@@ -70,15 +70,6 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         return formRunnerFact;
     }
 
-    private void compareSets(Set<?> set1, Set<?> set2) {
-        if (!set1.containsAll(set2)) {
-            throw new AssertionError("Expected sets to be equals. '" + set1.size() + "' <> '" + set2.size() + "'.");
-        }
-        if (!set2.containsAll(set1)) {
-            throw new AssertionError("Expected sets to be equals. '" + set1.size() + "' <> '" + set2.size() + "'.");
-        }
-    }
-
     public FormRunnerFact generateEvent(int value, LocalDateTime minTimestamp, LocalDateTime maxTimestamp) {
         FormRunnerFact formRunnerFact = generateEvent(value);
 
@@ -124,7 +115,7 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         }
 
         wait(consumerEvents);
-        compareSets(consumerEvents, producerEvents);
+        Assert.assertEquals(consumerEvents, producerEvents);
     }
 
     public synchronized void multipleProducerTest() throws InterruptedException {
@@ -141,8 +132,8 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
             formAnswerProducer2.sendFact(generatedEvent2);
         }
         producerEvents.addAll(producerEvents2);
-        wait(getWaitingTime());
-        compareSets(consumerEvents, producerEvents);
+        wait(consumerEvents);
+        Assert.assertEquals(consumerEvents, producerEvents);
     }
 
     public synchronized void multipleConsumerTest() throws InterruptedException {
@@ -150,16 +141,16 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         Set<FormRunnerFact> consumerEvents2 = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
         Set<FormRunnerFact> producerEvents = new HashSet<>(EVENTS_QUANTITY);
         formConsumerListeners.addListener(fact -> consumerEvents.add((FormRunnerFact) fact));
-        formConsumerListeners2.addListener(fact -> consumerEvents.add((FormRunnerFact) fact));
+        formConsumerListeners2.addListener(fact -> consumerEvents2.add((FormRunnerFact) fact));
 
         for (int i = 0; i < EVENTS_QUANTITY; i++) {
             FormRunnerFact generatedEvent = generateEvent(i);
             producerEvents.add(generatedEvent);
             formAnswerProducer.sendFact(generatedEvent);
         }
-        wait(getWaitingTime());
+        wait(consumerEvents);
         Assert.assertEquals(consumerEvents, producerEvents);
-        Assert.assertEquals(consumerEvents2, consumerEvents);
+        Assert.assertEquals(consumerEvents2, producerEvents);
     }
 
     public synchronized void simulationTest() throws InterruptedException {
@@ -180,7 +171,7 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
             formAnswerProducer.sendFact(eventInRange);
             formAnswerProducer.sendFact(eventInRange);
         }
-        wait(getWaitingTime());
+        wait(consumerEvents);
         Assert.assertEquals(consumerEvents, producerEvents);
     }
 
