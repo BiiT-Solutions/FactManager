@@ -3,8 +3,8 @@ package com.biit.factmanager.test;
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.kafka.consumers.FormAnswerConsumer;
 import com.biit.factmanager.kafka.consumers.FormAnswerConsumer2;
-import com.biit.factmanager.kafka.consumers.FormConsumerListeners;
-import com.biit.factmanager.kafka.consumers.FormConsumerListeners2;
+import com.biit.factmanager.kafka.consumers.FormAnswerConsumerListeners;
+import com.biit.factmanager.kafka.consumers.FormAnswerConsumerListeners2;
 import com.biit.factmanager.kafka.producers.FormAnswerProducer;
 import com.biit.factmanager.kafka.producers.FormAnswerProducer2;
 import com.biit.factmanager.persistence.entities.FormRunnerFact;
@@ -45,10 +45,10 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
     private FormAnswerProducer formAnswerProducer;
 
     @Autowired
-    private FormConsumerListeners<FormRunnerValue, FormRunnerFact> formConsumerListeners;
+    private FormAnswerConsumerListeners formAnswerConsumerListeners;
 
     @Autowired
-    private FormConsumerListeners2<FormRunnerValue, FormRunnerFact> formConsumerListeners2;
+    private FormAnswerConsumerListeners2 formAnswerConsumerListeners2;
 
     @Autowired
     private FormAnswerProducer2 formAnswerProducer2;
@@ -106,7 +106,7 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         Set<FormRunnerFact> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
         Set<FormRunnerFact> producerEvents = new HashSet<>(EVENTS_QUANTITY);
         //Store received events into set.
-        formConsumerListeners.addListener(fact -> consumerEvents.add((FormRunnerFact) fact));
+        formAnswerConsumerListeners.addListener(consumerEvents::add);
 
         for (int i = 0; i < EVENTS_QUANTITY; i++) {
             FormRunnerFact generatedEvent = generateEvent(i);
@@ -115,6 +115,7 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         }
 
         wait(consumerEvents);
+        Assert.assertEquals(consumerEvents.size(), producerEvents.size());
         Assert.assertEquals(consumerEvents, producerEvents);
     }
 
@@ -122,7 +123,7 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         Set<FormRunnerFact> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY * 2));
         Set<FormRunnerFact> producerEvents = new HashSet<>(EVENTS_QUANTITY);
         Set<FormRunnerFact> producerEvents2 = new HashSet<>(EVENTS_QUANTITY);
-        formConsumerListeners.addListener(fact -> consumerEvents.add((FormRunnerFact) fact));
+        formAnswerConsumerListeners.addListener(consumerEvents::add);
         for (int i = 0; i < EVENTS_QUANTITY; i++) {
             FormRunnerFact generatedEvent = generateEvent(i);
             producerEvents.add(generatedEvent);
@@ -140,8 +141,8 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         Set<FormRunnerFact> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
         Set<FormRunnerFact> consumerEvents2 = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
         Set<FormRunnerFact> producerEvents = new HashSet<>(EVENTS_QUANTITY);
-        formConsumerListeners.addListener(fact -> consumerEvents.add((FormRunnerFact) fact));
-        formConsumerListeners2.addListener(fact -> consumerEvents2.add((FormRunnerFact) fact));
+        formAnswerConsumerListeners.addListener(consumerEvents::add);
+        formAnswerConsumerListeners2.addListener(consumerEvents2::add);
 
         for (int i = 0; i < EVENTS_QUANTITY; i++) {
             FormRunnerFact generatedEvent = generateEvent(i);
@@ -159,7 +160,7 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
 
         Set<FormRunnerFact> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
         Set<FormRunnerFact> producerEvents = new HashSet<>(EVENTS_QUANTITY);
-        formConsumerListeners.addListener(fact -> {
+        formAnswerConsumerListeners.addListener(fact -> {
             if (fact.getCreationTime().isAfter(initialDate) && fact.getCreationTime().isBefore(finalDate)) {
                 consumerEvents.add((FormRunnerFact) fact);
             }
@@ -175,15 +176,11 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         Assert.assertEquals(consumerEvents, producerEvents);
     }
 
-    private int getWaitingTime() {
-        return EVENTS_QUANTITY * 40;
-    }
-
     private void wait(Set<FormRunnerFact> consumerEvents) throws InterruptedException {
         int i = 0;
         do {
             wait(1000);
             i++;
-        } while (consumerEvents.isEmpty() && i < 5);
+        } while (consumerEvents.size() < EVENTS_QUANTITY && i < 10);
     }
 }
