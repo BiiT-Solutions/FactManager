@@ -4,14 +4,19 @@ import com.biit.factmanager.core.providers.ChartProvider;
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.persistence.entities.FormRunnerFact;
 import com.biit.factmanager.persistence.entities.values.FormRunnerValue;
+import com.jayway.jsonpath.InvalidJsonException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @SpringBootTest
 @Test(groups = {"facts"})
@@ -21,19 +26,23 @@ public class ChartProviderTest {
     private FactProvider<FormRunnerFact> factProvider;
 
     @Autowired
-    private ChartProvider<FormRunnerFact> chartProvider;
+    private ChartProvider<FormRunnerFact> chartProvider = new ChartProvider<FormRunnerFact>(factProvider);
 
     private final List<FormRunnerFact> formRunnerFacts = new ArrayList<>();
 
     @BeforeClass
     public void populate() {
-        for (int j = 0; j <= 2; j++) {
-            for (int i = 0; i < 5; i++) {
+        for (int patient = 0; patient <= 2; patient++) {
+            for (int questions = 0; questions < 5; questions++) {
                 FormRunnerFact formRunnerFact = new FormRunnerFact();
                 FormRunnerValue formRunnerValue = new FormRunnerValue();
 
-                formRunnerValue.setScore((double) (i + j));
-                formRunnerFact.setTenantId("persona" + j);
+                formRunnerValue.setScore((double) (questions + patient));
+                formRunnerValue.setQuestion("question" + questions);
+
+                formRunnerFact.setTenantId("persona" + patient);
+                formRunnerFact.setGroup("examination" + questions);
+                formRunnerFact.setElementId("element" + patient);
                 formRunnerFact.setEntity(formRunnerValue);
 
                 formRunnerFacts.add(formRunnerFact);
@@ -42,57 +51,13 @@ public class ChartProviderTest {
     }
 
     @Test
-    public void htmlFromFormrunnerFacts() {
-        final String type = "bar";
-        final StringBuilder html = new StringBuilder();
-        html.append("<!DOCTYPE html>\n")
-                .append("<html lang=\"en\">\n")
-                .append("<head>\n")
-                .append("<meta charset=\"utf-8\">\n")
-                .append("<title>C3</title>\n")
-                .append("</head>\n\n")
-                .append("<body>\n")
-                .append("<h1>C3 example</h1>\n")
-                .append("<div id=\"chart\"></div>\n\n")
-                .append("<script src=\"https://d3js.org/d3.v5.min.js\"></script>\n")
-                .append("<script src=\"c3.min.js\"></script>\n");
-        html.append("<script>");
-        html.append("var chart = c3.generate({\n")
-                .append("bindto: '#chart',\n")
-                .append("data: {\n")
-                .append("columns: [\n");
-
-        getUniqueTenants().forEach(tenant -> {
-            html.append("[ '").append(tenant).append("'");
-            formRunnerFacts.forEach(formRunnerFact -> {
-                if (formRunnerFact.getTenantId().compareTo(tenant) == 0) {
-                    html.append(", ").append(formRunnerFact.getEntity().getScore());
-                }
-            });
-            html.append("],\n");
-        });
-
-        html.append("],\n")
-                .append("axes: {\n")
-                .append("data2: 'y2'\n")
-                .append("},\n")
-                .append("type: '" + type + "'\n},\n")
-                .append("axis: {\n")
-                .append("y2: {\n")
-                .append("show: true,\n")
-                .append("label: {\n")
-                .append("text: 'Y2',\n")
-                .append("position: 'outer-middle' //outer inner top bottom\n},\n")
-                .append("tick: {\n")
-                .append("format: d3.format(\"$\")\n}\n}\n}\n});\n</script>\n</body>\n</html>");
-
-        System.out.println(html);
+    public void htmlFromFormrunnerFacts() throws IOException, URISyntaxException {
+        Assert.assertEquals(readFile("charts/htmlFromFormrunnerFactsByTenants.html"),
+                chartProvider.htmlFromFormrunnerFactsByQuestion(formRunnerFacts, "bar","0.7.20"));
     }
 
-
-    private List<String> getUniqueTenants() {
-        List<String> tenants = new ArrayList<>();
-        formRunnerFacts.forEach(formRunnerFact -> tenants.add(formRunnerFact.getTenantId()));
-        return tenants.stream().distinct().collect(Collectors.toList());
+    private String readFile(String file) throws IOException, InvalidJsonException, URISyntaxException {
+        return new String(Files.readAllBytes(Paths.get(getClass().getClassLoader()
+                .getResource(file).toURI())));
     }
 }
