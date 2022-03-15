@@ -22,6 +22,10 @@ public class FactManagerLogger extends BasicLogger {
         info(logger, className, messageTemplate, arguments);
     }
 
+    public static void info(Class<?> clazz, String messageTemplate, Object... arguments) {
+        info(clazz.getName(), messageTemplate, arguments);
+    }
+
     /**
      * Shows not critical errors. I.e. Email address not found, permissions not
      * allowed for this user, ...
@@ -32,6 +36,10 @@ public class FactManagerLogger extends BasicLogger {
      */
     public static void warning(String className, String messageTemplate, Object... arguments) {
         warning(logger, className, messageTemplate, arguments);
+    }
+
+    public static void warning(Class<?> clazz, String messageTemplate, Object... arguments) {
+        warning(clazz.getName(), messageTemplate, arguments);
     }
 
     /**
@@ -46,6 +54,10 @@ public class FactManagerLogger extends BasicLogger {
         debug(logger, className, messageTemplate, arguments);
     }
 
+    public static void debug(Class<?> clazz, String messageTemplate, Object... arguments) {
+        debug(clazz.getName(), messageTemplate, arguments);
+    }
+
     /**
      * To log any not expected error that can cause application malfunction.
      *
@@ -55,6 +67,10 @@ public class FactManagerLogger extends BasicLogger {
      */
     public static void severe(String className, String messageTemplate, Object... arguments) {
         severe(logger, className, messageTemplate, arguments);
+    }
+
+    public static void severe(Class<?> clazz, String messageTemplate, Object... arguments) {
+        severe(clazz.getName(), messageTemplate, arguments);
     }
 
     public static void errorMessage(Class<?> clazz, Throwable throwable) {

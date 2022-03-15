@@ -1,7 +1,6 @@
 package com.biit.factmanager.rest.api;
 
 import com.biit.factmanager.core.providers.PivotViewProvider;
-import com.biit.factmanager.logger.FactManagerLogger;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;

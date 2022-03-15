@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Primary;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -157,5 +158,31 @@ public abstract class Fact<Value> implements IPivotViewerData, IKafkaStorable {
     @Override
     public LocalDateTime getCreationTime() {
         return getCreatedAt();
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Fact<?> fact = (Fact<?>) o;
+        return getCreatedAt().equals(fact.getCreatedAt()) && Objects.equals(getOrganizationId(), fact.getOrganizationId()) &&
+                Objects.equals(getTenantId(), fact.getTenantId()) && Objects.equals(getTag(), fact.getTag()) &&
+                Objects.equals(getGroup(), fact.getGroup()) && Objects.equals(getElementId(), fact.getElementId()) &&
+                getValue().equals(fact.getValue());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getOrganizationId(), getTenantId(), getTag(), getGroup(), getValue(), getElementId(), getCreatedAt());
+    }
+
+    @Override
+    public String toString() {
+        return getId() == null ? "Fact(" + getCreatedAt() + ")" : "Fact(" + getId() + ")";
     }
 }

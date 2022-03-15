@@ -9,10 +9,10 @@ import org.springframework.kafka.annotation.EnableKafka;
 
 @EnableKafka
 @Configuration
-public class FormAnswerConsumer extends EventConsumer<FormRunnerFact> {
+public class FormAnswerConsumer2 extends EventConsumer<FormRunnerFact> {
 
     @Autowired
-    public FormAnswerConsumer(KafkaConfig kafkaConfig) {
+    public FormAnswerConsumer2(KafkaConfig kafkaConfig) {
         super(kafkaConfig);
     }
 }

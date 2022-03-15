@@ -16,9 +16,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class FactManagerServer {
 
-
-	public static void main(String[] args) {
-		SpringApplication.run(FactManagerServer.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(FactManagerServer.class, args);
+    }
 
 }
