@@ -3,9 +3,9 @@ package com.biit.factmanager.persistence.repositories;
 import com.biit.factmanager.persistence.entities.Fact;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 
 public interface FactRepository<T extends Fact<?>> extends JpaRepository<T, Long>, CustomFactRepository<T> {
@@ -30,7 +30,8 @@ public interface FactRepository<T extends Fact<?>> extends JpaRepository<T, Long
 
     @Query("SELECT f FROM Fact f WHERE (:elementId is null or f.elementId = :elementId) and (:group is null or f.group = :group)" +
             "and (:startDate is null or f.createdAt >= :startDate) and (:endDate is null or f.createdAt <= :endDate)")
-    List<T> findByElementIdAndGroupAndCreatedAt(String elementId, String group, LocalDateTime startDate, LocalDateTime endDate);
+    List<T> findByElementIdAndGroupAndCreatedAt(@Param("elementId") String elementId, @Param("group") String group,
+                                                @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
     List<T> findByElementId(String elementId);
 
@@ -42,9 +43,11 @@ public interface FactRepository<T extends Fact<?>> extends JpaRepository<T, Long
 
     @Query("SELECT f FROM FormRunnerFact f WHERE (:tenantId is null or f.tenantId = :tenantId) and (:group is null or f.group = :group)" +
             "and (:startDate is null or f.createdAt >= :startDate) and (:endDate is null or f.createdAt <= :endDate)")
-    List<T> findByTenantIdAndGroupAndCreatedAt(String tenantId, String group, LocalDateTime startDate, LocalDateTime endDate);
+    List<T> findByTenantIdAndGroupAndCreatedAt(@Param("tenantId") String tenantId, @Param("group") String group, @Param("startDate") LocalDateTime startDate,
+                                               @Param("endDate") LocalDateTime endDate);
 
     @Query("SELECT f FROM  FormRunnerFact f WHERE (:tenantId is null or f.tenantId = :tenantId) and (:elementId is null or f.elementId = :elementId)" +
             "and (:startDate is null or f.createdAt >= :startDate) and (:endDate is null or f.createdAt <= :endDate)")
-    List<T> findByTenantIdAndElementIdAndCreatedAt(String tenantId, String elementId, LocalDateTime startDate, LocalDateTime endDate);
+    List<T> findByTenantIdAndElementIdAndCreatedAt(@Param("tenantId") String tenantId, @Param("elementId") String elementId,
+                                                   @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 }
