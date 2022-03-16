@@ -1,6 +1,7 @@
 package com.biit.factmanager.rest.api;
 
 import com.biit.factmanager.core.providers.PivotViewProvider;
+import com.biit.factmanager.rest.exceptions.BadRequestException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.BadRequestException;
 import java.time.LocalDateTime;
 import java.util.List;
 

@@ -19,25 +19,18 @@
     <dependencies>
         <dependency>
             <groupId>com.biit</groupId>
-            <artifactId>fact-manager-logger</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.biit</groupId>
             <artifactId>fact-manager-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.biit</groupId>
             <artifactId>kafka-client</artifactId>
-            <version>${kafka-client.version}</version>
         </dependency>
 
         <!-- Testing -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>${org.testng.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

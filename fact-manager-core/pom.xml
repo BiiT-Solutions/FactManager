@@ -20,11 +20,6 @@
     <dependencies>
         <dependency>
             <groupId>com.biit</groupId>
-            <artifactId>fact-manager-logger</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.biit</groupId>
             <artifactId>fact-manager-persistence</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -32,7 +27,6 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>${org.testng.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
