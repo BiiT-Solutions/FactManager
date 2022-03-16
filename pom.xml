@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.biit</groupId>
     <artifactId>fact-manager</artifactId>
-    <version>0.1.8-SNAPSHOT</version>
+    <version>0.1.8</version>
     <name>FactManager</name>
     <packaging>pom</packaging>
     <description>Application for handling facts as events and store them on database.</description>
@@ -13,7 +12,7 @@
         <groupId>com.biit</groupId>
         <artifactId>versions</artifactId>
         <version>[0.1,0.2)</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
     <modules>
@@ -41,7 +40,7 @@
     <scm>
         <connection>scm:git:git.biit-solutions.com:BiiT/FactManager.git</connection>
         <developerConnection>scm:git:git.biit-solutions.com:BiiT/FactManager.git</developerConnection>
-        <tag>FactManager</tag>
+        <tag>fact-manager-0.1.8</tag>
     </scm>
 
 
