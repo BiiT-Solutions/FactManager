@@ -1,14 +1,16 @@
 package com.biit.factmanager.rest;
 
 
+import com.biit.factmanager.logger.FactManagerLogger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -24,7 +26,6 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.time.Period;
 import java.util.Collections;
 
 @SpringBootApplication
@@ -79,5 +80,14 @@ public class FactManagerServicesServer {
 		executor.setWaitForTasksToCompleteOnShutdown(true);
 		executor.setThreadNamePrefix("Rest_Async-");
 		return executor;
+	}
+
+	@Bean
+	public ApplicationListener<ContextRefreshedEvent> startupLoggingListener() {
+		return new ApplicationListener<ContextRefreshedEvent>() {
+			public void onApplicationEvent(ContextRefreshedEvent event) {
+				FactManagerLogger.info(FactManagerServicesServer.class, "### Server started ###");
+			}
+		};
 	}
 }
