@@ -4,8 +4,8 @@ import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.rest.exceptions.BadRequestException;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,37 +24,37 @@ public abstract class FactServices<T extends Fact<?>> {
         this.factProvider = factProvider;
     }
 
-    @ApiOperation(value = "Adds a new fact", notes = "Parameters:\n"
+    @Operation(summary = "Adds a new fact", description = "Parameters:\n"
             + "fact (required): Fact object to be added")
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public T addFact(@ApiParam(value = "Notification Request", required = true) @RequestBody T fact,
+    public T addFact(@Parameter(name = "Notification Request", required = true) @RequestBody T fact,
                      HttpServletRequest httpRequest) {
         FactManagerLogger.info(this.getClass().getName(), "Adding fact '" + fact + "'.");
         return factProvider.save(fact);
     }
 
-    @ApiOperation(value = "Save a list of facts", notes = "Parameters:\n"
+    @Operation(summary = "Save a list of facts", description = "Parameters:\n"
             + "facts (required): List of Fact objects to be added")
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping(value = "/collection", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<T> addFactList(@ApiParam(value = "Notification Request", required = true) @RequestBody List<T> facts,
+    public List<T> addFactList(@Parameter(name = "Notification Request", required = true) @RequestBody List<T> facts,
                                HttpServletRequest httpRequest) {
         FactManagerLogger.debug(this.getClass().getName(), "Saving a list of facts '{}'.", facts);
         return factProvider.save(facts);
     }
 
-    @ApiOperation(value = "Deletes a fact", notes = "Parameters:\n"
+    @Operation(summary = "Deletes a fact", description = "Parameters:\n"
             + "fact (required): Fact object to be removed.")
     @ResponseStatus(value = HttpStatus.OK)
     @DeleteMapping(value = "")
-    public void deleteFact(@ApiParam(value = "Fact entity", required = true) @RequestBody T fact,
+    public void deleteFact(@Parameter(name = "fact", required = true) @RequestBody T fact,
                            HttpServletRequest httpRequest) {
         FactManagerLogger.info(this.getClass().getName(), "Remove fact");
         factProvider.delete(fact);
     }
 
-    @ApiOperation(value = "Search facts functionality", notes = "Parameters:\n"
+    @Operation(summary = "Search facts functionality", description = "Parameters:\n"
             + "- tenantId: the tenant classifier\n"
             + "- organizationId: which organization belongs to\n"
             + "- tag: kafka tag\n"
@@ -68,15 +68,15 @@ public abstract class FactServices<T extends Fact<?>> {
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<T> getFacts(
             HttpServletRequest httpRequest,
-            @ApiParam(value = "tenantId", required = false) @RequestParam(value = "tenantId", required = false) String tenantId,
-            @ApiParam(value = "organizationId", required = false) @RequestParam(value = "organizationId", required = false) String organizationId,
-            @ApiParam(value = "tag", required = false) @RequestParam(value = "tag", required = false) String tag,
-            @ApiParam(value = "group", required = false) @RequestParam(value = "group", required = false) String group,
-            @ApiParam(value = "elementId", required = false) @RequestParam(value = "elementId", required = false) String elementId,
-            @ApiParam(value = "startDate", required = false) @RequestParam(value = "startDate", required = false) LocalDateTime startDate,
-            @ApiParam(value = "endDate", required = false) @RequestParam(value = "endDate", required = false) LocalDateTime endDate,
-            @ApiParam(value = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
-            @ApiParam(value = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters) {
+            @Parameter(name = "tenantId", required = false) @RequestParam(value = "tenantId", required = false) String tenantId,
+            @Parameter(name = "organizationId", required = false) @RequestParam(value = "organizationId", required = false) String organizationId,
+            @Parameter(name = "tag", required = false) @RequestParam(value = "tag", required = false) String tag,
+            @Parameter(name = "group", required = false) @RequestParam(value = "group", required = false) String group,
+            @Parameter(name = "elementId", required = false) @RequestParam(value = "elementId", required = false) String elementId,
+            @Parameter(name = "startDate", required = false) @RequestParam(value = "startDate", required = false) LocalDateTime startDate,
+            @Parameter(name = "endDate", required = false) @RequestParam(value = "endDate", required = false) LocalDateTime endDate,
+            @Parameter(name = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
+            @Parameter(name = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters) {
 
         final Pair<String, Object>[] pairs;
         if (valueParameters != null) {

@@ -1,20 +1,21 @@
 package com.biit.factmanager.rest;
 
 import com.biit.factmanager.logger.FactManagerLogger;
-import io.swagger.annotations.ApiOperation;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import javax.naming.AuthenticationException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
+
+import javax.naming.AuthenticationException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class Info {
@@ -28,22 +29,22 @@ public class Info {
         this.applicationArguments = applicationArguments;
     }
 
-    @ApiOperation(value = "Basic method to check if the server is online.")
+    @Operation(summary = "Basic method to check if the server is online.")
     @RequestMapping(value = "/healthCheck", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public void healthCheck(HttpServletRequest httpRequest) {
 
     }
 
-    @ApiIgnore
-    @ApiOperation(value = "Redirects root address to API web site.")
+    @Hidden
+    @Operation(summary = "Redirects root address to API web site.")
     @GetMapping(value = "/")
     @ResponseStatus(HttpStatus.OK)
     public void root(HttpServletResponse response, HttpServletRequest httpRequest) throws IOException {
         response.sendRedirect("./swagger-ui.html");
     }
 
-    @ApiOperation(value = "Configuration info")
+    @Operation(summary = "Configuration info")
     @PostMapping(value = "/info", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.TEXT_PLAIN_VALUE)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
