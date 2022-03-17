@@ -38,7 +38,6 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
     public void addFacts() {
         Assert.assertEquals(factServices.getFacts(null, null, null, null, FACT_EXAMINATION_GROUP, null, null, null, null, null).size(), 0);
         // Save 2 empty facts
-        // Save 2 empty facts
         FormRunnerFact formRunnerFact = new FormRunnerFact();
         formRunnerFact.setGroup(FACT_EXAMINATION_GROUP);
         List<FormRunnerFact> facts = new ArrayList<>();

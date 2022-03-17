@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.biit</groupId>
     <artifactId>fact-manager</artifactId>
-    <version>0.1.8-SNAPSHOT</version>
+    <version>0.1.9-SNAPSHOT</version>
     <name>FactManager</name>
     <packaging>pom</packaging>
+    <description>Application for handling facts as events and store them on database.</description>
+
+    <parent>
+        <groupId>com.biit</groupId>
+        <artifactId>versions</artifactId>
+        <version>[0.1,0.2)</version>
+        <relativePath /> <!-- lookup parent from repository -->
+    </parent>
 
     <modules>
         <module>fact-manager-logger</module>
@@ -16,28 +23,6 @@
         <module>fact-manager-rest</module>
     </modules>
 
-
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.4</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-
-
-    <properties>
-        <main.basedir>${project.basedir}</main.basedir>
-        <checkstyle.version>2.17</checkstyle.version>
-        <spotbugs.version>4.0.4</spotbugs.version>
-        <project.scm.id>git</project.scm.id>
-        <org.testng.version>6.8.13</org.testng.version>
-        <springfox-swagger.version>2.9.2</springfox-swagger.version>
-        <!-- BiiT Dependencies -->
-        <biit-common-utils.version>[1.1,1.2)</biit-common-utils.version>
-        <kafka-client.version>[1.1,1.2)</kafka-client.version>
-        <event-structure.version>[1.0,1.1)</event-structure.version>
-        <biit-database-encryptor.version>[0.2,0.3)</biit-database-encryptor.version>
-    </properties>
 
     <distributionManagement>
         <repository>
@@ -66,14 +51,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>8</source>
-                    <target>8</target>
+                    <source>${java.jdk.version}</source>
+                    <target>${java.jdk.version}</target>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${checkstyle.version}</version>
+                <version>${maven-checkstyle.version}</version>
                 <configuration>
                     <configLocation>${main.basedir}/checkstyle.xml</configLocation>
                     <encoding>UTF-8</encoding>
@@ -88,28 +73,6 @@
                         <goals>
                             <goal>check</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.github.spotbugs</groupId>
-                <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>${spotbugs.version}</version>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Enables analysis which takes more memory but finds more bugs.
-                                If you run out of memory, changes the value of the effort element to 'Low'. -->
-                            <effort>Max</effort>
-                            <!-- Build fail if problems are found -->
-                            <failOnError>true</failOnError>
-                            <!-- Reports all bugs (values are max, medium and max) -->
-                            <threshold>max</threshold>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
