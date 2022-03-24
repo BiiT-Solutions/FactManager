@@ -25,7 +25,8 @@ public class SwaggerConfiguration {
         return new OpenAPI()
                 .info(new Info().title(SWAGGER_TITLE)
                         .description(SWAGGER_DESCRIPTION)
-                        .version("v1.0.0"))
+                        .version(SwaggerConfiguration.class.getPackage().getImplementationVersion() != null ?
+                                SwaggerConfiguration.class.getPackage().getImplementationVersion() : "Dev"))
                 .externalDocs(new ExternalDocumentation()
                         .description("Fact Manager Readme")
                         .url("https://git.biit-solutions.com/BiiT/FactManager"));
