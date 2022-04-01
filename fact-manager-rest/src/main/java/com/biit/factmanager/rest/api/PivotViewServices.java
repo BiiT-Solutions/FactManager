@@ -2,8 +2,8 @@ package com.biit.factmanager.rest.api;
 
 import com.biit.factmanager.core.providers.PivotViewProvider;
 import com.biit.factmanager.rest.exceptions.BadRequestException;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
@@ -25,20 +25,20 @@ public class PivotViewServices {
         this.pivotViewProvider = pivotViewProvider;
     }
 
-    @ApiOperation(value = "Get facts by params")
+    @Operation(summary = "Get facts by params")
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(value = "", produces = MediaType.APPLICATION_XML_VALUE)
     public String getFacts(
             HttpServletRequest httpRequest,
-            @ApiParam(value = "tenantId", required = false) @RequestParam(value = "tenantId", required = false) String tenantId,
-            @ApiParam(value = "organizationId", required = false) @RequestParam(value = "organizationId", required = false) String organizationId,
-            @ApiParam(value = "tag", required = false) @RequestParam(value = "tag", required = false) String tag,
-            @ApiParam(value = "group", required = false) @RequestParam(value = "group", required = false) String group,
-            @ApiParam(value = "elementId", required = false) @RequestParam(value = "elementId", required = false) String elementId,
-            @ApiParam(value = "startDate", required = false) @RequestParam(value = "startDate", required = false) LocalDateTime startDate,
-            @ApiParam(value = "endDate", required = false) @RequestParam(value = "endDate", required = false) LocalDateTime endDate,
-            @ApiParam(value = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
-            @ApiParam(value = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters) {
+            @Parameter(name = "tenantId", required = false) @RequestParam(value = "tenantId", required = false) String tenantId,
+            @Parameter(name = "organizationId", required = false) @RequestParam(value = "organizationId", required = false) String organizationId,
+            @Parameter(name = "tag", required = false) @RequestParam(value = "tag", required = false) String tag,
+            @Parameter(name = "group", required = false) @RequestParam(value = "group", required = false) String group,
+            @Parameter(name = "elementId", required = false) @RequestParam(value = "elementId", required = false) String elementId,
+            @Parameter(name = "startDate", required = false) @RequestParam(value = "startDate", required = false) LocalDateTime startDate,
+            @Parameter(name = "endDate", required = false) @RequestParam(value = "endDate", required = false) LocalDateTime endDate,
+            @Parameter(name = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
+            @Parameter(name = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters) {
 
         if (valueParameters.size() % 2 == 1) {
             throw new BadRequestException("Invalid number of parameters.");

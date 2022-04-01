@@ -18,44 +18,18 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-import java.util.Collections;
 
 @SpringBootApplication
 @ComponentScan({"com.biit.factmanager"})
 @ConfigurationPropertiesScan({"com.biit.factmanager.rest"})
 @EnableJpaRepositories({"com.biit.factmanager.persistence.repositories"})
 @EntityScan({"com.biit.factmanager.persistence.entities"})
-@EnableSwagger2
 public class FactManagerServicesServer {
-	private static final String SWAGGER_TITLE = "FactManager";
-	private static final String SWAGGER_REST_LOCATION = "com.biit.factmanager.rest";
 
 	public static void main(String[] args) {
 		SpringApplication.run(FactManagerServicesServer.class, args);
 	}
 
-	@Bean
-	public Docket api() {
-		return new Docket(DocumentationType.SWAGGER_2)
-				.select()
-				.apis(RequestHandlerSelectors.any())
-				.paths(PathSelectors.any())
-				.build();
-	}
-
-	private ApiInfo getApiInfo() {
-		return new ApiInfo(SWAGGER_TITLE, SWAGGER_TITLE, "1.0", "",
-				new Contact("Support", "https://www.biit-solutions.com/", "support@biit-solutions.com"),
-				"BiiT Solutions Private Use Only License", "https://www.biit-solutions.com", Collections.emptyList());
-	}
 
 	@Bean(name = DispatcherServletAutoConfiguration.DEFAULT_DISPATCHER_SERVLET_BEAN_NAME)
 	public DispatcherServlet dispatcherServlet() {
