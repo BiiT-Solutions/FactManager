@@ -30,7 +30,7 @@ public class Info {
     }
 
     @Operation(summary = "Basic method to check if the server is online.")
-    @RequestMapping(value = "/healthCheck", method = RequestMethod.GET)
+    @RequestMapping(value = "/health-check", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public void healthCheck(HttpServletRequest httpRequest) {
 
