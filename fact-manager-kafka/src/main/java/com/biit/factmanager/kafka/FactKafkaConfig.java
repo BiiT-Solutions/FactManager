@@ -1,6 +1,6 @@
 package com.biit.factmanager.kafka;
 
-import com.biit.kafka.KafkaConfig;
+import com.biit.kafka.config.KafkaConfig;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.stereotype.Service;
 
