@@ -38,7 +38,7 @@ public abstract class FactServices<T extends Fact<?>> {
             + "facts (required): List of Fact objects to be added")
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping(value = "/collection", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<T> addFactList(@Parameter(name = "Notification Request", required = true) @RequestBody List<T> facts,
+    public List<T> addFactList(@Parameter(name = "Fact list", required = true) @RequestBody List<T> facts,
                                HttpServletRequest httpRequest) {
         FactManagerLogger.debug(this.getClass().getName(), "Saving a list of facts '{}'.", facts);
         return factProvider.save(facts);
