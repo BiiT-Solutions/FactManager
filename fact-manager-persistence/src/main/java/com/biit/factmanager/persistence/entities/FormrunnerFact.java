@@ -16,6 +16,7 @@ public class FormrunnerFact extends Fact<FormrunnerValue> implements IKafkaStora
     @Transient
     private FormrunnerValue formrunnerValue;
 
+
     @JsonCreator
     public FormrunnerFact() {
         super();
@@ -37,7 +38,7 @@ public class FormrunnerFact extends Fact<FormrunnerValue> implements IKafkaStora
 
     @Override
     protected TypeReference<FormrunnerValue> getJsonParser() {
-        return null;
+        return new TypeReference<FormrunnerValue>(){};
     }
 
     @Override
