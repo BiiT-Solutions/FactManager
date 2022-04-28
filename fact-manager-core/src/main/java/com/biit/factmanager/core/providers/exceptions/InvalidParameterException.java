@@ -3,9 +3,7 @@ package com.biit.factmanager.core.providers.exceptions;
 import com.biit.factmanager.logger.ExceptionType;
 import com.biit.factmanager.logger.LoggedException;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
 public class InvalidParameterException extends LoggedException {
 	private static final long serialVersionUID = -2510787123562846634L;
 
