@@ -33,7 +33,6 @@ import java.util.concurrent.ThreadLocalRandom;
 @SpringBootTest
 @Test(groups = {"kafkaEvents"})
 public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
-    private static final String TOPIC_NAME = "facts";
     private static final int EVENTS_QUANTITY = 100;
     private static final String QUESTION = "Question? ";
     private static final String ANSWER = "Answer: ";
@@ -162,7 +161,7 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         Set<FormrunnerQuestionFact> producerEvents = new HashSet<>(EVENTS_QUANTITY);
         formAnswerConsumerListeners.addListener(fact -> {
             if (fact.getCreationTime().isAfter(initialDate) && fact.getCreationTime().isBefore(finalDate)) {
-                consumerEvents.add((FormrunnerQuestionFact) fact);
+                consumerEvents.add(fact);
             }
         });
 
