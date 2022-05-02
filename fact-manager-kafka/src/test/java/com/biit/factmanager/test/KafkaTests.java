@@ -7,8 +7,8 @@ import com.biit.factmanager.kafka.consumers.FormAnswerConsumerListeners;
 import com.biit.factmanager.kafka.consumers.FormAnswerConsumerListeners2;
 import com.biit.factmanager.kafka.producers.FormAnswerProducer;
 import com.biit.factmanager.kafka.producers.FormAnswerProducer2;
-import com.biit.factmanager.persistence.entities.FormRunnerFact;
-import com.biit.factmanager.persistence.entities.values.FormRunnerValue;
+import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
+import com.biit.factmanager.persistence.entities.values.FormrunnerQuestionValue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -39,7 +39,7 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
     private static final String ANSWER = "Answer: ";
 
     @Autowired
-    private FactProvider<FormRunnerFact> factProvider;
+    private FactProvider<FormrunnerQuestionFact> factProvider;
 
     @Autowired
     private FormAnswerProducer formAnswerProducer;
@@ -61,17 +61,17 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
 
     private ObjectMapper objectMapper;
 
-    private FormRunnerFact generateEvent(int value) {
-        FormRunnerFact formRunnerFact = new FormRunnerFact();
-        FormRunnerValue formRunnerValue = new FormRunnerValue();
-        formRunnerValue.setQuestion(QUESTION + value);
-        formRunnerValue.setAnswer(ANSWER + value);
-        formRunnerFact.setEntity(formRunnerValue);
-        return formRunnerFact;
+    private FormrunnerQuestionFact generateEvent(int value) {
+        FormrunnerQuestionFact FormrunnerQuestionFact = new FormrunnerQuestionFact();
+        FormrunnerQuestionValue FormrunnerQuestionValue = new FormrunnerQuestionValue();
+        FormrunnerQuestionValue.setQuestion(QUESTION + value);
+        FormrunnerQuestionValue.setAnswer(ANSWER + value);
+        FormrunnerQuestionFact.setEntity(FormrunnerQuestionValue);
+        return FormrunnerQuestionFact;
     }
 
-    public FormRunnerFact generateEvent(int value, LocalDateTime minTimestamp, LocalDateTime maxTimestamp) {
-        FormRunnerFact formRunnerFact = generateEvent(value);
+    public FormrunnerQuestionFact generateEvent(int value, LocalDateTime minTimestamp, LocalDateTime maxTimestamp) {
+        FormrunnerQuestionFact FormrunnerQuestionFact = generateEvent(value);
 
         //Create a random day.
         // create ZoneId
@@ -79,8 +79,8 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         long randomSecond = ThreadLocalRandom.current().nextLong(minTimestamp.toEpochSecond(zone), maxTimestamp.toEpochSecond(zone));
         LocalDateTime randomDate = LocalDateTime.ofEpochSecond(randomSecond, 0, zone);
 
-        formRunnerFact.setCreatedAt(randomDate);
-        return formRunnerFact;
+        FormrunnerQuestionFact.setCreatedAt(randomDate);
+        return FormrunnerQuestionFact;
     }
 
     private ObjectMapper getObjectMapper() {
@@ -98,18 +98,18 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
 
     public void checkDeserializer() throws JsonProcessingException {
         String value = "{\"value\":\"{\\\"answer\\\":\\\"Answer: 0\\\",\\\"question\\\":\\\"Question? 0\\\"}\",\"createdAt\":\"03-03-2022 16:10:23\",\"entity\":{\"answer\":\"Answer: 0\",\"question\":\"Question? 0\"},\"createdAt\":\"03-03-2022 16:10:24\"}";
-        getObjectMapper().readValue(value, FormRunnerFact.class);
+        getObjectMapper().readValue(value, FormrunnerQuestionFact.class);
         //No serialization exception found.
     }
 
     public synchronized void factTest() throws InterruptedException {
-        Set<FormRunnerFact> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
-        Set<FormRunnerFact> producerEvents = new HashSet<>(EVENTS_QUANTITY);
+        Set<FormrunnerQuestionFact> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
+        Set<FormrunnerQuestionFact> producerEvents = new HashSet<>(EVENTS_QUANTITY);
         //Store received events into set.
         formAnswerConsumerListeners.addListener(consumerEvents::add);
 
         for (int i = 0; i < EVENTS_QUANTITY; i++) {
-            FormRunnerFact generatedEvent = generateEvent(i);
+            FormrunnerQuestionFact generatedEvent = generateEvent(i);
             producerEvents.add(generatedEvent);
             formAnswerProducer.sendFact(generatedEvent);
         }
@@ -120,15 +120,15 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
     }
 
     public synchronized void multipleProducerTest() throws InterruptedException {
-        Set<FormRunnerFact> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY * 2));
-        Set<FormRunnerFact> producerEvents = new HashSet<>(EVENTS_QUANTITY);
-        Set<FormRunnerFact> producerEvents2 = new HashSet<>(EVENTS_QUANTITY);
+        Set<FormrunnerQuestionFact> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY * 2));
+        Set<FormrunnerQuestionFact> producerEvents = new HashSet<>(EVENTS_QUANTITY);
+        Set<FormrunnerQuestionFact> producerEvents2 = new HashSet<>(EVENTS_QUANTITY);
         formAnswerConsumerListeners.addListener(consumerEvents::add);
         for (int i = 0; i < EVENTS_QUANTITY; i++) {
-            FormRunnerFact generatedEvent = generateEvent(i);
+            FormrunnerQuestionFact generatedEvent = generateEvent(i);
             producerEvents.add(generatedEvent);
             formAnswerProducer.sendFact(generatedEvent);
-            FormRunnerFact generatedEvent2 = generateEvent(i);
+            FormrunnerQuestionFact generatedEvent2 = generateEvent(i);
             producerEvents2.add(generatedEvent2);
             formAnswerProducer2.sendFact(generatedEvent2);
         }
@@ -138,14 +138,14 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
     }
 
     public synchronized void multipleConsumerTest() throws InterruptedException {
-        Set<FormRunnerFact> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
-        Set<FormRunnerFact> consumerEvents2 = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
-        Set<FormRunnerFact> producerEvents = new HashSet<>(EVENTS_QUANTITY);
+        Set<FormrunnerQuestionFact> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
+        Set<FormrunnerQuestionFact> consumerEvents2 = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
+        Set<FormrunnerQuestionFact> producerEvents = new HashSet<>(EVENTS_QUANTITY);
         formAnswerConsumerListeners.addListener(consumerEvents::add);
         formAnswerConsumerListeners2.addListener(consumerEvents2::add);
 
         for (int i = 0; i < EVENTS_QUANTITY; i++) {
-            FormRunnerFact generatedEvent = generateEvent(i);
+            FormrunnerQuestionFact generatedEvent = generateEvent(i);
             producerEvents.add(generatedEvent);
             formAnswerProducer.sendFact(generatedEvent);
         }
@@ -158,16 +158,16 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         LocalDateTime initialDate = LocalDateTime.of(2022, Calendar.FEBRUARY, 1, 0, 0, 0);
         LocalDateTime finalDate = LocalDateTime.of(2022, Calendar.MAY, 1, 23, 59, 59);
 
-        Set<FormRunnerFact> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
-        Set<FormRunnerFact> producerEvents = new HashSet<>(EVENTS_QUANTITY);
+        Set<FormrunnerQuestionFact> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
+        Set<FormrunnerQuestionFact> producerEvents = new HashSet<>(EVENTS_QUANTITY);
         formAnswerConsumerListeners.addListener(fact -> {
             if (fact.getCreationTime().isAfter(initialDate) && fact.getCreationTime().isBefore(finalDate)) {
-                consumerEvents.add((FormRunnerFact) fact);
+                consumerEvents.add((FormrunnerQuestionFact) fact);
             }
         });
 
         for (int i = 0; i < EVENTS_QUANTITY; i++) {
-            FormRunnerFact eventInRange = generateEvent(i, initialDate, finalDate);
+            FormrunnerQuestionFact eventInRange = generateEvent(i, initialDate, finalDate);
             producerEvents.add(eventInRange);
             formAnswerProducer.sendFact(eventInRange);
             formAnswerProducer.sendFact(eventInRange);
@@ -176,7 +176,7 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         Assert.assertEquals(consumerEvents, producerEvents);
     }
 
-    private void wait(Set<FormRunnerFact> consumerEvents) throws InterruptedException {
+    private void wait(Set<FormrunnerQuestionFact> consumerEvents) throws InterruptedException {
         int i = 0;
         do {
             wait(1000);

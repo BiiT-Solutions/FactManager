@@ -1,5 +1,7 @@
 package com.biit.factmanager.rest;
 
+import com.biit.factmanager.core.providers.exceptions.FactNotFoundException;
+import com.biit.factmanager.core.providers.exceptions.InvalidParameterException;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.rest.exceptions.BadRequestException;
 import org.springframework.http.HttpHeaders;
@@ -32,6 +34,18 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex) {
+        FactManagerLogger.errorMessage(this.getClass(), ex);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FactNotFoundException.class)
+    public ResponseEntity<Object> factNotFoundException(IllegalArgumentException ex) {
+        FactManagerLogger.errorMessage(this.getClass(), ex);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InvalidParameterException.class)
+    public ResponseEntity<Object> invalidParameterException(IllegalArgumentException ex) {
         FactManagerLogger.errorMessage(this.getClass(), ex);
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }

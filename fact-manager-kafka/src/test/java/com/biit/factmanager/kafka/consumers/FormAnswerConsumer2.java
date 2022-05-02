@@ -1,6 +1,6 @@
 package com.biit.factmanager.kafka.consumers;
 
-import com.biit.factmanager.persistence.entities.FormRunnerFact;
+import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
 import com.biit.kafka.config.KafkaConfig;
 import com.biit.kafka.consumers.EventConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 
 @EnableKafka
 @Configuration
-public class FormAnswerConsumer2 extends EventConsumer<FormRunnerFact> {
+public class FormAnswerConsumer2 extends EventConsumer<FormrunnerQuestionFact> {
 
     @Autowired
     public FormAnswerConsumer2(KafkaConfig kafkaConfig) {

@@ -41,12 +41,12 @@ public interface FactRepository<T extends Fact<?>> extends JpaRepository<T, Long
             "(:group is null or f.group = : group)")
     List<T> findByElementIdAndGroup(String elementId, String group);
 
-    @Query("SELECT f FROM FormRunnerFact f WHERE (:tenantId is null or f.tenantId = :tenantId) and (:group is null or f.group = :group)" +
+    @Query("SELECT f FROM FormrunnerQuestionFact f WHERE (:tenantId is null or f.tenantId = :tenantId) and (:group is null or f.group = :group)" +
             "and (:startDate is null or f.createdAt >= :startDate) and (:endDate is null or f.createdAt <= :endDate)")
     List<T> findByTenantIdAndGroupAndCreatedAt(@Param("tenantId") String tenantId, @Param("group") String group, @Param("startDate") LocalDateTime startDate,
                                                @Param("endDate") LocalDateTime endDate);
 
-    @Query("SELECT f FROM  FormRunnerFact f WHERE (:tenantId is null or f.tenantId = :tenantId) and (:elementId is null or f.elementId = :elementId)" +
+    @Query("SELECT f FROM  FormrunnerQuestionFact f WHERE (:tenantId is null or f.tenantId = :tenantId) and (:elementId is null or f.elementId = :elementId)" +
             "and (:startDate is null or f.createdAt >= :startDate) and (:endDate is null or f.createdAt <= :endDate)")
     List<T> findByTenantIdAndElementIdAndCreatedAt(@Param("tenantId") String tenantId, @Param("elementId") String elementId,
                                                    @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);

@@ -1,6 +1,6 @@
 package com.biit.factmanager.persistence.entities.values;
 
-public class FormRunnerValue {
+public class FormrunnerQuestionValue {
     private String answer;
 
     private String xpath;
@@ -19,7 +19,7 @@ public class FormRunnerValue {
 
     private Long companyId;
 
-    public FormRunnerValue() {
+    public FormrunnerQuestionValue() {
     }
 
     public String getAnswer() {

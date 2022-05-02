@@ -1,6 +1,6 @@
 package com.biit.factmanager.test;
 
-import com.biit.factmanager.persistence.entities.FormRunnerFact;
+import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
 import com.biit.factmanager.persistence.entities.StringFact;
 import com.biit.factmanager.persistence.repositories.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
