@@ -1,7 +1,6 @@
 package com.biit.factmanager.test;
 
 import com.biit.factmanager.core.providers.FactProvider;
-import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
 import com.biit.factmanager.rest.api.FactServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +22,10 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
     private static final String FACT_EXAMINATION_GROUP = "examination_name";
 
     @Autowired
-    private FactServices factServices;
+    private FactServices<FormrunnerQuestionFact> factServices;
 
     @Autowired
-    private FactProvider factProvider;
+    private FactProvider<FormrunnerQuestionFact> factProvider;
 
 
     @BeforeClass
@@ -46,7 +45,7 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
         FormrunnerQuestionFact.setGroup(FACT_EXAMINATION_GROUP);
         facts.add(FormrunnerQuestionFact);
         Assert.assertEquals(facts.size(), 2);
-        facts = factServices.addFactList(facts, null);
+        factServices.addFactList(facts, null);
         // 2 saved + the one added at the beginning
         Assert.assertEquals(factServices.getFacts(null, null, null, null, FACT_EXAMINATION_GROUP, null, null, null, null, null).size(), 2);
     }
@@ -65,8 +64,8 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
 
     @AfterClass
     public void cleanDatabase() {
-        for (Object fact : factProvider.getAll()) {
-            factServices.deleteFact((Fact) fact, null);
+        for (FormrunnerQuestionFact fact : factProvider.getAll()) {
+            factServices.deleteFact(fact, null);
         }
     }
 }
