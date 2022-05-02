@@ -1,7 +1,6 @@
 package com.biit.factmanager.test;
 
 import com.biit.factmanager.core.providers.FactProvider;
-import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
 import com.biit.factmanager.rest.api.FactServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
     private static final String FACT_EXAMINATION_GROUP = "examination_name";
 
     @Autowired
-    private FactServices factServices;
+    private FactServices<FormrunnerQuestionFact> factServices;
 
     @Autowired
     private FactProvider factProvider;
@@ -66,7 +65,7 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
     @AfterClass
     public void cleanDatabase() {
         for (Object fact : factProvider.getAll()) {
-            factServices.deleteFact((Fact) fact, null);
+            factServices.deleteFact((FormrunnerQuestionFact) fact, null);
         }
     }
 }
