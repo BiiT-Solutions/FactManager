@@ -9,7 +9,7 @@
     <parent>
         <artifactId>fact-manager</artifactId>
         <groupId>com.biit</groupId>
-        <version>0.1.11</version>
+        <version>0.1.12-SNAPSHOT</version>
     </parent>
 
 
