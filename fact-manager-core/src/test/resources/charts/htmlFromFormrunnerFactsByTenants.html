@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"> </meta>
+<title>C3</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.20/c3.css " rel="stylesheet"> </link></head>
+
+<body>
+<h1>FormRunnerFact</h1>
+<div id="chart"></div>
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.20/c3.min.js "></script>
+<script>var chart = c3.generate({
+bindto: '#chart',
+data: {
+columns: [[ 'persona0', 0.0, 1.0, 2.0, 3.0, 4.0],
+[ 'persona1', 1.0, 2.0, 3.0, 4.0, 5.0],
+[ 'persona2', 2.0, 3.0, 4.0, 5.0, 6.0],
+],
+type: 'bar'
+},
+ axis: {
+ x: {
+ type: 'category',
+ categories: ['question0','question1','question2','question3','question4',]
+ }
+ }
+});
+</script>
+</body>
+</html>

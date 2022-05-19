@@ -33,6 +33,9 @@ public abstract class Fact<Value> implements IPivotViewerData, IKafkaStorable {
     @Column(name = "tenant_id")
     private String tenantId;
 
+    @Column(name = "category")
+    private String category;
+
     @Column(name = "tag")
     private String tag;
 
