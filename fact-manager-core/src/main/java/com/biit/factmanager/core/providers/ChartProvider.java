@@ -1,8 +1,8 @@
 package com.biit.factmanager.core.providers;
 
 import com.biit.factmanager.persistence.entities.Fact;
-import com.biit.factmanager.persistence.entities.FormRunnerFact;
-import com.biit.factmanager.persistence.entities.values.FormRunnerValue;
+import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
+import com.biit.factmanager.persistence.entities.values.FormrunnerQuestionValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -26,10 +26,10 @@ public class ChartProvider<T extends Fact<?>> {
                       LocalDateTime startDate, LocalDateTime endDate, Integer lastDays, String type, String version,
                       Pair<String, Object>... valueParameters) {
 
-        return htmlFromFormrunnerFactsByQuestion(factProvider.getAll(), type, version);
+        return htmlFromformrunnerQuestionFactsByQuestion(factProvider.getAll(), type, version);
     }
 
-    public String htmlFromFormrunnerFactsByQuestion(Collection<T> formRunnerFacts, String type, String version) {
+    public String htmlFromformrunnerQuestionFactsByQuestion(Collection<T> formrunnerQuestionFacts, String type, String version) {
         final StringBuilder html = new StringBuilder();
         html.append("<!DOCTYPE html>\n")
                 .append("<html lang=\"en\">\n")
@@ -39,7 +39,7 @@ public class ChartProvider<T extends Fact<?>> {
                 .append("<link href=\"https://cdnjs.cloudflare.com/ajax/libs/c3/").append(version).append("/c3.css \" rel=\"stylesheet\"> </link>")
                 .append("</head>\n\n")
                 .append("<body>\n")
-                .append("<h1>").append(formRunnerFacts.stream().findFirst().get().getClass().getName()
+                .append("<h1>").append(formrunnerQuestionFacts.stream().findFirst().get().getClass().getName()
                         .replaceAll("com.biit.factmanager.persistence.entities.", "")).append("</h1>\n")
                 .append("<div id=\"chart\"></div>\n\n")
                 .append("<script src=\"https://d3js.org/d3.v5.min.js\"></script>\n")
@@ -50,12 +50,12 @@ public class ChartProvider<T extends Fact<?>> {
                 .append("data: {\n")
                 .append("columns: [");
 
-        getUniqueTenants(formRunnerFacts).forEach(tenant -> {
+        getUniqueTenants(formrunnerQuestionFacts).forEach(tenant -> {
             html.append("[ '").append(tenant).append("'");
-            formRunnerFacts.forEach(formRunnerFact -> {
+            formrunnerQuestionFacts.forEach(formRunnerFact -> {
                 if (formRunnerFact.getTenantId().compareTo(tenant) == 0) {
-                    final FormRunnerValue formRunnerValue = (FormRunnerValue) formRunnerFact.getEntity();
-                    html.append(", ").append(formRunnerValue.getScore());
+                    final FormrunnerQuestionValue formrunnerQuestionValue = (FormrunnerQuestionValue) formRunnerFact.getEntity();
+                    html.append(", ").append(formrunnerQuestionValue.getScore());
                 }
             });
             html.append("],\n");
@@ -66,7 +66,7 @@ public class ChartProvider<T extends Fact<?>> {
                 .append("\n axis: {")
                 .append("\n x: {\n type: 'category',\n categories: [");
 
-        getUniqueQuestions((Collection<FormRunnerFact>) formRunnerFacts).forEach(question -> {
+        getUniqueQuestions((Collection<FormrunnerQuestionFact>) formrunnerQuestionFacts).forEach(question -> {
             html.append("'").append(question).append("',");
         });
         html.append("]\n }\n }")
@@ -81,9 +81,9 @@ public class ChartProvider<T extends Fact<?>> {
         return tenantIds.stream().distinct().collect(Collectors.toList());
     }
 
-    private List<String> getUniqueQuestions(Collection<FormRunnerFact> formRunnerFacts) {
+    private List<String> getUniqueQuestions(Collection<FormrunnerQuestionFact> formrunnerQuestionFacts) {
         final List<String> questions = new ArrayList<>();
-        formRunnerFacts.forEach(formRunnerFact -> questions.add(formRunnerFact.getEntity().getQuestion()));
+        formrunnerQuestionFacts.forEach(formRunnerFact -> questions.add(formRunnerFact.getEntity().getQuestion()));
         return questions.stream().distinct().collect(Collectors.toList());
     }
 }

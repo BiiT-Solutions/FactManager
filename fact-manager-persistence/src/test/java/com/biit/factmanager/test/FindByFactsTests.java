@@ -7,6 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.time.LocalDateTime;
@@ -20,19 +22,42 @@ public class FindByFactsTests extends AbstractTransactionalTestNGSpringContextTe
     @Autowired
     private FactRepository<StringFact> factRepository;
 
+    @BeforeClass
+    private void populate() {
+        int repositorySize = factRepository.findAll().size();
+        for (int i = 1; i <= 3; i++) {
+            StringFact stringFact = new StringFact();
+            stringFact.setOrganizationId(String.valueOf(i));
+            stringFact.setTenantId(String.valueOf(i));
+            stringFact.setTag(String.valueOf(i));
+            stringFact.setGroup(String.valueOf(i));
+            stringFact.setElementId(String.valueOf(i));
+            stringFact.setCreatedAt(LocalDateTime.now());
+
+            factRepository.save(stringFact);
+        }
+        Assert.assertEquals((repositorySize + 3), factRepository.findAll().size());
+    }
+
     @Test
     private void getFindBy() {
-        Collection<StringFact> fact1 =  factRepository.findBy("1","1","1","1","1",
+        Collection<StringFact> fact1 = factRepository.findBy("1", "1", "1", "1", "1",
                 LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(1));
 
-        Collection<StringFact> fact2 =  factRepository.findBy("2","2","2","2","2",
+        Collection<StringFact> fact2 = factRepository.findBy("2", "2", "2", "2", "2",
                 LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(1));
 
-        Collection<StringFact> fact3 =  factRepository.findBy("3","3","3","3","3",
+        Collection<StringFact> fact3 = factRepository.findBy("3", "3", "3", "3", "3",
                 LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(1));
 
-        Assert.assertEquals(fact1.size(),1);
-        Assert.assertEquals(fact2.size(),1);
-        Assert.assertEquals(fact3.size(),1);
+        Assert.assertEquals(fact1.size(), 1);
+        Assert.assertEquals(fact2.size(), 1);
+        Assert.assertEquals(fact3.size(), 1);
+    }
+
+    @AfterClass
+    private void tearDown() {
+        factRepository.deleteAll();
+        Assert.assertEquals(factRepository.findAll().size(), 0);
     }
 }
