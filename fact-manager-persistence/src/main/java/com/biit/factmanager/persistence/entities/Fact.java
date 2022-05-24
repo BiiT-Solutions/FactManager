@@ -1,6 +1,7 @@
 package com.biit.factmanager.persistence.entities;
 
-import com.biit.database.encryption.LocalDateTimeAttributeConverter;
+
+import com.biit.database.encryption.LocalDateTimeCryptoConverter;
 import com.biit.database.encryption.StringCryptoConverter;
 import com.biit.eventstructure.event.IKafkaStorable;
 import com.biit.factmanager.persistence.entities.exceptions.FactValueInvalidException;
@@ -53,7 +54,7 @@ public abstract class Fact<Value> implements IPivotViewerData, IKafkaStorable {
     private String elementId;
 
     @Column(name = "created_at")
-    @Convert(converter = LocalDateTimeAttributeConverter.class)
+    @Convert(converter = LocalDateTimeCryptoConverter.class)
     private LocalDateTime createdAt;
 
     public Fact() {

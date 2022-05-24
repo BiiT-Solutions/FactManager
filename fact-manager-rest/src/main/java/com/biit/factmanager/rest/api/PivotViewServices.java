@@ -1,6 +1,7 @@
 package com.biit.factmanager.rest.api;
 
 import com.biit.factmanager.core.providers.PivotViewProvider;
+import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.rest.exceptions.BadRequestException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,19 +17,19 @@ import java.util.List;
 
 @RequestMapping(value = "/pivotView")
 @RestController
-public class PivotViewServices {
+public class PivotViewServices<T extends Fact<?>> {
 
-    private final PivotViewProvider pivotViewProvider;
+    public PivotViewProvider<T> pivotViewProvider;
 
     @Autowired
-    public PivotViewServices(PivotViewProvider pivotViewProvider) {
+    public PivotViewServices(PivotViewProvider<T> pivotViewProvider) {
         this.pivotViewProvider = pivotViewProvider;
     }
 
-    @Operation(summary = "Get facts by params")
+    @Operation(summary = "Returns a pivotView view")
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(value = "", produces = MediaType.APPLICATION_XML_VALUE)
-    public String getFacts(
+    public String getView(
             HttpServletRequest httpRequest,
             @Parameter(name = "tenantId", required = false) @RequestParam(value = "tenantId", required = false) String tenantId,
             @Parameter(name = "organizationId", required = false) @RequestParam(value = "organizationId", required = false) String organizationId,
@@ -49,7 +50,7 @@ public class PivotViewServices {
             pairs[i] = Pair.of(valueParameters.get(i), valueParameters.get(i + 1));
         }
 
-        return pivotViewProvider.get(organizationId, tenantId, tag, group, elementId, startDate, endDate, lastDays, pairs);
+        return pivotViewProvider.getView(organizationId, tenantId, tag, group, elementId, startDate, endDate, lastDays, pairs);
     }
 
 

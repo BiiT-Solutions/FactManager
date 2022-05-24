@@ -3,7 +3,6 @@ package com.biit.factmanager.core.providers;
 import com.biit.factmanager.core.providers.exceptions.FactNotFoundException;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
-import com.biit.factmanager.persistence.repositories.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,7 @@ public class PivotViewProvider<T extends Fact<?>> {
         this.factProvider = factProvider;
     }
 
-    public String get(String organizationId, String tenantId, String tag, String group, String elementId, LocalDateTime startDate,
+    public String getView(String organizationId, String tenantId, String tag, String group, String elementId, LocalDateTime startDate,
                       LocalDateTime endDate, Integer lastDays, Pair<String, Object>... valueParameters) {
         return xmlFormFacts(factProvider.findBy(organizationId, tenantId, tag, group, elementId, startDate, endDate, lastDays, valueParameters));
     }

@@ -4,9 +4,11 @@ import com.biit.factmanager.core.providers.ChartProvider;
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
 import com.biit.factmanager.persistence.entities.values.FormrunnerQuestionValue;
+import com.biit.factmanager.persistence.enums.ChartType;
 import com.jayway.jsonpath.InvalidJsonException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -20,7 +22,7 @@ import java.util.List;
 
 @SpringBootTest
 @Test(groups = {"facts"})
-public class ChartProviderTest {
+public class ChartProviderTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private FactProvider<FormrunnerQuestionFact> factProvider;
@@ -52,8 +54,8 @@ public class ChartProviderTest {
 
     @Test
     public void htmlFromformrunnerQuestionFacts() throws IOException, URISyntaxException {
-        Assert.assertEquals(readFile("charts/htmlFromformrunnerQuestionFactsByTenants.html"),
-                chartProvider.htmlFromformrunnerQuestionFactsByQuestion(formrunnerQuestionFacts, "bar","0.7.20"));
+        Assert.assertEquals(readFile("charts/htmlFromFormrunnerQuestionFactsByTenants.html"),
+                chartProvider.htmlFromformrunnerQuestionFactsByQuestion(formrunnerQuestionFacts, ChartType.BAR));
     }
 
     private String readFile(String file) throws IOException, InvalidJsonException, URISyntaxException {
