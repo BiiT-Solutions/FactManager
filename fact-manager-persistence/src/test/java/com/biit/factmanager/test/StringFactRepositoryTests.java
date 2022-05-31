@@ -1,6 +1,5 @@
 package com.biit.factmanager.test;
 
-import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
 import com.biit.factmanager.persistence.entities.StringFact;
 import com.biit.factmanager.persistence.repositories.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,17 +25,18 @@ public class StringFactRepositoryTests extends AbstractTransactionalTestNGSpring
     private static final String FACT_ELEMENT_ID = "factElementId";
     private static final LocalDateTime FACT_TIME_FUTURE = LocalDateTime.now().plusDays(1);
     private static final LocalDateTime FACT_TIME_PAST = LocalDateTime.now().minusDays(1);
+    private long stringFactRepositorySize = 0;
 
     @Autowired
     private FactRepository<StringFact> stringFactRepository;
 
     @Test
     private void createStringFact() {
-        Assert.assertEquals(stringFactRepository.count(), 0);
+        stringFactRepositorySize = stringFactRepository.count();
         StringFact stringFact = new StringFact();
         stringFact.setString(STRING_FACT);
         stringFactRepository.save(stringFact);
-        Assert.assertEquals(stringFactRepository.count(), 1);
+        Assert.assertEquals(stringFactRepository.count(), stringFactRepositorySize += 1);
     }
 
     @Test(dependsOnMethods = "createStringFact")
@@ -57,11 +57,10 @@ public class StringFactRepositoryTests extends AbstractTransactionalTestNGSpring
 
     @Test(dependsOnMethods = "createStringFact")
     private void searchFactByInvalidValue() {
-        Collection<StringFact> facts = stringFactRepository.findByValueParameters(Pair.of("string", STRING_FACT + "!"));
-        Assert.assertEquals(facts.size(), 0);
+        Assert.assertEquals(stringFactRepository.findByValueParameters(Pair.of("string", STRING_FACT + "!")).size(), 0);
     }
 
-    @Test(dependsOnMethods = {"searchFactByValue", "searchFactByInvalidValue"})
+    @Test(dependsOnMethods = {"searchFactByValue", "searchFactByInvalidValue", "readFact"})
     private void updateStringFact() throws Exception {
         StringFact stringFact = new StringFact();
         stringFact.setString(NEW_STRING_FACT);
@@ -70,29 +69,27 @@ public class StringFactRepositoryTests extends AbstractTransactionalTestNGSpring
         StringFact updatedStringFact = stringFactRepository.findById(savedStringFact.getId()).orElseThrow(Exception::new);
         updatedStringFact.setString(STRING_FACT_UPDATED);
         stringFactRepository.save(updatedStringFact);
-        Assert.assertEquals(stringFactRepository.findAll().size(), 2);
+        Assert.assertEquals(stringFactRepository.count(), stringFactRepositorySize += 1);
         Assert.assertEquals((stringFactRepository.findById(savedStringFact.getId()).orElseThrow(Exception::new)).getString(), STRING_FACT_UPDATED);
     }
 
     @Test(dependsOnMethods = "updateStringFact")
     private void searchFactByUpdatedValue() {
-        Collection<StringFact> facts = stringFactRepository.findByValueParameters(Pair.of("string", STRING_FACT_UPDATED));
-        Assert.assertEquals(facts.size(), 1);
+        Assert.assertEquals(stringFactRepository.findByValueParameters(Pair.of("string", STRING_FACT_UPDATED)).size(), 1);
     }
 
     @Test(dependsOnMethods = "updateStringFact")
     private void searchFactByOldValue() {
-        Collection<StringFact> facts = stringFactRepository.findByValueParameters(Pair.of("string", NEW_STRING_FACT));
-        Assert.assertEquals(facts.size(), 0);
+        Assert.assertEquals(stringFactRepository.findByValueParameters(Pair.of("string", NEW_STRING_FACT)).size(), 0);
     }
 
     @Test(dependsOnMethods = {"updateStringFact", "searchFactByUpdatedValue", "searchFactByOldValue"})
     private void deleteStringFact() {
-        Assert.assertEquals(stringFactRepository.count(), 2);
+        Assert.assertEquals(stringFactRepository.count(), stringFactRepositorySize);
         List<StringFact> stringFacts = stringFactRepository.findAll();
-        Assert.assertEquals(stringFacts.size(), 2);
+        Assert.assertEquals(stringFacts.size(), stringFactRepositorySize);
         stringFactRepository.delete(stringFacts.get(0));
-        Assert.assertEquals(stringFactRepository.count(), 1);
+        Assert.assertEquals(stringFactRepository.count(), stringFactRepositorySize -= 1);
     }
 
     @AfterClass

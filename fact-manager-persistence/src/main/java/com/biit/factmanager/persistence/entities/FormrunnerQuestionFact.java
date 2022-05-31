@@ -22,24 +22,23 @@ import javax.persistence.Transient;
 public class FormrunnerQuestionFact extends Fact<FormrunnerQuestionValue> implements IKafkaStorable {
 
     @Transient
-    private FormrunnerQuestionValue FormrunnerQuestionValue;
+    private FormrunnerQuestionValue formrunnerQuestionValue;
 
     @JsonCreator
     public FormrunnerQuestionFact() {
         super();
-        FormrunnerQuestionValue = new FormrunnerQuestionValue();
     }
 
     private FormrunnerQuestionValue getFormrunnerQuestionValue() {
-        if (FormrunnerQuestionValue == null) {
-            FormrunnerQuestionValue = getEntity();
+        if (formrunnerQuestionValue == null) {
+            formrunnerQuestionValue = getEntity();
         }
-        return FormrunnerQuestionValue;
+        return formrunnerQuestionValue;
     }
 
     @Override
     public void setEntity(FormrunnerQuestionValue entity) {
-        FormrunnerQuestionValue = entity;
+        formrunnerQuestionValue = entity;
         super.setEntity(entity);
     }
 

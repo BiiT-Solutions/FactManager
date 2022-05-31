@@ -12,10 +12,10 @@ import javax.persistence.Transient;
 public class StringFact extends Fact<StringValue> {
 
     @Transient
-    private final StringValue stringValue;
+    private StringValue stringValue;
 
     public StringFact() {
-        this.stringValue = new StringValue();
+        super();
     }
 
     @Override
@@ -42,8 +42,12 @@ public class StringFact extends Fact<StringValue> {
     }
 
     public void setString(String string) {
-        stringValue.setString(string);
-        setEntity(stringValue);
+        if (stringValue == null) {
+            setEntity(new StringValue(string));
+        } else {
+            stringValue.setString(string);
+            setEntity(stringValue);
+        }
     }
 
     @Override

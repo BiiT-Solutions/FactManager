@@ -30,10 +30,11 @@ public class PivotViewProvider<T extends Fact<?>> {
         final Map<String, Collection<T>> tenantsIds = new HashMap<>();
         final Map<String, Integer> imageIndexes = new HashMap<>();
         for (final T fact : facts) {
+            if (fact.getPivotViewerItemImageIndex() != null && fact.getPivotViewerTag() != null && fact.getPivotViewerValue() != null) {
             elementsByItem.add(fact.getPivotViewerTag());
             tenantsIds.computeIfAbsent(fact.getTenantId(), k -> new ArrayList<>());
             tenantsIds.get(fact.getTenantId()).add(fact);
-            if (fact.getPivotViewerItemImageIndex() != null) {
+
                 imageIndexes.put(fact.getTenantId(), fact.getPivotViewerItemImageIndex());
             }
         }
@@ -52,14 +53,12 @@ public class PivotViewProvider<T extends Fact<?>> {
                         new FactNotFoundException(this.getClass(), "No facts for tenant '" + tenantId + "' with score."));
                 xml.append("        <Item Id=\"").append(scoreFacts.getPivotViewerValueItemId()).append("\" Img=\"")
                         .append(imageIndexes.get(tenantId)).append("\"")
-                        .append(" Href=\"/usmo\" Name=\"").append(scoreFacts.getPivotViewerItemName()).append("\">\n");
+                        .append(" Href=\"/usmo\" Name=\"").append(scoreFacts.getElementId()).append("\">\n"); //appointment was patientName
                 xml.append("            <Facets>\n");
                 tenantsIds.get(tenantId).forEach(fact -> {
-                    if (fact.getPivotViewerTag() != null) {
-                        xml.append("                <Facet Name=\"").append(fact.getPivotViewerTag()).append("\">\n");
-                        xml.append("                    <Number Value=\"").append(fact.getPivotViewerValue()).append("\"/>\n");
+                        xml.append("                <Facet Name=\"").append(fact.getPivotViewerTag()).append("\">\n");          //facet = question
+                        xml.append("                    <Number Value=\"").append(fact.getPivotViewerValue()).append("\"/>\n"); //score
                         xml.append("                </Facet>\n");
-                    }
                 });
                 xml.append("            </Facets>\n");
                 xml.append("        </Item>\n");

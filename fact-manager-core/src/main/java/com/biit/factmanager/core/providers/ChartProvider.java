@@ -32,7 +32,7 @@ public class ChartProvider<T extends Fact<?>> {
         return htmlFromformrunnerQuestionFactsByQuestion(factProvider.
                 findBy(organizationId, tenantId, tag, group, elementId, startDate, endDate, lastDays, valueParameters), type);
     }
-    
+
     public String htmlFromformrunnerQuestionFactsByQuestion(Collection<T> formrunnerQuestionFacts, ChartType type) {
         final StringBuilder html = new StringBuilder();
 
@@ -65,7 +65,9 @@ public class ChartProvider<T extends Fact<?>> {
             formrunnerQuestionFacts.forEach(formrunnerQuestionFact -> {
                 if (formrunnerQuestionFact.getTenantId().compareTo(tenant) == 0) {
                     final FormrunnerQuestionValue formrunnerQuestionValue = (FormrunnerQuestionValue) formrunnerQuestionFact.getEntity();
-                    html.append(", ").append(formrunnerQuestionValue.getScore());
+                    if ((formrunnerQuestionValue.getScore() != null) && !(formrunnerQuestionValue.getScore().isNaN())) {
+                        html.append(", ").append(formrunnerQuestionValue.getScore());
+                    }
                 }
             });
             html.append("],\n");
