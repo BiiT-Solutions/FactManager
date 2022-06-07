@@ -30,7 +30,7 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private PivotViewProvider<FormrunnerQuestionFact> pivotViewProvider;
 
-    private final List<FormrunnerQuestionFact> FormrunnerQuestionFacts = new ArrayList<>();
+    private final List<FormrunnerQuestionFact> formrunnerQuestionFacts = new ArrayList<>();
 
     @BeforeClass
     public void populate() {
@@ -47,12 +47,12 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
 
                 //Forms scores has not question field filled up.
                 FormrunnerQuestionValue formFormrunnerQuestionValue = new FormrunnerQuestionValue();
-                formFormrunnerQuestionValue.setScore((double) examination);
+                formFormrunnerQuestionValue.getVariables().put(FormrunnerQuestionValue.SCORE_VALUE, (double) examination);
                 formFormrunnerQuestionValue.setXpath(formXpath);
-                formFormrunnerQuestionValue.setPatientName("Patient" + patient);
+                formFormrunnerQuestionValue.setItemName("Patient" + patient);
                 formFormrunnerQuestionFact.setEntity(formFormrunnerQuestionValue);
                 formFormrunnerQuestionFact = factProvider.save(formFormrunnerQuestionFact);
-                FormrunnerQuestionFacts.add(formFormrunnerQuestionFact);
+                formrunnerQuestionFacts.add(formFormrunnerQuestionFact);
 
                 // Each examination 2 categories
                 for (int category = 1; category < 3; category++) {
@@ -63,16 +63,15 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
                     categoryFormrunnerQuestionFact.setElementId("examinationId" + examination);
                     categoryFormrunnerQuestionFact.setTenantId("p" + patient);
 
-                    //Categories scores has not question field filled up.
+                    //Categories scores has no question field filled up.
                     FormrunnerQuestionValue categoryFormrunnerQuestionValue = new FormrunnerQuestionValue();
-                    categoryFormrunnerQuestionValue.setScore((double) category);
-                    categoryFormrunnerQuestionValue.setParent("form");
+                    formFormrunnerQuestionValue.getVariables().put(FormrunnerQuestionValue.SCORE_VALUE, (double) category);
                     categoryFormrunnerQuestionValue.setXpath(categoryXpath);
-                    categoryFormrunnerQuestionValue.setPatientName("Patient" + patient);
+                    categoryFormrunnerQuestionValue.setItemName("Patient" + patient);
                     categoryFormrunnerQuestionFact.setEntity(categoryFormrunnerQuestionValue);
 
                     categoryFormrunnerQuestionFact = factProvider.save(categoryFormrunnerQuestionFact);
-                    FormrunnerQuestionFacts.add(categoryFormrunnerQuestionFact);
+                    formrunnerQuestionFacts.add(categoryFormrunnerQuestionFact);
                     // Each Examination with 10 questions
                     for (int question = 0; question < 10; question++) {
                         String questionXpath = categoryXpath + String.format("Question_%s_%s_%s", examination, category, question) + "/";
@@ -84,14 +83,14 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
 
                         FormrunnerQuestionValue questionFormrunnerQuestionValue = new FormrunnerQuestionValue();
                         questionFormrunnerQuestionValue.setQuestion(String.format("Question_%s_%s_%s", examination, category, question));
-                        questionFormrunnerQuestionValue.setParent("category" + category);
-                        questionFormrunnerQuestionValue.setScore(Double.parseDouble("0." + question));
+                        questionFormrunnerQuestionValue.getVariables().put(FormrunnerQuestionValue.SCORE_VALUE, Double.parseDouble("0." + question));
+
                         questionFormrunnerQuestionValue.setXpath(questionXpath);
-                        questionFormrunnerQuestionValue.setPatientName("Patient" + patient);
+                        questionFormrunnerQuestionValue.setItemName("Patient" + patient);
                         questionFormrunnerQuestionFact.setEntity(questionFormrunnerQuestionValue);
 
                         questionFormrunnerQuestionFact = factProvider.save(questionFormrunnerQuestionFact);
-                        FormrunnerQuestionFacts.add(questionFormrunnerQuestionFact);
+                        formrunnerQuestionFacts.add(questionFormrunnerQuestionFact);
                     }
                 }
             }
@@ -100,12 +99,12 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void xmlFromFormrunnerQuestionFact() throws IOException, URISyntaxException {
-        Assert.assertEquals(pivotViewProvider.xmlFormFacts(FormrunnerQuestionFacts), readFile("pivotviewer/FormrunnerQuestionFacts.xml"));
+        Assert.assertEquals(pivotViewProvider.xmlFormFacts(formrunnerQuestionFacts), readFile("pivotviewer/FormrunnerQuestionFacts.xml"));
     }
 
     @AfterClass
     public void cleanUp() {
-        for (FormrunnerQuestionFact fact : FormrunnerQuestionFacts) {
+        for (FormrunnerQuestionFact fact : formrunnerQuestionFacts) {
             factProvider.delete(fact);
         }
     }

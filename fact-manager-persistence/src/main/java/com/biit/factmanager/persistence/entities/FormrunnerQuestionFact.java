@@ -2,6 +2,7 @@ package com.biit.factmanager.persistence.entities;
 
 
 import com.biit.eventstructure.event.IKafkaStorable;
+import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.values.FormrunnerQuestionValue;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -22,24 +23,24 @@ import javax.persistence.Transient;
 public class FormrunnerQuestionFact extends Fact<FormrunnerQuestionValue> implements IKafkaStorable {
 
     @Transient
-    private FormrunnerQuestionValue FormrunnerQuestionValue;
+    private FormrunnerQuestionValue formrunnerQuestionValue;
 
     @JsonCreator
     public FormrunnerQuestionFact() {
         super();
-        FormrunnerQuestionValue = new FormrunnerQuestionValue();
+        formrunnerQuestionValue = new FormrunnerQuestionValue();
     }
 
     private FormrunnerQuestionValue getFormrunnerQuestionValue() {
-        if (FormrunnerQuestionValue == null) {
-            FormrunnerQuestionValue = getEntity();
+        if (formrunnerQuestionValue == null) {
+            formrunnerQuestionValue = getEntity();
         }
-        return FormrunnerQuestionValue;
+        return formrunnerQuestionValue;
     }
 
     @Override
     public void setEntity(FormrunnerQuestionValue entity) {
-        FormrunnerQuestionValue = entity;
+        formrunnerQuestionValue = entity;
         super.setEntity(entity);
     }
 
@@ -59,16 +60,17 @@ public class FormrunnerQuestionFact extends Fact<FormrunnerQuestionValue> implem
 
     @Override
     public String getPivotViewerValue() {
-        if (getFormrunnerQuestionValue() != null && getFormrunnerQuestionValue().getScore() != null) {
-            return getFormrunnerQuestionValue().getScore().toString();
+        if (getFormrunnerQuestionValue() != null && getFormrunnerQuestionValue().getVariables() != null
+                && getFormrunnerQuestionValue().getVariables().get(FormrunnerQuestionValue.SCORE_VALUE) != null) {
+            return getFormrunnerQuestionValue().getVariables().get(FormrunnerQuestionValue.SCORE_VALUE).toString();
         }
         return null;
     }
 
     @Override
     public String getPivotViewerItemName() {
-        if (getFormrunnerQuestionValue() != null && getFormrunnerQuestionValue().getPatientName() != null) {
-            return getFormrunnerQuestionValue().getPatientName();
+        if (getFormrunnerQuestionValue() != null && getFormrunnerQuestionValue().getItemName() != null) {
+            return getFormrunnerQuestionValue().getItemName();
         }
         return null;
     }
@@ -77,8 +79,16 @@ public class FormrunnerQuestionFact extends Fact<FormrunnerQuestionValue> implem
     public Integer getPivotViewerItemImageIndex() {
         //Form scores that has the score, check by xpath.
         if (getFormrunnerQuestionValue() != null && (getFormrunnerQuestionValue().getXpath() == null || getFormrunnerQuestionValue().getXpath().length() < 2)
-                && getFormrunnerQuestionValue().getScore() != null) {
-            return getFormrunnerQuestionValue().getScore().intValue();
+                && getFormrunnerQuestionValue().getVariables() != null
+                && getFormrunnerQuestionValue().getVariables().get(FormrunnerQuestionValue.SCORE_VALUE) != null) {
+            try {
+                return (int) Double.parseDouble(getFormrunnerQuestionValue().getVariables().get(FormrunnerQuestionValue.SCORE_VALUE).toString());
+            } catch (NumberFormatException e) {
+                FactManagerLogger.errorMessage(this.getClass().getName(), "Invalid score '"
+                        + getFormrunnerQuestionValue().getVariables().get(FormrunnerQuestionValue.SCORE_VALUE).toString()
+                        + "' on '"
+                        + getFormrunnerQuestionValue().getXpath() + "'.");
+            }
         }
         return null;
     }
