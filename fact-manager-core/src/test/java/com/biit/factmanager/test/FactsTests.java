@@ -41,21 +41,33 @@ public class FactsTests extends AbstractTestNGSpringContextTests {
     }
 
     @Test
+    public void checkScore() {
+        FormrunnerQuestionFact formrunnerQuestionFact = new FormrunnerQuestionFact();
+        FormrunnerQuestionValue formrunnerQuestionValue = new FormrunnerQuestionValue();
+        formrunnerQuestionValue.setQuestion(QUESTION_1);
+        formrunnerQuestionValue.setAnswer(ANSWER_1);
+        formrunnerQuestionValue.getVariables().put(FormrunnerQuestionValue.SCORE_VALUE, 1d);
+        formrunnerQuestionFact.setEntity(formrunnerQuestionValue);
+
+        Assert.assertEquals(formrunnerQuestionFact.getEntity().getVariables().get(FormrunnerQuestionValue.SCORE_VALUE), 1d);
+    }
+
+    @Test
     public void searchByValueParameter() {
         Assert.assertEquals(factProvider.count(), 0);
-        FormrunnerQuestionFact FormrunnerQuestionFact = new FormrunnerQuestionFact();
-        FormrunnerQuestionValue FormrunnerQuestionValue = new FormrunnerQuestionValue();
-        FormrunnerQuestionValue.setQuestion(QUESTION_1);
-        FormrunnerQuestionValue.setAnswer(ANSWER_1);
-        FormrunnerQuestionFact.setEntity(FormrunnerQuestionValue);
-        factProvider.save(FormrunnerQuestionFact);
+        FormrunnerQuestionFact formrunnerQuestionFact = new FormrunnerQuestionFact();
+        FormrunnerQuestionValue formrunnerQuestionValue = new FormrunnerQuestionValue();
+        formrunnerQuestionValue.setQuestion(QUESTION_1);
+        formrunnerQuestionValue.setAnswer(ANSWER_1);
+        formrunnerQuestionFact.setEntity(formrunnerQuestionValue);
+        factProvider.save(formrunnerQuestionFact);
 
-        FormrunnerQuestionFact = new FormrunnerQuestionFact();
-        FormrunnerQuestionValue = new FormrunnerQuestionValue();
-        FormrunnerQuestionValue.setQuestion(QUESTION_2);
-        FormrunnerQuestionValue.setAnswer(ANSWER_2);
-        FormrunnerQuestionFact.setEntity(FormrunnerQuestionValue);
-        factProvider.save(FormrunnerQuestionFact);
+        formrunnerQuestionFact = new FormrunnerQuestionFact();
+        formrunnerQuestionValue = new FormrunnerQuestionValue();
+        formrunnerQuestionValue.setQuestion(QUESTION_2);
+        formrunnerQuestionValue.setAnswer(ANSWER_2);
+        formrunnerQuestionFact.setEntity(formrunnerQuestionValue);
+        factProvider.save(formrunnerQuestionFact);
 
         Assert.assertEquals(factProvider.getByValueParameter("question", QUESTION_1).size(), 1);
         Assert.assertEquals(factProvider.getByValueParameter("question", QUESTION_2).size(), 1);

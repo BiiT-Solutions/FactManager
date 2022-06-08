@@ -58,10 +58,6 @@ public class FactManagerServicesServer {
 
 	@Bean
 	public ApplicationListener<ContextRefreshedEvent> startupLoggingListener() {
-		return new ApplicationListener<ContextRefreshedEvent>() {
-			public void onApplicationEvent(ContextRefreshedEvent event) {
-				FactManagerLogger.info(FactManagerServicesServer.class, "### Server started ###");
-			}
-		};
+		return event -> FactManagerLogger.info(FactManagerServicesServer.class, "### Server started ###");
 	}
 }

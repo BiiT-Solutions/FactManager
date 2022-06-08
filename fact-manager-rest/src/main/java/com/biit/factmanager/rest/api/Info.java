@@ -1,4 +1,4 @@
-package com.biit.factmanager.rest;
+package com.biit.factmanager.rest.api;
 
 import com.biit.factmanager.logger.FactManagerLogger;
 import io.swagger.v3.oas.annotations.Hidden;

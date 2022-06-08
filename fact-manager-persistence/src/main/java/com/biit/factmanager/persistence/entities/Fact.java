@@ -1,6 +1,5 @@
 package com.biit.factmanager.persistence.entities;
 
-
 import com.biit.database.encryption.LocalDateTimeCryptoConverter;
 import com.biit.database.encryption.StringCryptoConverter;
 import com.biit.eventstructure.event.IKafkaStorable;
@@ -33,9 +32,6 @@ public abstract class Fact<Value> implements IPivotViewerData, IKafkaStorable {
     //Patient Id
     @Column(name = "tenant_id")
     private String tenantId;
-
-    @Column(name = "category")
-    private String category;
 
     @Column(name = "tag")
     private String tag;

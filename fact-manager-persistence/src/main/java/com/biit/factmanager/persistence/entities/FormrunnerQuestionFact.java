@@ -2,6 +2,7 @@ package com.biit.factmanager.persistence.entities;
 
 
 import com.biit.eventstructure.event.IKafkaStorable;
+import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.values.FormrunnerQuestionValue;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -27,6 +28,7 @@ public class FormrunnerQuestionFact extends Fact<FormrunnerQuestionValue> implem
     @JsonCreator
     public FormrunnerQuestionFact() {
         super();
+        formrunnerQuestionValue = new FormrunnerQuestionValue();
     }
 
     private FormrunnerQuestionValue getFormrunnerQuestionValue() {
@@ -58,25 +60,35 @@ public class FormrunnerQuestionFact extends Fact<FormrunnerQuestionValue> implem
 
     @Override
     public String getPivotViewerValue() {
-        if (getFormrunnerQuestionValue() != null && getFormrunnerQuestionValue().getScore() != null) {
-            return getFormrunnerQuestionValue().getScore().toString();
+        if (getFormrunnerQuestionValue() != null && getFormrunnerQuestionValue().getVariables() != null
+                && getFormrunnerQuestionValue().getVariables().get(FormrunnerQuestionValue.SCORE_VALUE) != null) {
+            return getFormrunnerQuestionValue().getVariables().get(FormrunnerQuestionValue.SCORE_VALUE).toString();
         }
         return null;
     }
 
     @Override
     public String getPivotViewerItemName() {
-        if (getFormrunnerQuestionValue() != null && getFormrunnerQuestionValue().getPatientName() != null) {
-            return getFormrunnerQuestionValue().getPatientName();
+        if (getFormrunnerQuestionValue() != null && getFormrunnerQuestionValue().getItemName() != null) {
+            return getFormrunnerQuestionValue().getItemName();
         }
         return null;
     }
 
     @Override
     public Integer getPivotViewerItemImageIndex() {
-        if (getFormrunnerQuestionValue() != null && getFormrunnerQuestionValue().getXpath() != null
-                && getFormrunnerQuestionValue().getScore() != null) {
-            return getFormrunnerQuestionValue().getScore().intValue();
+        //Form scores that has the score, check by xpath.
+        if (getFormrunnerQuestionValue() != null && (getFormrunnerQuestionValue().getXpath() == null || getFormrunnerQuestionValue().getXpath().length() < 2)
+                && getFormrunnerQuestionValue().getVariables() != null
+                && getFormrunnerQuestionValue().getVariables().get(FormrunnerQuestionValue.SCORE_VALUE) != null) {
+            try {
+                return (int) Double.parseDouble(getFormrunnerQuestionValue().getVariables().get(FormrunnerQuestionValue.SCORE_VALUE).toString());
+            } catch (NumberFormatException e) {
+                FactManagerLogger.errorMessage(this.getClass().getName(), "Invalid score '"
+                        + getFormrunnerQuestionValue().getVariables().get(FormrunnerQuestionValue.SCORE_VALUE).toString()
+                        + "' on '"
+                        + getFormrunnerQuestionValue().getXpath() + "'.");
+            }
         }
         return null;
     }

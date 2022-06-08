@@ -2,7 +2,6 @@ package com.biit.factmanager.test;
 
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.core.providers.PivotViewProvider;
-import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
 import com.biit.factmanager.persistence.entities.values.FormrunnerQuestionValue;
 import com.jayway.jsonpath.InvalidJsonException;
@@ -48,9 +47,9 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
 
                 //Forms scores has not question field filled up.
                 FormrunnerQuestionValue formFormrunnerQuestionValue = new FormrunnerQuestionValue();
-                formFormrunnerQuestionValue.setScore((double) examination);
+                formFormrunnerQuestionValue.getVariables().put(FormrunnerQuestionValue.SCORE_VALUE, (double) examination);
                 formFormrunnerQuestionValue.setXpath(formXpath);
-                formFormrunnerQuestionValue.setPatientName("Patient" + patient);
+                formFormrunnerQuestionValue.setItemName("Patient" + patient);
                 formFormrunnerQuestionFact.setEntity(formFormrunnerQuestionValue);
                 formFormrunnerQuestionFact = factProvider.save(formFormrunnerQuestionFact);
                 formrunnerQuestionFacts.add(formFormrunnerQuestionFact);
@@ -64,12 +63,11 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
                     categoryFormrunnerQuestionFact.setElementId("examinationId" + examination);
                     categoryFormrunnerQuestionFact.setTenantId("p" + patient);
 
-                    //Categories scores has not question field filled up.
+                    //Categories scores has no question field filled up.
                     FormrunnerQuestionValue categoryFormrunnerQuestionValue = new FormrunnerQuestionValue();
-                    categoryFormrunnerQuestionValue.setScore((double) category);
-                    categoryFormrunnerQuestionValue.setParent("form");
+                    formFormrunnerQuestionValue.getVariables().put(FormrunnerQuestionValue.SCORE_VALUE, (double) category);
                     categoryFormrunnerQuestionValue.setXpath(categoryXpath);
-                    categoryFormrunnerQuestionValue.setPatientName("Patient" + patient);
+                    categoryFormrunnerQuestionValue.setItemName("Patient" + patient);
                     categoryFormrunnerQuestionFact.setEntity(categoryFormrunnerQuestionValue);
 
                     categoryFormrunnerQuestionFact = factProvider.save(categoryFormrunnerQuestionFact);
@@ -85,10 +83,10 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
 
                         FormrunnerQuestionValue questionFormrunnerQuestionValue = new FormrunnerQuestionValue();
                         questionFormrunnerQuestionValue.setQuestion(String.format("Question_%s_%s_%s", examination, category, question));
-                        questionFormrunnerQuestionValue.setParent("category" + category);
-                        questionFormrunnerQuestionValue.setScore(Double.parseDouble("0." + question));
+                        questionFormrunnerQuestionValue.getVariables().put(FormrunnerQuestionValue.SCORE_VALUE, Double.parseDouble("0." + question));
+
                         questionFormrunnerQuestionValue.setXpath(questionXpath);
-                        questionFormrunnerQuestionValue.setPatientName("Patient" + patient);
+                        questionFormrunnerQuestionValue.setItemName("Patient" + patient);
                         questionFormrunnerQuestionFact.setEntity(questionFormrunnerQuestionValue);
 
                         questionFormrunnerQuestionFact = factProvider.save(questionFormrunnerQuestionFact);
@@ -101,7 +99,6 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void xmlFromFormrunnerQuestionFact() throws IOException, URISyntaxException {
-        FactManagerLogger.info(this.getClass().getName(), pivotViewProvider.xmlFormFacts(formrunnerQuestionFacts));
         Assert.assertEquals(pivotViewProvider.xmlFormFacts(formrunnerQuestionFacts), readFile("pivotviewer/FormrunnerQuestionFacts.xml"));
     }
 

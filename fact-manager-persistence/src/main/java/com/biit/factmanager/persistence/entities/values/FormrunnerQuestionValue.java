@@ -1,30 +1,38 @@
 package com.biit.factmanager.persistence.entities.values;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class FormrunnerQuestionValue {
+    public static final String SCORE_VALUE = "Score";
     private String answer;
 
     private String xpath;
 
-    private String patientName;
+    //Patient name.
+    private String itemName;
 
-    private Double score;
+    private Map<String, Object> variables;
 
     private String question;
 
-    private String parent;
+    private String formVersion;
 
-    private String examinationVersion;
+    private String formName;
 
     private Long professionalId;
 
     private Long companyId;
 
     public FormrunnerQuestionValue() {
+        super();
+        variables = new HashMap<>();
     }
 
     public String getAnswer() {
         return answer;
     }
+
 
     public void setAnswer(String answer) {
         this.answer = answer;
@@ -38,12 +46,12 @@ public class FormrunnerQuestionValue {
         this.xpath = xpath;
     }
 
-    public Double getScore() {
-        return score;
+    public Map<String, Object> getVariables() {
+        return variables;
     }
 
-    public void setScore(Double score) {
-        this.score = score;
+    public void setVariables(Map<String, Object> variables) {
+        this.variables = variables;
     }
 
     public String getQuestion() {
@@ -54,20 +62,20 @@ public class FormrunnerQuestionValue {
         this.question = question;
     }
 
-    public String getParent() {
-        return parent;
+    public String getFormVersion() {
+        return formVersion;
     }
 
-    public void setParent(String parent) {
-        this.parent = parent;
+    public void setFormVersion(String formVersion) {
+        this.formVersion = formVersion;
     }
 
-    public String getExaminationVersion() {
-        return examinationVersion;
+    public String getFormName() {
+        return formName;
     }
 
-    public void setExaminationVersion(String examinationVersion) {
-        this.examinationVersion = examinationVersion;
+    public void setFormName(String formName) {
+        this.formName = formName;
     }
 
     public Long getProfessionalId() {
@@ -86,12 +94,12 @@ public class FormrunnerQuestionValue {
         this.companyId = companyId;
     }
 
-    public String getPatientName() {
-        return patientName;
+    public String getItemName() {
+        return itemName;
     }
 
-    public void setPatientName(String patientName) {
-        this.patientName = patientName;
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
     }
 
 }
