@@ -74,8 +74,7 @@ public class FormrunnerQuestionFact extends Fact<FormrunnerQuestionValue> implem
 
     @Override
     public Integer getPivotViewerItemImageIndex() {
-        //Form scores that has the score, check by xpath.
-        if (getFormrunnerQuestionValue() != null && (getFormrunnerQuestionValue().getXpath() == null || getFormrunnerQuestionValue().getXpath().length() < 2)
+        if (getFormrunnerQuestionValue() != null && getFormrunnerQuestionValue().getXpath() != null
                 && getFormrunnerQuestionValue().getScore() != null) {
             return getFormrunnerQuestionValue().getScore().intValue();
         }

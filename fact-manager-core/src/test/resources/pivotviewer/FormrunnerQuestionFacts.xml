@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Collection xmlns="http://schemas.microsoft.com/collection/metadata/2009" SchemaVersion="1.0" Name="FactManager">
     <FacetCategories>
-        <FacetCategory Name="null" Type="Number"/>
         <FacetCategory Name="Question_1_1_0" Type="Number"/>
         <FacetCategory Name="Question_1_1_1" Type="Number"/>
         <FacetCategory Name="Question_1_1_2" Type="Number"/>
@@ -44,7 +43,7 @@
         <FacetCategory Name="Question_2_2_9" Type="Number"/>
     </FacetCategories>
     <Items ImgBase="./factManager/fact_manager.dzc">
-        <Item Id="p0" Img="2" Href="/usmo" Name="examinationId1">
+        <Item Id="p0" Img="0" Href="/usmo" Name="examinationId1">
             <Facets>
                 <Facet Name="Question_1_1_0">
                     <Number Value="0.0"/>
@@ -168,7 +167,7 @@
                 </Facet>
             </Facets>
         </Item>
-        <Item Id="p1" Img="2" Href="/usmo" Name="examinationId1">
+        <Item Id="p1" Img="0" Href="/usmo" Name="examinationId1">
             <Facets>
                 <Facet Name="Question_1_1_0">
                     <Number Value="0.0"/>
@@ -292,7 +291,7 @@
                 </Facet>
             </Facets>
         </Item>
-        <Item Id="p2" Img="2" Href="/usmo" Name="examinationId1">
+        <Item Id="p2" Img="0" Href="/usmo" Name="examinationId1">
             <Facets>
                 <Facet Name="Question_1_1_0">
                     <Number Value="0.0"/>
@@ -416,7 +415,7 @@
                 </Facet>
             </Facets>
         </Item>
-        <Item Id="p3" Img="2" Href="/usmo" Name="examinationId1">
+        <Item Id="p3" Img="0" Href="/usmo" Name="examinationId1">
             <Facets>
                 <Facet Name="Question_1_1_0">
                     <Number Value="0.0"/>
@@ -540,7 +539,7 @@
                 </Facet>
             </Facets>
         </Item>
-        <Item Id="p4" Img="2" Href="/usmo" Name="examinationId1">
+        <Item Id="p4" Img="0" Href="/usmo" Name="examinationId1">
             <Facets>
                 <Facet Name="Question_1_1_0">
                     <Number Value="0.0"/>
