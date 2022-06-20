@@ -15,15 +15,15 @@ import org.testng.annotations.Test;
 @Test(groups = {"facts"})
 public class FactsTests extends AbstractTestNGSpringContextTests {
     private static final String QUESTION_XPATH_1 = "/form/Category/Question1";
-    private static final Integer VALUE_1 = 3;
+    private static final String VALUE_1 = "3";
 
     private static final String QUESTION_XPATH_2 = "/form/Category/Question2";
-    private static final Integer VALUE_2 = 5;
+    private static final String VALUE_2 = "5";
 
     @Autowired
-    private FactProvider<FormrunnerVariableFact<Integer>> formrunnerVariableFactProvider;
+    private FactProvider<FormrunnerVariableFact> formrunnerVariableFactProvider;
 
-    private FormrunnerVariableFact<Integer> fact = null;
+    private FormrunnerVariableFact fact = null;
 
 
     @BeforeClass
@@ -34,7 +34,7 @@ public class FactsTests extends AbstractTestNGSpringContextTests {
     @Test
     public void addFact() {
         Assert.assertEquals(formrunnerVariableFactProvider.count(), 0);
-        fact = formrunnerVariableFactProvider.save(new FormrunnerVariableFact<>());
+        fact = formrunnerVariableFactProvider.save(new FormrunnerVariableFact());
         Assert.assertNotNull(fact);
         Assert.assertEquals(formrunnerVariableFactProvider.count(), 1);
         formrunnerVariableFactProvider.delete(fact);
@@ -42,27 +42,27 @@ public class FactsTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void checkScore() {
-        FormrunnerVariableFact<Integer> formrunnerVariableFact = new FormrunnerVariableFact<>();
-        FormrunnerVariableValue<Integer> formrunnerVariableValue = new FormrunnerVariableValue<>();
+        FormrunnerVariableFact formrunnerVariableFact = new FormrunnerVariableFact();
+        FormrunnerVariableValue formrunnerVariableValue = new FormrunnerVariableValue();
         formrunnerVariableValue.setXpath(QUESTION_XPATH_1);
-        formrunnerVariableValue.setValue(1);
+        formrunnerVariableValue.setValue("1");
         formrunnerVariableFact.setEntity(formrunnerVariableValue);
 
-        Assert.assertEquals(formrunnerVariableFact.getEntity().getValue(), Integer.valueOf(1));
+        Assert.assertEquals(formrunnerVariableFact.getEntity().getValue(), "1");
     }
 
     @Test
     public void searchByValueParameter() {
         Assert.assertEquals(formrunnerVariableFactProvider.count(), 0);
-        FormrunnerVariableFact<Integer> formrunnerVariableFact = new FormrunnerVariableFact<>();
-        FormrunnerVariableValue<Integer> formrunnerVariableValue = new FormrunnerVariableValue<>();
+        FormrunnerVariableFact formrunnerVariableFact = new FormrunnerVariableFact();
+        FormrunnerVariableValue formrunnerVariableValue = new FormrunnerVariableValue();
         formrunnerVariableValue.setXpath(QUESTION_XPATH_1);
         formrunnerVariableValue.setValue(VALUE_1);
         formrunnerVariableFact.setEntity(formrunnerVariableValue);
         formrunnerVariableFactProvider.save(formrunnerVariableFact);
 
-        formrunnerVariableFact = new FormrunnerVariableFact<>();
-        formrunnerVariableValue = new FormrunnerVariableValue<>();
+        formrunnerVariableFact = new FormrunnerVariableFact();
+        formrunnerVariableValue = new FormrunnerVariableValue();
         formrunnerVariableValue.setXpath(QUESTION_XPATH_2);
         formrunnerVariableValue.setValue(VALUE_2);
         formrunnerVariableFact.setEntity(formrunnerVariableValue);
@@ -72,7 +72,7 @@ public class FactsTests extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(formrunnerVariableFactProvider.getByValueParameter("xpath", QUESTION_XPATH_2).size(), 1);
         Assert.assertEquals(formrunnerVariableFactProvider.getByValueParameter("value", VALUE_1).size(), 1);
         Assert.assertEquals(formrunnerVariableFactProvider.getByValueParameter("value", VALUE_2).size(), 1);
-        Assert.assertEquals(formrunnerVariableFactProvider.getByValueParameter("value", 1000).size(), 0);
+        Assert.assertEquals(formrunnerVariableFactProvider.getByValueParameter("value", "1000").size(), 0);
     }
 
 

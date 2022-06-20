@@ -20,18 +20,18 @@ import javax.persistence.Transient;
  */
 @Entity
 @DiscriminatorValue("FormrunnerVariableFact")
-public class FormrunnerVariableFact<T> extends Fact<FormrunnerVariableValue<T>> implements IKafkaStorable {
+public class FormrunnerVariableFact extends Fact<FormrunnerVariableValue> implements IKafkaStorable {
 
     @Transient
-    private FormrunnerVariableValue<T> formrunnerVariableValue;
+    private FormrunnerVariableValue formrunnerVariableValue;
 
     @JsonCreator
     public FormrunnerVariableFact() {
         super();
-        formrunnerVariableValue = new FormrunnerVariableValue<T>();
+        formrunnerVariableValue = new FormrunnerVariableValue();
     }
 
-    private FormrunnerVariableValue<T> getFormrunnerVariableValue() {
+    private FormrunnerVariableValue getFormrunnerVariableValue() {
         if (formrunnerVariableValue == null) {
             formrunnerVariableValue = getEntity();
         }
@@ -39,14 +39,14 @@ public class FormrunnerVariableFact<T> extends Fact<FormrunnerVariableValue<T>> 
     }
 
     @Override
-    public void setEntity(FormrunnerVariableValue<T> entity) {
+    public void setEntity(FormrunnerVariableValue entity) {
         formrunnerVariableValue = entity;
         super.setEntity(entity);
     }
 
     @Override
-    protected TypeReference<FormrunnerVariableValue<T>> getJsonParser() {
-        return new TypeReference<FormrunnerVariableValue<T>>() {
+    protected TypeReference<FormrunnerVariableValue> getJsonParser() {
+        return new TypeReference<FormrunnerVariableValue>() {
         };
     }
 

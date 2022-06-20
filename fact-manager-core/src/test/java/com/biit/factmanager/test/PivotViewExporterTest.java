@@ -25,12 +25,12 @@ import java.util.List;
 public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
-    private FactProvider<FormrunnerVariableFact<Double>> formrunnerVariableFactProvider;
+    private FactProvider<FormrunnerVariableFact> formrunnerVariableFactProvider;
 
     @Autowired
-    private PivotViewProvider<FormrunnerVariableFact<Double>> pivotViewProvider;
+    private PivotViewProvider<FormrunnerVariableFact> pivotViewProvider;
 
-    private final List<FormrunnerVariableFact<Double>> formrunnerVariablesFacts = new ArrayList<>();
+    private final List<FormrunnerVariableFact> formrunnerVariablesFacts = new ArrayList<>();
 
     @BeforeClass
     public void populate() {
@@ -40,13 +40,13 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
             for (int examination = 1; examination < 3; examination++) {
                 String formXpath = "/form";
                 //Set form scores (image index).
-                FormrunnerVariableFact<Double> formrunnerVariableFact = new FormrunnerVariableFact<>();
+                FormrunnerVariableFact formrunnerVariableFact = new FormrunnerVariableFact();
                 formrunnerVariableFact.setGroup("examination" + examination);
                 formrunnerVariableFact.setElementId("examinationId" + examination);
                 formrunnerVariableFact.setTenantId("p" + patient);
 
                 //Forms scores has not question field filled up.
-                FormrunnerVariableValue<Double> formrunnerVariableValue = new FormrunnerVariableValue<>();
+                FormrunnerVariableValue formrunnerVariableValue = new FormrunnerVariableValue();
                 //formrunnerVariableValue.setValue((double) examination);
                 formrunnerVariableValue.setXpath(formXpath);
                 formrunnerVariableValue.setItemName("Patient" + patient);
@@ -58,13 +58,13 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
                 for (int category = 1; category < 3; category++) {
                     String categoryXpath = formXpath + "/category" + category;
                     //Set category.
-                    FormrunnerVariableFact<Double> categoryFormrunnerVariableFact = new FormrunnerVariableFact<>();
+                    FormrunnerVariableFact categoryFormrunnerVariableFact = new FormrunnerVariableFact();
                     categoryFormrunnerVariableFact.setGroup("examination" + examination);
                     categoryFormrunnerVariableFact.setElementId("examinationId" + examination);
                     categoryFormrunnerVariableFact.setTenantId("p" + patient);
 
                     //Categories scores has no question field filled up.
-                    FormrunnerVariableValue<Double> categoryFormrunnerVariableValue = new FormrunnerVariableValue<>();
+                    FormrunnerVariableValue categoryFormrunnerVariableValue = new FormrunnerVariableValue();
                     categoryFormrunnerVariableValue.setXpath(categoryXpath);
                     categoryFormrunnerVariableValue.setItemName("Patient" + patient);
                     //categoryFormrunnerVariableValue.setValue((double) category);
@@ -75,15 +75,15 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
                     // Each Examination with 10 questions
                     for (int question = 0; question < 10; question++) {
                         String questionXpath = categoryXpath + String.format("/Question_%s_%s_%s", examination, category, question);
-                        FormrunnerVariableFact<Double> questionFormrunnerVariableFact = new FormrunnerVariableFact<>();
+                        FormrunnerVariableFact questionFormrunnerVariableFact = new FormrunnerVariableFact();
                         questionFormrunnerVariableFact.setGroup("examination" + examination);
                         questionFormrunnerVariableFact.setElementId("examinationId" + examination);
                         questionFormrunnerVariableFact.setTag("tag");
                         questionFormrunnerVariableFact.setTenantId("p" + patient);
 
-                        FormrunnerVariableValue<Double> questionFormrunnerQuestionValue = new FormrunnerVariableValue<>();
+                        FormrunnerVariableValue questionFormrunnerQuestionValue = new FormrunnerVariableValue();
                         questionFormrunnerQuestionValue.setItemName(FormrunnerVariableValue.SCORE_VALUE);
-                        questionFormrunnerQuestionValue.setValue(Double.parseDouble("0." + question));
+                        questionFormrunnerQuestionValue.setValue("0." + question);
 
                         questionFormrunnerQuestionValue.setXpath(questionXpath);
                         questionFormrunnerQuestionValue.setItemName("Patient" + patient);
@@ -104,7 +104,7 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
 
     @AfterClass
     public void cleanUp() {
-        for (FormrunnerVariableFact<Double> fact : formrunnerVariablesFacts) {
+        for (FormrunnerVariableFact fact : formrunnerVariablesFacts) {
             formrunnerVariableFactProvider.delete(fact);
         }
     }

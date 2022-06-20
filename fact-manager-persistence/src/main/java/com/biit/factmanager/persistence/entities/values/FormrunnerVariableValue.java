@@ -2,7 +2,7 @@ package com.biit.factmanager.persistence.entities.values;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class FormrunnerVariableValue<T> {
+public class FormrunnerVariableValue {
     public static final String SCORE_VALUE = "Score";
     protected static final String DEFAULT_PATH_SEPARATOR = "/";
 
@@ -10,7 +10,7 @@ public class FormrunnerVariableValue<T> {
 
     private String variable;
 
-    private T value;
+    private String value;
 
     //Patient name.
     private String itemName;
@@ -51,11 +51,11 @@ public class FormrunnerVariableValue<T> {
         this.variable = variable;
     }
 
-    public T getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(T value) {
+    public void setValue(String value) {
         this.value = value;
     }
 
