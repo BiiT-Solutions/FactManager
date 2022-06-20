@@ -3,7 +3,6 @@ package com.biit.factmanager.core.providers;
 import com.biit.factmanager.core.providers.exceptions.FactNotFoundException;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
-import com.biit.factmanager.persistence.repositories.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -29,13 +28,14 @@ public class PivotViewProvider<T extends Fact<?>> {
         final StringBuilder xml = new StringBuilder();
         final Set<String> elementsByItem = new LinkedHashSet<>();
         final Map<String, Collection<T>> tenantsIds = new HashMap<>();
-        final Map<String, Integer> imageIndexes = new HashMap<>();
+        final Map<String, List<Integer>> imageIndexes = new HashMap<>();
         for (final T fact : facts) {
             elementsByItem.add(fact.getPivotViewerTag());
             tenantsIds.computeIfAbsent(fact.getTenantId(), k -> new ArrayList<>());
             tenantsIds.get(fact.getTenantId()).add(fact);
             if (fact.getPivotViewerItemImageIndex() != null) {
-                imageIndexes.put(fact.getTenantId(), fact.getPivotViewerItemImageIndex());
+                imageIndexes.computeIfAbsent(fact.getTenantId(), k -> new ArrayList<>());
+                imageIndexes.get(fact.getTenantId()).add(fact.getPivotViewerItemImageIndex());
             }
         }
         xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -52,11 +52,11 @@ public class PivotViewProvider<T extends Fact<?>> {
                 final T scoreFacts = tenantsIds.get(tenantId).stream().filter(f -> f.getPivotViewerItemImageIndex() != null).findAny().orElseThrow(() ->
                         new FactNotFoundException(this.getClass(), "No facts for tenant '" + tenantId + "' with score."));
                 xml.append("        <Item Id=\"").append(scoreFacts.getPivotViewerValueItemId()).append("\" Img=\"")
-                        .append(imageIndexes.get(tenantId)).append("\"")
+                        .append(Collections.min(imageIndexes.get(tenantId))).append("\"")
                         .append(" Href=\"/usmo\" Name=\"").append(scoreFacts.getPivotViewerItemName()).append("\">\n");
                 xml.append("            <Facets>\n");
                 tenantsIds.get(tenantId).forEach(fact -> {
-                    if (fact.getPivotViewerTag() != null) {
+                    if (fact.getPivotViewerTag() != null && fact.getPivotViewerValue() != null) {
                         xml.append("                <Facet Name=\"").append(fact.getPivotViewerTag()).append("\">\n");
                         xml.append("                    <Number Value=\"").append(fact.getPivotViewerValue()).append("\"/>\n");
                         xml.append("                </Facet>\n");
