@@ -65,9 +65,9 @@ public class ChartProvider<T extends Fact<?>> {
             formrunnerQuestionFacts.forEach(formrunnerQuestionFact -> {
                 if (formrunnerQuestionFact.getTenantId().compareTo(tenant) == 0) {
                     final FormrunnerQuestionValue formrunnerQuestionValue = (FormrunnerQuestionValue) formrunnerQuestionFact.getEntity();
-                    if ((formrunnerQuestionValue.getScore() != null) && !(formrunnerQuestionValue.getScore().isNaN())) {
-                        html.append(", ").append(formrunnerQuestionValue.getScore());
-                    }
+                    //if ((formrunnerQuestionValue.getScore() != null) && !(formrunnerQuestionValue.getScore().isNaN())) {
+                        //html.append(", ").append(formrunnerQuestionValue.getScore());
+                    //}
                 }
             });
             html.append("],\n");

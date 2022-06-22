@@ -26,9 +26,6 @@ public class FactValueTests extends AbstractTransactionalTestNGSpringContextTest
         for (int i = 0; i < 10; i++) {
             FormrunnerQuestionValue formrunnerQuestionValue = new FormrunnerQuestionValue();
             formrunnerQuestionValue.setQuestion("question" + i);
-            formrunnerQuestionValue.setScore((double) i);
-            formrunnerQuestionValue.setPatientName("patient" + i);
-            formrunnerQuestionValue.setExaminationVersion("examinationVersion" + i);
             formrunnerQuestionValue.setAnswer("answer" + i);
             formrunnerQuestionValue.setCompanyId((long) i);
             formrunnerQuestionValue.setProfessionalId((long) i);

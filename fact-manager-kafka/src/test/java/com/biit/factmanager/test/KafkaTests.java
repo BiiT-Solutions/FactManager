@@ -34,7 +34,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @Test(groups = {"kafkaEvents"})
 public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
     private static final int EVENTS_QUANTITY = 100;
-    private static final String QUESTION = "Question? ";
+    private static final String QUESTION = "/form/category/questionA ";
     private static final String ANSWER = "Answer: ";
 
     @Autowired
@@ -63,7 +63,7 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
     private FormrunnerQuestionFact generateEvent(int value) {
         FormrunnerQuestionFact FormrunnerQuestionFact = new FormrunnerQuestionFact();
         FormrunnerQuestionValue FormrunnerQuestionValue = new FormrunnerQuestionValue();
-        FormrunnerQuestionValue.setQuestion(QUESTION + value);
+        FormrunnerQuestionValue.setXpath(QUESTION + value);
         FormrunnerQuestionValue.setAnswer(ANSWER + value);
         FormrunnerQuestionFact.setEntity(FormrunnerQuestionValue);
         return FormrunnerQuestionFact;

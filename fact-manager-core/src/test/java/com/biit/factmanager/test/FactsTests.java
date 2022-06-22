@@ -1,8 +1,8 @@
 package com.biit.factmanager.test;
 
 import com.biit.factmanager.core.providers.FactProvider;
-import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
-import com.biit.factmanager.persistence.entities.values.FormrunnerQuestionValue;
+import com.biit.factmanager.persistence.entities.FormrunnerVariableFact;
+import com.biit.factmanager.persistence.entities.values.FormrunnerVariableValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -14,16 +14,16 @@ import org.testng.annotations.Test;
 @SpringBootTest
 @Test(groups = {"facts"})
 public class FactsTests extends AbstractTestNGSpringContextTests {
-    private static final String QUESTION_1 = "Question1";
-    private static final String ANSWER_1 = "Answer1";
+    private static final String QUESTION_XPATH_1 = "/form/Category/Question1";
+    private static final String VALUE_1 = "3";
 
-    private static final String QUESTION_2 = "Question2";
-    private static final String ANSWER_2 = "Answer1";
+    private static final String QUESTION_XPATH_2 = "/form/Category/Question2";
+    private static final String VALUE_2 = "5";
 
     @Autowired
-    private FactProvider<FormrunnerQuestionFact> factProvider;
+    private FactProvider<FormrunnerVariableFact> formrunnerVariableFactProvider;
 
-    private FormrunnerQuestionFact fact = null;
+    private FormrunnerVariableFact fact = null;
 
 
     @BeforeClass
@@ -33,50 +33,51 @@ public class FactsTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void addFact() {
-        Assert.assertEquals(factProvider.count(), 0);
-        fact = factProvider.save(new FormrunnerQuestionFact());
+        Assert.assertEquals(formrunnerVariableFactProvider.count(), 0);
+        fact = formrunnerVariableFactProvider.save(new FormrunnerVariableFact());
         Assert.assertNotNull(fact);
-        Assert.assertEquals(factProvider.count(), 1);
-        factProvider.delete(fact);
+        Assert.assertEquals(formrunnerVariableFactProvider.count(), 1);
+        formrunnerVariableFactProvider.delete(fact);
     }
 
     @Test
     public void checkScore() {
-        FormrunnerQuestionFact formrunnerQuestionFact = new FormrunnerQuestionFact();
-        FormrunnerQuestionValue formrunnerQuestionValue = new FormrunnerQuestionValue();
-        formrunnerQuestionValue.setQuestion(QUESTION_1);
-        formrunnerQuestionValue.setAnswer(ANSWER_1);
-        formrunnerQuestionValue.getVariables().put(FormrunnerQuestionValue.SCORE_VALUE, 1d);
-        formrunnerQuestionFact.setEntity(formrunnerQuestionValue);
+        FormrunnerVariableFact formrunnerVariableFact = new FormrunnerVariableFact();
+        FormrunnerVariableValue formrunnerVariableValue = new FormrunnerVariableValue();
+        formrunnerVariableValue.setXpath(QUESTION_XPATH_1);
+        formrunnerVariableValue.setValue("1");
+        formrunnerVariableFact.setEntity(formrunnerVariableValue);
 
-        Assert.assertEquals(formrunnerQuestionFact.getEntity().getVariables().get(FormrunnerQuestionValue.SCORE_VALUE), 1d);
+        Assert.assertEquals(formrunnerVariableFact.getEntity().getValue(), "1");
     }
 
     @Test
     public void searchByValueParameter() {
-        Assert.assertEquals(factProvider.count(), 0);
-        FormrunnerQuestionFact formrunnerQuestionFact = new FormrunnerQuestionFact();
-        FormrunnerQuestionValue formrunnerQuestionValue = new FormrunnerQuestionValue();
-        formrunnerQuestionValue.setQuestion(QUESTION_1);
-        formrunnerQuestionValue.setAnswer(ANSWER_1);
-        formrunnerQuestionFact.setEntity(formrunnerQuestionValue);
-        factProvider.save(formrunnerQuestionFact);
+        Assert.assertEquals(formrunnerVariableFactProvider.count(), 0);
+        FormrunnerVariableFact formrunnerVariableFact = new FormrunnerVariableFact();
+        FormrunnerVariableValue formrunnerVariableValue = new FormrunnerVariableValue();
+        formrunnerVariableValue.setXpath(QUESTION_XPATH_1);
+        formrunnerVariableValue.setValue(VALUE_1);
+        formrunnerVariableFact.setEntity(formrunnerVariableValue);
+        formrunnerVariableFactProvider.save(formrunnerVariableFact);
 
-        formrunnerQuestionFact = new FormrunnerQuestionFact();
-        formrunnerQuestionValue = new FormrunnerQuestionValue();
-        formrunnerQuestionValue.setQuestion(QUESTION_2);
-        formrunnerQuestionValue.setAnswer(ANSWER_2);
-        formrunnerQuestionFact.setEntity(formrunnerQuestionValue);
-        factProvider.save(formrunnerQuestionFact);
+        formrunnerVariableFact = new FormrunnerVariableFact();
+        formrunnerVariableValue = new FormrunnerVariableValue();
+        formrunnerVariableValue.setXpath(QUESTION_XPATH_2);
+        formrunnerVariableValue.setValue(VALUE_2);
+        formrunnerVariableFact.setEntity(formrunnerVariableValue);
+        formrunnerVariableFactProvider.save(formrunnerVariableFact);
 
-        Assert.assertEquals(factProvider.getByValueParameter("question", QUESTION_1).size(), 1);
-        Assert.assertEquals(factProvider.getByValueParameter("question", QUESTION_2).size(), 1);
-        Assert.assertEquals(factProvider.getByValueParameter("answer", ANSWER_1).size(), 2);
+        Assert.assertEquals(formrunnerVariableFactProvider.getByValueParameter("xpath", QUESTION_XPATH_1).size(), 1);
+        Assert.assertEquals(formrunnerVariableFactProvider.getByValueParameter("xpath", QUESTION_XPATH_2).size(), 1);
+        Assert.assertEquals(formrunnerVariableFactProvider.getByValueParameter("value", VALUE_1).size(), 1);
+        Assert.assertEquals(formrunnerVariableFactProvider.getByValueParameter("value", VALUE_2).size(), 1);
+        Assert.assertEquals(formrunnerVariableFactProvider.getByValueParameter("value", "1000").size(), 0);
     }
 
 
     @AfterClass
     public void cleanDatabase() {
-        factProvider.getAll().forEach(fact -> factProvider.delete(fact));
+        formrunnerVariableFactProvider.getAll().forEach(fact -> formrunnerVariableFactProvider.delete(fact));
     }
 }

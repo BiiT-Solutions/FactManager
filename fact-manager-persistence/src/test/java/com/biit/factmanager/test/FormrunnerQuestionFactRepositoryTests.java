@@ -27,8 +27,8 @@ public class FormrunnerQuestionFactRepositoryTests extends AbstractTransactional
     private static final long FACT_COMPANY_ID = 3;
     private static final long FACT_PATIENT_ID = 4;
     private static final long FACT_PROFESSIONAL_ID = 5;
-    private static final String FACT_QUESTION = "Question";
-    private static final String FACT_QUESTION_2 = "Question2";
+    private static final String FACT_QUESTION_XPATH = "/form/Category/Question";
+    private static final String FACT_QUESTION_XPATH_2 = "/form/Category/Question2";
     private static final String FACT_ANSWER = "Answer";
     private static final String FACT_EXAMINATION_NAME = "test";
     private static final String FACT_ELEMENT_ID = "elementId";
@@ -36,7 +36,6 @@ public class FormrunnerQuestionFactRepositoryTests extends AbstractTransactional
     private static final LocalDateTime FACT_DATE_BEFORE = LocalDateTime.now().minusDays(20);
     private static final LocalDateTime FACT_DATE_AFTER = LocalDateTime.now().plusDays(20);
     private static final LocalDateTime FACT_DATE_NOW = LocalDateTime.now();
-    private int repositorySize;
 
     @Autowired
     private FactRepository<FormrunnerQuestionFact> formrunnerQuestionFactRepository;
@@ -44,32 +43,28 @@ public class FormrunnerQuestionFactRepositoryTests extends AbstractTransactional
 
     @BeforeClass
     private void populate() {
-        repositorySize = formrunnerQuestionFactRepository.findAll().size();
-
         FormrunnerQuestionFact createdAtBeforeAndTenantIdAndCategory = new FormrunnerQuestionFact();
+        FormrunnerQuestionFact createdAtNowAndTenantIdAndElementId = new FormrunnerQuestionFact();
+        FormrunnerQuestionFact createdAtAfterAndElementIdAndCategory = new FormrunnerQuestionFact();
+
         createdAtBeforeAndTenantIdAndCategory.setTenantId(FACT_TENANT_ID);
         createdAtBeforeAndTenantIdAndCategory.setGroup(FACT_CATEGORY);
         createdAtBeforeAndTenantIdAndCategory.setCreatedAt(FACT_DATE_BEFORE);
-        formrunnerQuestionFactRepository.save(createdAtBeforeAndTenantIdAndCategory);
-
-        FormrunnerQuestionFact createdAtNowAndTenantIdAndElementId = new FormrunnerQuestionFact();
         createdAtNowAndTenantIdAndElementId.setCreatedAt(FACT_DATE_AFTER);
         createdAtNowAndTenantIdAndElementId.setTenantId(FACT_TENANT_ID);
         createdAtNowAndTenantIdAndElementId.setElementId(FACT_ELEMENT_ID);
-        formrunnerQuestionFactRepository.save(createdAtNowAndTenantIdAndElementId);
-
-        FormrunnerQuestionFact createdAtAfterAndElementIdAndCategory = new FormrunnerQuestionFact();
         createdAtAfterAndElementIdAndCategory.setCreatedAt(FACT_DATE_AFTER);
         createdAtAfterAndElementIdAndCategory.setElementId(FACT_ELEMENT_ID);
         createdAtAfterAndElementIdAndCategory.setGroup(FACT_CATEGORY);
-        formrunnerQuestionFactRepository.save(createdAtAfterAndElementIdAndCategory);
 
+        formrunnerQuestionFactRepository.save(createdAtBeforeAndTenantIdAndCategory);
+        formrunnerQuestionFactRepository.save(createdAtNowAndTenantIdAndElementId);
+        formrunnerQuestionFactRepository.save(createdAtAfterAndElementIdAndCategory);
     }
 
     @Test
     private void getAllAtTheBeginning() {
-
-        Assert.assertEquals(formrunnerQuestionFactRepository.count(), repositorySize += 3);
+        Assert.assertEquals(formrunnerQuestionFactRepository.count(), 3);
     }
 
     @Test(dependsOnMethods = "getAllAtTheBeginning")
@@ -79,30 +74,32 @@ public class FormrunnerQuestionFactRepositoryTests extends AbstractTransactional
         factToSave.setElementId(FACT_EXAMINATION_ID + "");
         factToSave.setTenantId(FACT_PATIENT_ID + "");
 
-        FormrunnerQuestionValue FormrunnerQuestionValue = new FormrunnerQuestionValue();
-        FormrunnerQuestionValue.setCompanyId(FACT_COMPANY_ID);
-        FormrunnerQuestionValue.setProfessionalId(FACT_PROFESSIONAL_ID);
-        FormrunnerQuestionValue.setQuestion(FACT_QUESTION);
-        FormrunnerQuestionValue.setAnswer(FACT_ANSWER);
-        factToSave.setEntity(FormrunnerQuestionValue);
+        FormrunnerQuestionValue formrunnerQuestionValue = new FormrunnerQuestionValue();
+        formrunnerQuestionValue.setCompanyId(FACT_COMPANY_ID);
+        formrunnerQuestionValue.setProfessionalId(FACT_PROFESSIONAL_ID);
+        formrunnerQuestionValue.setXpath(FACT_QUESTION_XPATH);
+        formrunnerQuestionValue.setAnswer(FACT_ANSWER);
+        Assert.assertEquals(formrunnerQuestionValue.getQuestion(), "Question");
+        factToSave.setEntity(formrunnerQuestionValue);
 
         formrunnerQuestionFactRepository.save(factToSave);
-        Assert.assertEquals(formrunnerQuestionFactRepository.count(), repositorySize += 1);
+        Assert.assertEquals(formrunnerQuestionFactRepository.count(), 4);
 
         factToSave = new FormrunnerQuestionFact();
         factToSave.setGroup(FACT_EXAMINATION_NAME);
         factToSave.setElementId(FACT_EXAMINATION_ID + "");
         factToSave.setTenantId(FACT_PATIENT_ID + "");
 
-        FormrunnerQuestionValue = new FormrunnerQuestionValue();
-        FormrunnerQuestionValue.setCompanyId(FACT_COMPANY_ID);
-        FormrunnerQuestionValue.setProfessionalId(FACT_PROFESSIONAL_ID);
-        FormrunnerQuestionValue.setQuestion(FACT_QUESTION_2);
-        FormrunnerQuestionValue.setAnswer(FACT_ANSWER);
-        factToSave.setEntity(FormrunnerQuestionValue);
+        formrunnerQuestionValue = new FormrunnerQuestionValue();
+        formrunnerQuestionValue.setCompanyId(FACT_COMPANY_ID);
+        formrunnerQuestionValue.setProfessionalId(FACT_PROFESSIONAL_ID);
+        formrunnerQuestionValue.setXpath(FACT_QUESTION_XPATH_2);
+        formrunnerQuestionValue.setAnswer(FACT_ANSWER);
+        Assert.assertEquals(formrunnerQuestionValue.getQuestion(), "Question2");
+        factToSave.setEntity(formrunnerQuestionValue);
 
         formrunnerQuestionFactRepository.save(factToSave);
-        Assert.assertEquals(formrunnerQuestionFactRepository.count(), repositorySize += 1);
+        Assert.assertEquals(formrunnerQuestionFactRepository.count(), 5);
 
     }
 
@@ -114,7 +111,7 @@ public class FormrunnerQuestionFactRepositoryTests extends AbstractTransactional
 
     @Test(dependsOnMethods = "searchFactByValueCompany")
     private void searchFactByValueQuestion() {
-        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findByValueParameters(Pair.of("question", FACT_QUESTION));
+        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findByValueParameters(Pair.of("xpath", FACT_QUESTION_XPATH));
         Assert.assertEquals(facts.size(), 1);
     }
 
@@ -126,14 +123,14 @@ public class FormrunnerQuestionFactRepositoryTests extends AbstractTransactional
 
     @Test(dependsOnMethods = "searchFactByValueCompany")
     private void searchFactByValueQuestionAndAnswer() {
-        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findByValueParameters(Pair.of("question", FACT_QUESTION),
+        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findByValueParameters(Pair.of("xpath", FACT_QUESTION_XPATH),
                 Pair.of("answer", FACT_ANSWER));
         Assert.assertEquals(facts.size(), 1);
     }
 
     @Test(dependsOnMethods = "searchFactByValueCompany")
     private void searchFactByInvalidValueQuestionAndAnswer() {
-        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findByValueParameters(Pair.of("questionA", FACT_QUESTION),
+        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findByValueParameters(Pair.of("xpathWrong", FACT_QUESTION_XPATH),
                 Pair.of("answer", FACT_ANSWER));
         Assert.assertEquals(facts.size(), 0);
     }
@@ -141,21 +138,21 @@ public class FormrunnerQuestionFactRepositoryTests extends AbstractTransactional
     @Test(dependsOnMethods = "searchFactByValueCompany")
     private void searchFactByValueQuestionAndAnswerValidDate() {
         Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findBy(null, null, null, null, null, LocalDateTime.now().minus(1, ChronoUnit.HOURS),
-                LocalDateTime.now(), Pair.of("question", FACT_QUESTION), Pair.of("answer", FACT_ANSWER));
+                LocalDateTime.now(), Pair.of("xpath", FACT_QUESTION_XPATH), Pair.of("answer", FACT_ANSWER));
         Assert.assertEquals(facts.size(), 1);
     }
 
     @Test(dependsOnMethods = "searchFactByValueCompany")
     private void searchFactByValueQuestionAndAnswerInvalidDate() {
         Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findBy(null, null, null, null, null, LocalDateTime.now(),
-                LocalDateTime.now(), Pair.of("question", FACT_QUESTION), Pair.of("answer", FACT_ANSWER));
+                LocalDateTime.now(), Pair.of("question", FACT_QUESTION_XPATH), Pair.of("answer", FACT_ANSWER));
         Assert.assertEquals(facts.size(), 0);
     }
 
 
     @Test(dependsOnMethods = "addFactsWithValues")
     private void getFilteredFacts() {
-        Assert.assertEquals(formrunnerQuestionFactRepository.count(), repositorySize);
+        Assert.assertEquals(formrunnerQuestionFactRepository.count(), 5);
         Assert.assertEquals((long) formrunnerQuestionFactRepository.findByTenantIdAndGroupAndCreatedAt
                 (FACT_TENANT_ID, FACT_CATEGORY, FACT_DATE_BEFORE.minusDays(1), FACT_DATE_AFTER).size(), 1);
         Assert.assertEquals((long) formrunnerQuestionFactRepository.findByTenantIdAndElementIdAndCreatedAt
@@ -173,7 +170,7 @@ public class FormrunnerQuestionFactRepositoryTests extends AbstractTransactional
     @Test(dependsOnMethods = "factBetweenDates")
     private void factBeforeDate() {
         Assert.assertEquals(formrunnerQuestionFactRepository.findByCreatedAtLessThan
-                (LocalDateTime.now().plusDays(21)).size(), repositorySize);
+                (LocalDateTime.now().plusDays(21)).size(), 5);
     }
 
     @Test(dependsOnMethods = "factBeforeDate")
@@ -184,7 +181,8 @@ public class FormrunnerQuestionFactRepositoryTests extends AbstractTransactional
 
     @AfterClass
     private void deleteFact() {
-        formrunnerQuestionFactRepository.deleteAll();
+        formrunnerQuestionFactRepository.findAll().
+                forEach(FormrunnerQuestionFact -> formrunnerQuestionFactRepository.delete(FormrunnerQuestionFact));
         Assert.assertEquals(formrunnerQuestionFactRepository.count(), 0);
     }
 }

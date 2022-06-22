@@ -2,12 +2,15 @@ package com.biit.factmanager.persistence.entities.values;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class FormrunnerQuestionValue {
+public class FormrunnerVariableValue {
+    public static final String SCORE_VALUE = "Score";
     protected static final String DEFAULT_PATH_SEPARATOR = "/";
 
-    private String answer;
-
     private String xpath;
+
+    private String variable;
+
+    private String value;
 
     //Patient name.
     private String itemName;
@@ -20,17 +23,8 @@ public class FormrunnerQuestionValue {
 
     private Long companyId;
 
-    public FormrunnerQuestionValue() {
+    public FormrunnerVariableValue() {
         super();
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
     }
 
     public String getXpath() {
@@ -42,11 +36,27 @@ public class FormrunnerQuestionValue {
     }
 
     @JsonIgnore
-    public String getQuestion() {
+    public String getFormElement() {
         if (getXpath() != null) {
             return getXpath().substring(getXpath().lastIndexOf(DEFAULT_PATH_SEPARATOR) + 1);
         }
         return "";
+    }
+
+    public String getVariable() {
+        return variable;
+    }
+
+    public void setVariable(String variable) {
+        this.variable = variable;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public String getFormVersion() {
@@ -88,5 +98,4 @@ public class FormrunnerQuestionValue {
     public void setItemName(String itemName) {
         this.itemName = itemName;
     }
-
 }
