@@ -22,8 +22,9 @@ public interface FactRepository<T extends Fact<?>> extends JpaRepository<T, Long
             "and (:elementId is null or f.elementId = :elementId) " +
             "and (:startDate is null or f.createdAt >= :startDate) " +
             "and (:endDate is null or f.createdAt <= :endDate)")
-    List<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId,
-                   LocalDateTime startDate, LocalDateTime endDate);
+    List<T> findBy(@Param("organizationId") String organizationId, @Param("tenantId") String tenantId, @Param("tag") String tag,
+                   @Param("group") String group, @Param("elementId") String elementId,
+                   @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
     List<T> findByCreatedAtLessThan(LocalDateTime createdAt);
 
