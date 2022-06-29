@@ -2,6 +2,7 @@ package com.biit.factmanager.core.providers;
 
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
+import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
 import com.biit.factmanager.persistence.entities.values.FormrunnerQuestionValue;
 import com.biit.factmanager.persistence.enums.ChartType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,19 +28,23 @@ public class ChartProvider<T extends Fact<?>> {
 
     @SafeVarargs
     public final String getChart(String organizationId, String tenantId, String tag, String group, String elementId,
-                            LocalDateTime startDate, LocalDateTime endDate, Integer lastDays, ChartType type,
-                            Pair<String, Object>... valueParameters) {
+                                 LocalDateTime startDate, LocalDateTime endDate, Integer lastDays, ChartType type,
+                                 Pair<String, Object>... valueParameters) {
+        if (organizationId.isEmpty() && tenantId.isEmpty() && tag.isEmpty() && group.isEmpty() && elementId.isEmpty()) {
+            return htmlFromformrunnerQuestionFactsByQuestion(factProvider.getAll(), type);
+        }
         return htmlFromformrunnerQuestionFactsByQuestion(factProvider.
                 findBy(organizationId, tenantId, tag, group, elementId, startDate, endDate, lastDays, valueParameters), type);
     }
 
-    public String htmlFromformrunnerQuestionFactsByQuestion(Collection<T> formrunnerQuestionFacts, ChartType type) {
+    public String htmlFromformrunnerQuestionFactsByQuestion(Collection<T> facts, ChartType type) {
         final StringBuilder html = new StringBuilder();
 
-        if (formrunnerQuestionFacts.isEmpty()) {
+        if (facts.isEmpty()) {
             FactManagerLogger.errorMessage(this.getClass().getName(), "Empty collection of facts, cannot create chart html");
             throw new NullPointerException();
         }
+        final Collection<T> formrunnerQuestionFacts = filterNonFormrunnerQuestionFacts(facts);
 
         html.append("<!DOCTYPE html>\n")
                 .append("<html lang=\"en\">\n")
@@ -49,8 +54,6 @@ public class ChartProvider<T extends Fact<?>> {
                 .append("<link href=\"https://cdnjs.cloudflare.com/ajax/libs/c3/").append(VERSION).append("/c3.css \" rel=\"stylesheet\"> </link>")
                 .append("</head>\n\n")
                 .append("<body>\n")
-                .append("<h1>").append(formrunnerQuestionFacts.stream().findFirst().get().getClass().getName()
-                        .replaceAll("com.biit.factmanager.persistence.entities.", "")).append("</h1>\n")
                 .append("<div id=\"chart\"></div>\n\n")
                 .append("<script src=\"https://d3js.org/d3.v5.min.js\"></script>\n")
                 .append("<script src=\"https://cdnjs.cloudflare.com/ajax/libs/c3/").append(VERSION).append("/c3.min.js \"></script>\n");
@@ -58,22 +61,28 @@ public class ChartProvider<T extends Fact<?>> {
         html.append("var chart = c3.generate({\n")
                 .append("bindto: '#chart',\n")
                 .append("data: {\n")
-                .append("columns: [");
+                .append("columns: [\n");
 
-        getUniqueTenants(formrunnerQuestionFacts).forEach(tenant -> {
-            html.append("[ '").append(tenant).append("'");
+        final List<String> uniqueTenants = getUniqueTenants(formrunnerQuestionFacts);
+        uniqueTenants.forEach(tenant -> {
+            html.append("   [").append("'").append(tenant).append("', ");
             formrunnerQuestionFacts.forEach(formrunnerQuestionFact -> {
                 if (formrunnerQuestionFact.getTenantId().compareTo(tenant) == 0) {
                     final FormrunnerQuestionValue formrunnerQuestionValue = (FormrunnerQuestionValue) formrunnerQuestionFact.getEntity();
-                    //if ((formrunnerQuestionValue.getScore() != null) && !(formrunnerQuestionValue.getScore().isNaN())) {
-                        //html.append(", ").append(formrunnerQuestionValue.getScore());
-                    //}
+                    if (formrunnerQuestionValue.getAnswer().matches("[+-]?\\d*(\\.\\d+)?")) {
+                        html.append(formrunnerQuestionValue.getAnswer());
+                        if (!(formrunnerQuestionFacts.stream().reduce((first, second) -> second).orElse(null) == formrunnerQuestionFact)) {
+                            html.append(", ");
+                        }
+                    }
                 }
             });
-            html.append("],\n");
+            html.append("]");
+            if (!(uniqueTenants.stream().reduce((first, second) -> second).orElse(null) == tenant)) {
+                html.append(",\n");
+            }
         });
-
-        html.append("],\n").append("type: '").append(translateType(type)).append("'\n},")
+        html.append("\n],\n").append("type: '").append(translateType(type)).append("'\n},")
                 .append("\n axis: {")
                 .append("\n x: {\n type: 'category',\n categories: [");
 
@@ -97,6 +106,11 @@ public class ChartProvider<T extends Fact<?>> {
             questions.add(formrunnerQuestionValue.getQuestion());
         });
         return questions.stream().distinct().collect(Collectors.toList());
+    }
+
+    private Collection<T> filterNonFormrunnerQuestionFacts(Collection<T> facts) {
+        facts.removeIf(i -> !(i instanceof FormrunnerQuestionFact));
+        return facts;
     }
 
     private String translateType(ChartType chartType) {

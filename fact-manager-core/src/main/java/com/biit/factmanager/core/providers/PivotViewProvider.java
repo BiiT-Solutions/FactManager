@@ -3,6 +3,7 @@ package com.biit.factmanager.core.providers;
 import com.biit.factmanager.core.providers.exceptions.FactNotFoundException;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
+import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class PivotViewProvider<T extends Fact<?>> {
 
     public String get(String organizationId, String tenantId, String tag, String group, String elementId, LocalDateTime startDate,
                       LocalDateTime endDate, Integer lastDays, Pair<String, Object>... valueParameters) {
+        if (organizationId.isEmpty() && tenantId.isEmpty() && tag.isEmpty() && group.isEmpty() && elementId.isEmpty()) {
+            return xmlFormFacts(factProvider.getAll());
+        }
         return xmlFormFacts(factProvider.findBy(organizationId, tenantId, tag, group, elementId, startDate, endDate, lastDays, valueParameters));
     }
 
@@ -29,6 +33,13 @@ public class PivotViewProvider<T extends Fact<?>> {
         final Set<String> elementsByItem = new LinkedHashSet<>();
         final Map<String, Collection<T>> tenantsIds = new HashMap<>();
         final Map<String, List<Integer>> imageIndexes = new HashMap<>();
+
+        if (facts.isEmpty()) {
+            FactManagerLogger.errorMessage(this.getClass().getName(), "Empty collection of facts, cannot create chart html");
+            throw new NullPointerException();
+        }
+        facts.removeIf(i -> !(i instanceof FormrunnerQuestionFact));
+
         for (final T fact : facts) {
             elementsByItem.add(fact.getPivotViewerTag());
             tenantsIds.computeIfAbsent(fact.getTenantId(), k -> new ArrayList<>());
@@ -46,7 +57,7 @@ public class PivotViewProvider<T extends Fact<?>> {
         }
         xml.append("    </FacetCategories>\n");
         xml.append("    <Items ImgBase=\"").append("./factManager/fact_manager.dzc").append("\">\n");
-        tenantsIds.keySet().forEach(tenantId -> {
+            tenantsIds.keySet().forEach(tenantId -> {
             try {
                 //Get item information from form fact.
                 final T scoreFacts = tenantsIds.get(tenantId).stream().filter(f -> f.getPivotViewerItemImageIndex() != null).findAny().orElseThrow(() ->
@@ -71,5 +82,10 @@ public class PivotViewProvider<T extends Fact<?>> {
         xml.append("    </Items>\n");
         xml.append("</Collection>\n");
         return xml.toString();
+    }
+
+    private Collection<T> filterNonFormrunnerQuestionFacts(Collection<T> facts) {
+        facts.removeIf(i -> !(i instanceof FormrunnerQuestionFact));
+        return facts;
     }
 }

@@ -50,7 +50,7 @@ public class PivotViewServices<T extends Fact<?>> {
             pairs[i] = Pair.of(valueParameters.get(i), valueParameters.get(i + 1));
         }
 
-        return pivotViewProvider.getView(organizationId, tenantId, tag, group, elementId, startDate, endDate, lastDays, pairs);
+        return pivotViewProvider.get(organizationId, tenantId, tag, group, elementId, startDate, endDate, lastDays, pairs);
     }
 
 
