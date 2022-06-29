@@ -50,7 +50,7 @@ public class ChartProviderTest extends AbstractTestNGSpringContextTests {
                 FormrunnerQuestionValue formRunnerValue = new FormrunnerQuestionValue();
 
                 //formRunnerValue.setScore((double) (questions + patient));
-                formRunnerValue.setQuestion("question" + questions);
+                formRunnerValue.setXpath("question" + questions);
 
                 formrunnerQuestionFact.setTenantId("persona" + patient);
                 formrunnerQuestionFact.setGroup("examination" + questions);
@@ -78,6 +78,7 @@ public class ChartProviderTest extends AbstractTestNGSpringContextTests {
 
     @Test(dependsOnMethods = "addNewFacts")
     public void oneTenantAllExaminations() throws IOException, URISyntaxException {
+        //TODO: check this assertion
         //Assert.assertEquals(readFile("charts/OneTenantMultipleExaminationsChart"), chartProvider.getChart(ORGANIZATION_ID, TENANT_ID, TAG, GROUP, ELEMENT_ID,
                // LocalDateTime.now().minusYears(1), LocalDateTime.now().plusDays(1), null, ChartType.BAR));
     }
@@ -90,10 +91,7 @@ public class ChartProviderTest extends AbstractTestNGSpringContextTests {
     private void insertFactsByTenant(String tenantId) {
         for (int fact = 0; fact < 5; fact++) {
             FormrunnerQuestionValue formrunnerQuestionValue = new FormrunnerQuestionValue();
-            formrunnerQuestionValue.setQuestion("question"+ fact);
-            //formrunnerQuestionValue.setScore((double) fact);
-            //formrunnerQuestionValue.setExaminationVersion(EXAMINATION_VERSION);
-            //formrunnerQuestionValue.setPatientName(PATIENT_NAME);
+            formrunnerQuestionValue.setXpath("question"+ fact);
 
             FormrunnerQuestionFact formrunnerQuestionFact = new FormrunnerQuestionFact();
             formrunnerQuestionFact.setTenantId(tenantId);
@@ -111,10 +109,8 @@ public class ChartProviderTest extends AbstractTestNGSpringContextTests {
     private void insertNotNumberFacts(String tenantId) {
         for (int fact = 0; fact < 5; fact++) {
             FormrunnerQuestionValue formrunnerQuestionValue = new FormrunnerQuestionValue();
-            formrunnerQuestionValue.setQuestion("question"+ fact);
-            //formrunnerQuestionValue.setScore(null);
-            //formrunnerQuestionValue.setExaminationVersion(EXAMINATION_VERSION);
-            //formrunnerQuestionValue.setPatientName(PATIENT_NAME);
+            formrunnerQuestionValue.setXpath("question"+ fact);
+            formrunnerQuestionValue.setItemName(PATIENT_NAME);
 
             FormrunnerQuestionFact formrunnerQuestionFact = new FormrunnerQuestionFact();
             formrunnerQuestionFact.setTenantId(tenantId);

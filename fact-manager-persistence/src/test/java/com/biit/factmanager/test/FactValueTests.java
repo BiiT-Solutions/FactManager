@@ -25,7 +25,6 @@ public class FactValueTests extends AbstractTransactionalTestNGSpringContextTest
         formrunnerQuestionFactRepository.deleteAll();
         for (int i = 0; i < 10; i++) {
             FormrunnerQuestionValue formrunnerQuestionValue = new FormrunnerQuestionValue();
-            formrunnerQuestionValue.setQuestion("question" + i);
             formrunnerQuestionValue.setAnswer("answer" + i);
             formrunnerQuestionValue.setCompanyId((long) i);
             formrunnerQuestionValue.setProfessionalId((long) i);

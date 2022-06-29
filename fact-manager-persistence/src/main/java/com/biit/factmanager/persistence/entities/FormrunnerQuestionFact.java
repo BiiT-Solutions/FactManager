@@ -31,7 +31,7 @@ public class FormrunnerQuestionFact extends Fact<FormrunnerQuestionValue> implem
     }
 
     private FormrunnerQuestionValue getFormrunnerQuestionValue() {
-        if (formrunnerQuestionValue == null) {
+        if (formrunnerQuestionValue == null || formrunnerQuestionValue.getAnswer() == null) {
             formrunnerQuestionValue = getEntity();
         }
         return formrunnerQuestionValue;
@@ -59,6 +59,28 @@ public class FormrunnerQuestionFact extends Fact<FormrunnerQuestionValue> implem
 
     @Override
     public String getPivotViewerValue() {
+        if (getFormrunnerQuestionValue().getAnswer() != null || !getFormrunnerQuestionValue().getAnswer().isEmpty()) {
+            final String answer = getFormrunnerQuestionValue().getAnswer();
+            if ("A".compareTo(answer) == 0 || "B".compareTo(answer) == 0
+                    || "C".compareTo(answer) == 0 || "D".compareTo(answer) == 0) {
+                switch (answer) {
+                    case "A":
+                        return "1";
+                    case "B":
+                        return "2";
+                    case "C":
+                        return "3";
+                    case "D":
+                        return "4";
+                    default:
+                        return "5";
+                }
+            } else if (answer.matches("[+-]?\\d*(\\.\\d+)?")) {
+                return getFormrunnerQuestionValue().getAnswer();
+            } else {
+                return null;
+            }
+        }
         return null;
     }
 
@@ -72,6 +94,33 @@ public class FormrunnerQuestionFact extends Fact<FormrunnerQuestionValue> implem
 
     @Override
     public Integer getPivotViewerItemImageIndex() {
-        return null;
+        final String answer = getFormrunnerQuestionValue().getAnswer();
+        if ("A".compareTo(answer) == 0 || "B".compareTo(answer) == 0
+                || "C".compareTo(answer) == 0 || "D".compareTo(answer) == 0) {
+            switch (answer) {
+                case "A":
+                    return 1;
+                case "B":
+                    return 2;
+                case "C":
+                    return 3;
+                case "D":
+                    return 4;
+                default:
+                    return 5;
+            }
+        } else if (answer.matches("[+-]?\\d*(\\.\\d+)?")) {
+            final int numericAnswer = Integer.parseInt(answer);
+            if (numericAnswer > 0 && numericAnswer <= 5) {
+                return numericAnswer;
+            }
+            if (numericAnswer > 5) {
+                return 5;
+            } else {
+                return 1;
+            }
+        } else {
+            return null;
+        }
     }
 }

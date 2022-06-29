@@ -40,7 +40,7 @@ public class FindByFactsTests extends AbstractTransactionalTestNGSpringContextTe
     }
 
     @Test
-    private void getFindBy() {
+    public void getFindBy() {
         Collection<StringFact> fact1 = factRepository.findBy("1", "1", "1", "1", "1",
                 LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(1));
 
