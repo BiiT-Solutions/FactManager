@@ -30,6 +30,9 @@ public class ChartProvider<T extends Fact<?>> {
     public final String getChart(String organizationId, String tenantId, String tag, String group, String elementId,
                                  LocalDateTime startDate, LocalDateTime endDate, Integer lastDays, ChartType type,
                                  Pair<String, Object>... valueParameters) {
+        if (!organizationId.isEmpty() && tenantId.isEmpty() && tag.isEmpty() && group.isEmpty() && elementId.isEmpty()) {
+            return htmlFromformrunnerQuestionFactsByQuestion(factProvider.findByOrganizationId(organizationId), type);
+        }
         if (organizationId.isEmpty() && tenantId.isEmpty() && tag.isEmpty() && group.isEmpty() && elementId.isEmpty()) {
             return htmlFromformrunnerQuestionFactsByQuestion(factProvider.getAll(), type);
         }

@@ -24,6 +24,7 @@ public class FindByFactsTests extends AbstractTransactionalTestNGSpringContextTe
 
     @BeforeClass
     private void populate() {
+        factRepository.deleteAll();
         int repositorySize = factRepository.findAll().size();
         for (int i = 1; i <= 3; i++) {
             StringFact stringFact = new StringFact();
@@ -53,6 +54,13 @@ public class FindByFactsTests extends AbstractTransactionalTestNGSpringContextTe
         Assert.assertEquals(fact1.size(), 1);
         Assert.assertEquals(fact2.size(), 1);
         Assert.assertEquals(fact3.size(), 1);
+    }
+
+    @Test
+    public void getFindbyOrganizationId() {
+        Assert.assertEquals(factRepository.findByOrganizationId("1").size(), 1);
+        Assert.assertEquals(factRepository.findByOrganizationId("2").size(), 1);
+        Assert.assertEquals(factRepository.findByOrganizationId("3").size(), 1);
     }
 
     @AfterClass

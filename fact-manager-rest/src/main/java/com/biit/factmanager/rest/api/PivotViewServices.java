@@ -1,6 +1,7 @@
 package com.biit.factmanager.rest.api;
 
 import com.biit.factmanager.core.providers.PivotViewProvider;
+import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.rest.exceptions.BadRequestException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,6 +23,7 @@ import java.util.List;
 @RestController
 public class PivotViewServices<T extends Fact<?>> {
 
+    private static String PIVOT_VIEW_SERVER_XML = "/home/simon/IdeaProjects/html5pivotviewer-1.0/samples/data/haagse_passage.cxml";
     public PivotViewProvider<T> pivotViewProvider;
 
     @Autowired
@@ -50,7 +55,22 @@ public class PivotViewServices<T extends Fact<?>> {
             pairs[i] = Pair.of(valueParameters.get(i), valueParameters.get(i + 1));
         }
 
-        return pivotViewProvider.get(organizationId, tenantId, tag, group, elementId, startDate, endDate, lastDays, pairs);
+        final String pivotViewerXml = pivotViewProvider.get(organizationId, tenantId, tag, group, elementId, startDate, endDate, lastDays, pairs);
+        final File oldxml = new File(PIVOT_VIEW_SERVER_XML);
+        oldxml.delete();
+
+        final File newxml = new File(PIVOT_VIEW_SERVER_XML);
+        try {
+            final Writer writer = new OutputStreamWriter(Files.newOutputStream(newxml.toPath()), StandardCharsets.UTF_8);
+            final PrintWriter printWriter = new PrintWriter(writer);
+            printWriter.print(pivotViewerXml);
+            printWriter.close();
+        } catch (IOException e) {
+            FactManagerLogger.errorMessage(this.getClass().getName(), "Unable to write pivotView xml");
+        }
+
+
+        return pivotViewerXml;
     }
 
 

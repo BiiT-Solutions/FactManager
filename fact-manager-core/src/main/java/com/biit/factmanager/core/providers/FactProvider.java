@@ -49,6 +49,10 @@ public class FactProvider<T extends Fact<?>> {
         return factRepository.findByValueParameters(pairs);
     }
 
+    public Collection<T> findByOrganizationId(String organizationId) {
+        return factRepository.findByOrganizationId(organizationId);
+    }
+
     public Collection<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, LocalDateTime startDate,
                                 LocalDateTime endDate, Integer lastDays, Pair<String, Object>... valueParameters) {
         if (lastDays == null) {
