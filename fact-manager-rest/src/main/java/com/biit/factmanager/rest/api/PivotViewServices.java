@@ -46,6 +46,10 @@ public class PivotViewServices<T extends Fact<?>> {
             @Parameter(name = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
             @Parameter(name = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters) {
 
+        if (valueParameters.size() == 1 && valueParameters.get(0).compareTo("[]") == 0) {
+            valueParameters.remove(0);
+        }
+
         if (valueParameters.size() % 2 == 1) {
             throw new BadRequestException("Invalid number of parameters.");
         }
