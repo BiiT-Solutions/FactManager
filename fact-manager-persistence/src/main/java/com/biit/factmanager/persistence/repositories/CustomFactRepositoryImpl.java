@@ -1,7 +1,6 @@
 package com.biit.factmanager.persistence.repositories;
 
 import com.biit.factmanager.persistence.entities.Fact;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
 
@@ -12,8 +11,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -111,6 +108,11 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
 
         query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
         query.select(root).where(predicates.toArray(new Predicate[predicates.size()]));
+
+        /* For Hibernate */
+        System.out.println(entityManager.createQuery(query).unwrap(org.hibernate.query.Query.class).getQueryString());
+
+
         return entityManager.createQuery(query).getResultList();
     }
 

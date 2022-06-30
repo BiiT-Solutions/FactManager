@@ -19,10 +19,9 @@ public class FormrunnerFact extends Fact<FormrunnerValue> implements IKafkaStora
     @JsonCreator
     public FormrunnerFact() {
         super();
-        formrunnerValue = new FormrunnerValue();
     }
 
-    private FormrunnerValue getFormrunnerQuestionValue() {
+    private FormrunnerValue getFormrunnerValue() {
         if (formrunnerValue == null) {
             formrunnerValue = getEntity();
         }
@@ -43,16 +42,32 @@ public class FormrunnerFact extends Fact<FormrunnerValue> implements IKafkaStora
 
     @Override
     public String getPivotViewerTag() {
+        if (getFormrunnerValue() != null && getFormrunnerValue().getFormName() != null) {
+            return getFormrunnerValue().getFormName();
+        }
         return null;
     }
 
     @Override
     public String getPivotViewerValue() {
+        if (getFormrunnerValue() != null && getFormrunnerValue().getFormName() != null) {
+            return getFormrunnerValue().getFormJson();
+        }
+        return null;
+    }
+    @Override
+    public String getPivotViewerItemName() {
+        if (getFormrunnerValue() != null && getFormrunnerValue().getFormName() != null) {
+            return getFormrunnerValue().getPatientName();
+        }
         return null;
     }
 
     @Override
     public Integer getPivotViewerItemImageIndex() {
+        if (getFormrunnerValue() != null && getFormrunnerValue().getFormName() != null) {
+            return Integer.parseInt(getFormrunnerValue().getVersion());
+        }
         return null;
     }
 }
