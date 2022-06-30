@@ -69,10 +69,12 @@ public class ChartProvider<T extends Fact<?>> {
             formrunnerQuestionFacts.forEach(formrunnerQuestionFact -> {
                 if (formrunnerQuestionFact.getTenantId().compareTo(tenant) == 0) {
                     final FormrunnerQuestionValue formrunnerQuestionValue = (FormrunnerQuestionValue) formrunnerQuestionFact.getEntity();
-                    if (formrunnerQuestionValue.getAnswer().matches("[+-]?\\d*(\\.\\d+)?")) {
+                    if (formrunnerQuestionValue.getAnswer() != null && formrunnerQuestionValue.getAnswer().matches("[+-]?\\d*(\\.\\d+)?")) {
                         html.append(formrunnerQuestionValue.getAnswer());
                         if (!(formrunnerQuestionFacts.stream().reduce((first, second) -> second).orElse(null) == formrunnerQuestionFact)) {
                             html.append(", ");
+                        } else {
+                            FactManagerLogger.info(this.getClass().getName(), "Null or not number answer");
                         }
                     }
                 }

@@ -33,6 +33,10 @@ public class ChartProviderTest extends AbstractTestNGSpringContextTests {
     private static final String ORGANIZATION_ID = "organizationId";
     private static final String PATIENT_NAME = "patient";
     private static final String EXAMINATION_VERSION = "examinationVersion";
+    private static final String STRING_ANSWER = "string";
+    private static final String TENANT_ID2 = "tenant2";
+
+    private long repositorySize;
 
     @Autowired
     private FactProvider<FormrunnerQuestionFact> factProvider;
@@ -42,14 +46,33 @@ public class ChartProviderTest extends AbstractTestNGSpringContextTests {
 
     private final List<FormrunnerQuestionFact> formrunnerQuestionFacts = new ArrayList<>();
 
+    private void insertNullFactsByTenant(String tenantId) {
+        for (int fact = 0; fact < 5; fact++) {
+            FormrunnerQuestionValue formrunnerQuestionValue = new FormrunnerQuestionValue();
+            formrunnerQuestionValue.setXpath("question"+ fact);
+            formrunnerQuestionValue.setAnswer(null);
+
+            FormrunnerQuestionFact formrunnerQuestionFact = new FormrunnerQuestionFact();
+            formrunnerQuestionFact.setTenantId(tenantId);
+            formrunnerQuestionFact.setGroup(GROUP);
+            formrunnerQuestionFact.setElementId(ELEMENT_ID);
+            formrunnerQuestionFact.setTag(TAG);
+            formrunnerQuestionFact.setOrganizationId(ORGANIZATION_ID);
+            formrunnerQuestionFact.setCreatedAt(LocalDateTime.now().minusMonths(fact));
+            formrunnerQuestionFact.setEntity(formrunnerQuestionValue);
+
+            factProvider.save(formrunnerQuestionFact);
+        }
+        repositorySize = factProvider.count();
+    }
+
     @BeforeClass
     public void populate() {
         for (int patient = 0; patient <= 2; patient++) {
             for (int questions = 0; questions < 5; questions++) {
                 FormrunnerQuestionFact formrunnerQuestionFact = new FormrunnerQuestionFact();
                 FormrunnerQuestionValue formRunnerValue = new FormrunnerQuestionValue();
-
-                //formRunnerValue.setScore((double) (questions + patient));
+                formRunnerValue.setAnswer(String.valueOf((questions + patient)));
                 formRunnerValue.setXpath("question" + questions);
 
                 formrunnerQuestionFact.setTenantId("persona" + patient);
@@ -60,27 +83,7 @@ public class ChartProviderTest extends AbstractTestNGSpringContextTests {
                 formrunnerQuestionFacts.add(formrunnerQuestionFact);
             }
         }
-    }
-
-    @Test
-    public void htmlFromformrunnerQuestionFacts() throws IOException, URISyntaxException {
-        Assert.assertEquals(readFile("charts/htmlFromFormrunnerQuestionFactsByTenants.html"),
-                chartProvider.htmlFromformrunnerQuestionFactsByQuestion(formrunnerQuestionFacts, ChartType.BAR));
-    }
-
-    @Test(dependsOnMethods = {"htmlFromformrunnerQuestionFacts"})
-    public void addNewFacts() {
-        insertFactsByTenant(TENANT_ID);
-        insertFactsByTenant("patata");
-        insertNotNumberFacts(TENANT_ID);
-        Assert.assertTrue(factProvider.getAll().size() == 15);
-    }
-
-    @Test(dependsOnMethods = "addNewFacts")
-    public void oneTenantAllExaminations() throws IOException, URISyntaxException {
-        //TODO: check this assertion
-        //Assert.assertEquals(readFile("charts/OneTenantMultipleExaminationsChart"), chartProvider.getChart(ORGANIZATION_ID, TENANT_ID, TAG, GROUP, ELEMENT_ID,
-               // LocalDateTime.now().minusYears(1), LocalDateTime.now().plusDays(1), null, ChartType.BAR));
+        repositorySize = factProvider.count();
     }
 
     private String readFile(String file) throws IOException, InvalidJsonException, URISyntaxException {
@@ -92,6 +95,7 @@ public class ChartProviderTest extends AbstractTestNGSpringContextTests {
         for (int fact = 0; fact < 5; fact++) {
             FormrunnerQuestionValue formrunnerQuestionValue = new FormrunnerQuestionValue();
             formrunnerQuestionValue.setXpath("question"+ fact);
+            formrunnerQuestionValue.setAnswer(String.valueOf(fact));
 
             FormrunnerQuestionFact formrunnerQuestionFact = new FormrunnerQuestionFact();
             formrunnerQuestionFact.setTenantId(tenantId);
@@ -104,6 +108,7 @@ public class ChartProviderTest extends AbstractTestNGSpringContextTests {
 
             factProvider.save(formrunnerQuestionFact);
         }
+        repositorySize = factProvider.count();
     }
 
     private void insertNotNumberFacts(String tenantId) {
@@ -111,6 +116,7 @@ public class ChartProviderTest extends AbstractTestNGSpringContextTests {
             FormrunnerQuestionValue formrunnerQuestionValue = new FormrunnerQuestionValue();
             formrunnerQuestionValue.setXpath("question"+ fact);
             formrunnerQuestionValue.setItemName(PATIENT_NAME);
+            formrunnerQuestionValue.setAnswer(STRING_ANSWER);
 
             FormrunnerQuestionFact formrunnerQuestionFact = new FormrunnerQuestionFact();
             formrunnerQuestionFact.setTenantId(tenantId);
@@ -123,6 +129,28 @@ public class ChartProviderTest extends AbstractTestNGSpringContextTests {
 
             factProvider.save(formrunnerQuestionFact);
         }
+        repositorySize = factProvider.count();
+    }
+
+    @Test
+    public void htmlFromformrunnerQuestionFacts() throws IOException, URISyntaxException {
+        Assert.assertEquals(readFile("charts/htmlFromFormrunnerQuestionFactsByTenants.html"),
+                chartProvider.htmlFromformrunnerQuestionFactsByQuestion(formrunnerQuestionFacts, ChartType.BAR));
+    }
+
+    @Test(dependsOnMethods = {"htmlFromformrunnerQuestionFacts"})
+    public void addNewFacts() {
+        insertFactsByTenant(TENANT_ID);
+        insertFactsByTenant(TENANT_ID2);
+        insertNotNumberFacts(TENANT_ID);
+        insertNullFactsByTenant(TENANT_ID);
+        Assert.assertEquals(repositorySize, factProvider.count());
+    }
+
+    @Test(dependsOnMethods = "addNewFacts")
+    public void oneTenantAllExaminations() throws IOException, URISyntaxException {
+        Assert.assertEquals(readFile("charts/OneTenantMultipleExaminationsChart"), chartProvider.getChart(ORGANIZATION_ID, TENANT_ID, TAG, GROUP, ELEMENT_ID,
+               LocalDateTime.now().minusYears(1), LocalDateTime.now().plusDays(1), null, ChartType.BAR));
     }
 
     @AfterClass
