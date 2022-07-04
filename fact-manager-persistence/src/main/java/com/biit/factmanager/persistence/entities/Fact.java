@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.context.annotation.Primary;
 
 import javax.persistence.*;
@@ -49,13 +50,10 @@ public abstract class Fact<Value> implements IPivotViewerData, IKafkaStorable {
     @Convert(converter = StringCryptoConverter.class)
     private String elementId;
 
+    @CreationTimestamp
     @Column(name = "created_at")
     @Convert(converter = LocalDateTimeCryptoConverter.class)
     private LocalDateTime createdAt;
-
-    public Fact() {
-        setCreatedAt(LocalDateTime.now());
-    }
 
     public String getGroup() {
         return group;

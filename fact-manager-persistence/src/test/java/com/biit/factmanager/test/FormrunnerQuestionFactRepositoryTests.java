@@ -185,7 +185,7 @@ public class FormrunnerQuestionFactRepositoryTests extends AbstractTransactional
     @Test(dependsOnMethods = "factBeforeDate")
     private void factAfterDate() {
         Assert.assertEquals(formrunnerQuestionFactRepository.findByCreatedAtGreaterThan
-                (FACT_DATE_NOW).size(), 4);
+                (FACT_DATE_NOW).size(), 5);
     }
 
     @AfterClass
