@@ -7,7 +7,6 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -20,22 +19,20 @@ import java.util.HashMap;
 
 @Configuration
 @EnableJpaRepositories(entityManagerFactoryRef = "factmanagerSystemFactory", transactionManagerRef = "factmanagerTransactionManager", basePackages = {
-        DatabaseConfiguration.PACKAGE})
-public class DatabaseConfiguration {
+        FactManagerDatabaseConfiguration.PACKAGE})
+public class FactManagerDatabaseConfiguration {
     public static final String PACKAGE = "com.biit.factmanager.persistence";
 
     @Autowired
     private Environment environment;
 
     @Bean
-    @Primary
     @ConfigurationProperties(prefix = "spring.factmanager.datasource")
     public DataSource factmanagerDataSource() {
         return DataSourceBuilder.create().build();
     }
 
     @Bean
-    @Primary
     public LocalContainerEntityManagerFactoryBean factmanagerSystemFactory(EntityManagerFactoryBuilder builder,
                                                                         @Qualifier("factmanagerDataSource") DataSource dataSource) {
         final HashMap<String, Object> properties = new HashMap<>();
@@ -44,7 +41,6 @@ public class DatabaseConfiguration {
     }
 
     @Bean
-    @Primary
     public PlatformTransactionManager factmanagerTransactionManager(
             @Qualifier("factmanagerSystemFactory") EntityManagerFactory userEntityManagerFactory) {
         return new JpaTransactionManager(userEntityManagerFactory);
