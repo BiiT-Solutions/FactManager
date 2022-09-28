@@ -37,6 +37,8 @@ public class FactManagerDatabaseConfiguration {
                                                                            @Qualifier("factmanagerDataSource") DataSource dataSource) {
         final HashMap<String, Object> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", environment.getProperty("spring.factmanager.datasource.jpa.hibernate.ddl-auto"));
+        //Not working!
+        properties.put("hibernate.dialect", environment.getProperty("spring.factmanager.datasource.hibernate.dialect"));
         return builder.dataSource(dataSource).properties(properties).packages(PACKAGE).build();
     }
 
