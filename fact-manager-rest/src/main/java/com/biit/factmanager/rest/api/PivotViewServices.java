@@ -23,6 +23,7 @@ import java.util.List;
 @RestController
 public class PivotViewServices<T extends Fact<?>> {
 
+    //TODO(jhortelan): What rubbish is this???
     private static String PIVOT_VIEW_SERVER_XML = "/home/simon/IdeaProjects/html5pivotviewer-1.0/samples/data/haagse_passage.cxml";
     public PivotViewProvider<T> pivotViewProvider;
 
