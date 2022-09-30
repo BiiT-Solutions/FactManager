@@ -20,7 +20,7 @@ import java.util.Objects;
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = "type")
 @Primary
 @Table(name = "facts")
-public abstract class Fact<Value> implements IPivotViewerData, IKafkaStorable {
+public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     private static final int MAX_JSON_LENGTH = 100000;
 
     @Id
@@ -45,7 +45,7 @@ public abstract class Fact<Value> implements IPivotViewerData, IKafkaStorable {
     @Convert(converter = StringCryptoConverter.class)
     private String value;
 
-    // Id of the entity on the fact
+    // ID of the entity on the fact
     @Column(name = "element_id")
     @Convert(converter = StringCryptoConverter.class)
     private String elementId;
@@ -54,6 +54,15 @@ public abstract class Fact<Value> implements IPivotViewerData, IKafkaStorable {
     @Column(name = "created_at")
     @Convert(converter = LocalDateTimeCryptoConverter.class)
     private LocalDateTime createdAt;
+
+    public Fact() {
+        super();
+    }
+
+    public Fact(ENTITY entity) {
+        super();
+        setEntity(entity);
+    }
 
     public String getGroup() {
         return group;
@@ -129,7 +138,7 @@ public abstract class Fact<Value> implements IPivotViewerData, IKafkaStorable {
         return tenantId;
     }
 
-    public void setEntity(Value entity) {
+    public void setEntity(ENTITY entity) {
         try {
             setValue(new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).writeValueAsString(entity));
         } catch (JsonProcessingException e) {
@@ -137,9 +146,9 @@ public abstract class Fact<Value> implements IPivotViewerData, IKafkaStorable {
         }
     }
 
-    protected abstract TypeReference<Value> getJsonParser();
+    protected abstract TypeReference<ENTITY> getJsonParser();
 
-    public Value getEntity() {
+    public ENTITY getEntity() {
         try {
             return new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).readValue(getValue(), getJsonParser());
         } catch (JsonProcessingException e) {
