@@ -4,6 +4,7 @@ import com.biit.database.encryption.LocalDateTimeCryptoConverter;
 import com.biit.database.encryption.StringCryptoConverter;
 import com.biit.eventstructure.event.IKafkaStorable;
 import com.biit.factmanager.persistence.entities.exceptions.FactValueInvalidException;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -72,6 +73,7 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
         this.group = group;
     }
 
+    @JsonIgnore
     public String getValue() {
         return value == null ? "" : value;
     }
@@ -129,11 +131,13 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     }
 
     @Override
+    @JsonIgnore
     public String getPivotViewerValueItemId() {
         return tenantId;
     }
 
     @Override
+    @JsonIgnore
     public String getPivotViewerItemName() {
         return tenantId;
     }
@@ -157,11 +161,13 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     }
 
     @Override
+    @JsonIgnore
     public String getEventId() {
         return getElementId();
     }
 
     @Override
+    @JsonIgnore
     public LocalDateTime getCreationTime() {
         return getCreatedAt();
     }
