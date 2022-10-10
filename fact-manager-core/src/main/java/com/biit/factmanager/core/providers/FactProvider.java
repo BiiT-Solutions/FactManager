@@ -1,33 +1,30 @@
 package com.biit.factmanager.core.providers;
 
-import com.biit.factmanager.core.providers.exceptions.FactNotFoundException;
 import com.biit.factmanager.core.providers.exceptions.InvalidParameterException;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.persistence.repositories.FactRepository;
+import com.biit.server.providers.CrudProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Service
-public class FactProvider<T extends Fact<?>> {
+public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactRepository<T>> {
     private final FactRepository<T> factRepository;
 
 
     @Autowired
     public FactProvider(FactRepository<T> factRepository) {
+        super(factRepository);
         this.factRepository = factRepository;
     }
 
-    public T get(Long factId) {
-        return factRepository.findById(factId).orElseThrow(
-                () -> new FactNotFoundException(this.getClass(), "No fact with id '" + factId + "' found."));
+    public Optional<T> get(Long factId) {
+        return factRepository.findById(factId);
     }
 
     public List<T> getAll() {

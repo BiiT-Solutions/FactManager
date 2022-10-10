@@ -23,6 +23,10 @@
             <artifactId>fact-manager-persistence</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.biit</groupId>
+            <artifactId>rest-server-dto</artifactId>
+        </dependency>
         <!-- Testing -->
         <dependency>
             <groupId>org.testng</groupId>
