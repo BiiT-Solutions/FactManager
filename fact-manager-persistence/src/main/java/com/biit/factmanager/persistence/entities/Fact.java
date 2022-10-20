@@ -22,7 +22,7 @@ import java.util.Objects;
 @Primary
 @Table(name = "facts")
 public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
-    private static final int MAX_JSON_LENGTH = 100000;
+    private static final int MAX_JSON_LENGTH = 10 * 1024 * 1024;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
