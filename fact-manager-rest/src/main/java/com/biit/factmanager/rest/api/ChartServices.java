@@ -37,6 +37,7 @@ public class ChartServices<T extends Fact<?>> {
             @Parameter(description = "tag", required = false) @RequestParam(value = "tag", required = false) String tag,
             @Parameter(description = "group", required = false) @RequestParam(value = "group", required = false) String group,
             @Parameter(description = "elementId", required = false) @RequestParam(value = "elementId", required = false) String elementId,
+            @Parameter(description = "processId", required = false) @RequestParam(value = "processId", required = false) String processId,
             @Parameter(description = "startDate", required = false) @RequestParam(value = "startDate", required = false) LocalDateTime startDate,
             @Parameter(description = "endDate", required = false) @RequestParam(value = "endDate", required = false) LocalDateTime endDate,
             @Parameter(description = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
@@ -52,6 +53,6 @@ public class ChartServices<T extends Fact<?>> {
             pairs[i] = Pair.of(valueParameters.get(i), valueParameters.get(i + 1));
         }
 
-        return chartProvider.getChart(organizationId, tenantId, tag, group, elementId, startDate, endDate, lastDays, type, pairs);
+        return chartProvider.getChart(organizationId, tenantId, tag, group, elementId, processId, startDate, endDate, lastDays, type, pairs);
     }
 }

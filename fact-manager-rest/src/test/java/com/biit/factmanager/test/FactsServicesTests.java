@@ -35,7 +35,8 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void addFacts() {
-        Assert.assertEquals(factServices.getFacts(null, null, null, null, FACT_EXAMINATION_GROUP, null, null, null, null, null).size(), 0);
+        Assert.assertEquals(factServices.getFacts(null, null, null, null, FACT_EXAMINATION_GROUP, null, null,
+                null, null, null, null).size(), 0);
         // Save 2 empty facts
         FormrunnerQuestionFact FormrunnerQuestionFact = new FormrunnerQuestionFact();
         FormrunnerQuestionFact.setGroup(FACT_EXAMINATION_GROUP);
@@ -47,18 +48,19 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(facts.size(), 2);
         factServices.addFactList(facts, null);
         // 2 saved + the one added at the beginning
-        Assert.assertEquals(factServices.getFacts(null, null, null, null, FACT_EXAMINATION_GROUP, null, null, null, null, null).size(), 2);
+        Assert.assertEquals(factServices.getFacts(null, null, null, null, FACT_EXAMINATION_GROUP, null, null,
+                null, null, null, null).size(), 2);
     }
 
     @Test(dependsOnMethods = "addFacts")
     public void removeFact() {
-        Collection<FormrunnerQuestionFact> facts = factServices.getFacts(null, null, null, null, FACT_EXAMINATION_GROUP, null, null, null, null, null);
+        Collection<FormrunnerQuestionFact> facts = factServices.getFacts(null, null, null, null, FACT_EXAMINATION_GROUP, null, null, null, null, null, null);
         Assert.assertEquals(facts.size(), 2);
         Assert.assertNotNull(facts);
         for (FormrunnerQuestionFact fact : facts) {
             factServices.deleteFact(fact, null);
         }
-        Assert.assertEquals(factServices.getFacts(null, null, null, null, FACT_EXAMINATION_GROUP, null, null, null, null, null).size(), 0);
+        Assert.assertEquals(factServices.getFacts(null, null, null, null, FACT_EXAMINATION_GROUP, null, null, null, null, null, null).size(), 0);
     }
 
 

@@ -146,14 +146,14 @@ public class FormrunnerQuestionFactRepositoryTests extends AbstractTransactional
 
     @Test(dependsOnMethods = "searchFactByValueCompany")
     private void searchFactByValueQuestionAndAnswerValidDate() {
-        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findBy(null, null, null, null, null, LocalDateTime.now().minus(1, ChronoUnit.HOURS),
+        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findBy(null, null, null, null, null, null, LocalDateTime.now().minus(1, ChronoUnit.HOURS),
                 LocalDateTime.now(), Pair.of("xpath", FACT_QUESTION_XPATH), Pair.of("answer", FACT_ANSWER));
         Assert.assertEquals(facts.size(), 1);
     }
 
     @Test(dependsOnMethods = "searchFactByValueCompany")
     private void searchFactByValueQuestionAndAnswerInvalidDate() {
-        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findBy(null, null, null, null, null, LocalDateTime.now(),
+        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findBy(null, null, null, null, null, null, LocalDateTime.now(),
                 LocalDateTime.now(), Pair.of("question", FACT_QUESTION_XPATH), Pair.of("answer", FACT_ANSWER));
         Assert.assertEquals(facts.size(), 0);
     }

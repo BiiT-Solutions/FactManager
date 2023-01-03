@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 public class PivotViewServices<T extends Fact<?>> {
 
-      public PivotViewProvider<T> pivotViewProvider;
+    public PivotViewProvider<T> pivotViewProvider;
 
     @Autowired
     public PivotViewServices(PivotViewProvider<T> pivotViewProvider) {
@@ -36,6 +36,7 @@ public class PivotViewServices<T extends Fact<?>> {
             @Parameter(name = "tag", required = false) @RequestParam(value = "tag", required = false) String tag,
             @Parameter(name = "group", required = false) @RequestParam(value = "group", required = false) String group,
             @Parameter(name = "elementId", required = false) @RequestParam(value = "elementId", required = false) String elementId,
+            @Parameter(name = "processId", required = false) @RequestParam(value = "processId", required = false) String processId,
             @Parameter(name = "startDate", required = false) @RequestParam(value = "startDate", required = false) LocalDateTime startDate,
             @Parameter(name = "endDate", required = false) @RequestParam(value = "endDate", required = false) LocalDateTime endDate,
             @Parameter(name = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
@@ -54,7 +55,7 @@ public class PivotViewServices<T extends Fact<?>> {
             pairs[i] = Pair.of(valueParameters.get(i), valueParameters.get(i + 1));
         }
 
-        return pivotViewProvider.get(organizationId, tenantId, tag, group, elementId, startDate, endDate, lastDays, pairs);
+        return pivotViewProvider.get(organizationId, tenantId, tag, group, elementId, processId, startDate, endDate, lastDays, pairs);
     }
 
 

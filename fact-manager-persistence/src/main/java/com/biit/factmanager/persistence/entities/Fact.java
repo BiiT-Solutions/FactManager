@@ -35,6 +35,9 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     @Column(name = "tenant_id")
     private String tenantId;
 
+    @Column(name = "process_id")
+    private String processId;
+
     @Column(name = "tag")
     private String tag;
 
@@ -128,6 +131,14 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getProcessId() {
+        return processId;
+    }
+
+    public void setProcessId(String processId) {
+        this.processId = processId;
     }
 
     @Override

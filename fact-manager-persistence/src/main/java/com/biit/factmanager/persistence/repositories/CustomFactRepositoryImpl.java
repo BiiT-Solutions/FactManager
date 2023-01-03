@@ -69,8 +69,8 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
     }
 
     @Override
-    public Collection<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, LocalDateTime startDate,
-                                LocalDateTime endDate, Pair<String, Object>... valueParameters) {
+    public Collection<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, String processId,
+                                LocalDateTime startDate, LocalDateTime endDate, Pair<String, Object>... valueParameters) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> query = criteriaBuilder.createQuery(entityTypeClass);
         final Root<T> root = query.from(entityTypeClass);
@@ -81,6 +81,9 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
         }
         if (tenantId != null) {
             predicates.add(criteriaBuilder.equal(root.get("tenantId"), tenantId));
+        }
+        if (processId != null) {
+            predicates.add(criteriaBuilder.equal(root.get("processId"), processId));
         }
         if (tag != null) {
             predicates.add(criteriaBuilder.equal(root.get("tag"), tag));
@@ -111,7 +114,6 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
 
         /* For Hibernate */
         System.out.println(entityManager.createQuery(query).unwrap(org.hibernate.query.Query.class).getQueryString());
-
 
         return entityManager.createQuery(query).getResultList();
     }
