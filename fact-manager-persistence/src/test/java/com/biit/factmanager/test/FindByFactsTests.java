@@ -42,13 +42,13 @@ public class FindByFactsTests extends AbstractTransactionalTestNGSpringContextTe
 
     @Test
     public void getFindBy() {
-        Collection<StringFact> fact1 = factRepository.findBy("1", "1", "1", "1", "1",
+        Collection<StringFact> fact1 = factRepository.findBy("1", "1", "1", "1", "1", null,
                 LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(1));
 
-        Collection<StringFact> fact2 = factRepository.findBy("2", "2", "2", "2", "2",
+        Collection<StringFact> fact2 = factRepository.findBy("2", "2", "2", "2", "2", null,
                 LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(1));
 
-        Collection<StringFact> fact3 = factRepository.findBy("3", "3", "3", "3", "3",
+        Collection<StringFact> fact3 = factRepository.findBy("3", "3", "3", "3", "3", null,
                 LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(1));
 
         Assert.assertEquals(fact1.size(), 1);
