@@ -7,12 +7,15 @@ import com.biit.factmanager.rest.exceptions.BadRequestException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.data.util.Pair;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.List;
 
@@ -74,8 +77,10 @@ public abstract class FactServices<T extends Fact<?>> {
             @Parameter(name = "group", required = false) @RequestParam(value = "group", required = false) String group,
             @Parameter(name = "elementId", required = false) @RequestParam(value = "elementId", required = false) String elementId,
             @Parameter(name = "processId", required = false) @RequestParam(value = "processId", required = false) String processId,
-            @Parameter(name = "startDate", required = false) @RequestParam(value = "startDate", required = false) LocalDateTime startDate,
-            @Parameter(name = "endDate", required = false) @RequestParam(value = "endDate", required = false) LocalDateTime endDate,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Parameter(description = "Facts since the selected date", example = "2023-01-01T00:00:00.00Z")
+            @RequestParam(value = "from", required = false) OffsetDateTime from,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Parameter(description = "Facts until the selected date", example = "2023-01-31T23:59:59.99Z")
+            @RequestParam(value = "to", required = false) OffsetDateTime to,
             @Parameter(name = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
             @Parameter(name = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters) {
 
@@ -89,10 +94,13 @@ public abstract class FactServices<T extends Fact<?>> {
             for (int i = 0; i < valueParameters.size(); i += 2) {
                 pairs[i] = Pair.of(valueParameters.get(i), valueParameters.get(i + 1));
             }
-            return factProvider.findBy(organizationId, tenantId, tag, group, elementId, processId, startDate, endDate, lastDays, pairs);
         } else {
-            return factProvider.findBy(organizationId, tenantId, tag, group, elementId, processId, startDate, endDate, lastDays);
+            pairs = null;
         }
+        return factProvider.findBy(organizationId, tenantId, tag, group, elementId, processId,
+                from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
+                to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
+                lastDays, pairs);
     }
 
 }

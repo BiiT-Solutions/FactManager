@@ -13,7 +13,6 @@ import javax.persistence.criteria.Root;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -48,7 +47,7 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
     }
 
     @Override
-    public Collection<T> findByValueParameters(Pair<String, Object>... valueParameters) {
+    public List<T> findByValueParameters(Pair<String, Object>... valueParameters) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> query = criteriaBuilder.createQuery(entityTypeClass);
         final Root<T> root = query.from(entityTypeClass);
@@ -69,8 +68,8 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
     }
 
     @Override
-    public Collection<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, String processId,
-                                LocalDateTime startDate, LocalDateTime endDate, Pair<String, Object>... valueParameters) {
+    public List<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, String processId,
+                          LocalDateTime startDate, LocalDateTime endDate, Pair<String, Object>... valueParameters) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> query = criteriaBuilder.createQuery(entityTypeClass);
         final Root<T> root = query.from(entityTypeClass);
@@ -100,12 +99,14 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
         if (endDate != null) {
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), endDate));
         }
-        for (final Pair<String, Object> condition : valueParameters) {
-            //ON JSON numbers are not using quotes.
-            if (condition.getSecond() instanceof Number) {
-                predicates.add(criteriaBuilder.like(root.get("value"), String.format("%%\"%s\":%s%%", condition.getFirst(), condition.getSecond())));
-            } else {
-                predicates.add(criteriaBuilder.like(root.get("value"), String.format("%%\"%s\":\"%s\"%%", condition.getFirst(), condition.getSecond())));
+        if (valueParameters != null) {
+            for (final Pair<String, Object> condition : valueParameters) {
+                //ON JSON numbers are not using quotes.
+                if (condition.getSecond() instanceof Number) {
+                    predicates.add(criteriaBuilder.like(root.get("value"), String.format("%%\"%s\":%s%%", condition.getFirst(), condition.getSecond())));
+                } else {
+                    predicates.add(criteriaBuilder.like(root.get("value"), String.format("%%\"%s\":\"%s\"%%", condition.getFirst(), condition.getSecond())));
+                }
             }
         }
 

@@ -31,11 +31,11 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
         return factRepository.findAll();
     }
 
-    public Collection<T> getFiltered(String group, String elementId) {
+    public List<T> getFiltered(String group, String elementId) {
         return factRepository.findByElementIdAndGroup(elementId, group);
     }
 
-    public Collection<T> getByValueParameter(Object... pairParameterValues) {
+    public List<T> getByValueParameter(Object... pairParameterValues) {
         if (pairParameterValues.length % 2 == 1) {
             throw new InvalidParameterException(this.getClass(), "Parameters '" + Arrays.toString(pairParameterValues) + "' must be even.");
         }
@@ -46,11 +46,11 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
         return factRepository.findByValueParameters(pairs);
     }
 
-    public Collection<T> findByOrganizationId(String organizationId) {
+    public List<T> findByOrganizationId(String organizationId) {
         return factRepository.findByOrganizationId(organizationId);
     }
 
-    public Collection<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, String processId, LocalDateTime startDate,
+    public List<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, String processId, LocalDateTime startDate,
                                 LocalDateTime endDate, Integer lastDays, Pair<String, Object>... valueParameters) {
         if (lastDays == null) {
             return findBy(organizationId, tenantId, tag, group, elementId, processId, startDate, endDate, valueParameters);
@@ -60,14 +60,14 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
     }
 
 
-    public Collection<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, String processId, Integer lastDays,
+    public List<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, String processId, Integer lastDays,
                                 Pair<String, Object>... valueParameters) {
         final LocalDateTime startDate = LocalDateTime.now().minusDays(lastDays);
         final LocalDateTime endDate = LocalDateTime.now();
         return factRepository.findBy(organizationId, tenantId, tag, group, elementId, processId, startDate, endDate, valueParameters);
     }
 
-    public Collection<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, String processId, LocalDateTime startDate,
+    public List<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, String processId, LocalDateTime startDate,
                                 LocalDateTime endDate, Pair<String, Object>... valueParameters) {
         return factRepository.findBy(organizationId, tenantId, tag, group, elementId, processId, startDate, endDate, valueParameters);
     }
