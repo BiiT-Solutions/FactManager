@@ -10,9 +10,7 @@ import org.springframework.stereotype.Service;
 @ComponentScan({"com.biit.factmanager"})
 @EntityScan({"com.biit.factmanager.persistence.entities"})
 @Service
-
 public class FactManagerServer {
-
 
 	public static void main(String[] args) {
 		SpringApplication.run(FactManagerServer.class, args);

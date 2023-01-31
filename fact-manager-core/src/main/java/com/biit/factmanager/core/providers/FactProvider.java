@@ -51,7 +51,7 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
     }
 
     public List<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, String processId, LocalDateTime startDate,
-                                LocalDateTime endDate, Integer lastDays, Pair<String, Object>... valueParameters) {
+                          LocalDateTime endDate, Integer lastDays, Pair<String, Object>... valueParameters) {
         if (lastDays == null) {
             return findBy(organizationId, tenantId, tag, group, elementId, processId, startDate, endDate, valueParameters);
         } else {
@@ -61,14 +61,17 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
 
 
     public List<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, String processId, Integer lastDays,
-                                Pair<String, Object>... valueParameters) {
-        final LocalDateTime startDate = LocalDateTime.now().minusDays(lastDays);
+                          Pair<String, Object>... valueParameters) {
         final LocalDateTime endDate = LocalDateTime.now();
-        return factRepository.findBy(organizationId, tenantId, tag, group, elementId, processId, startDate, endDate, valueParameters);
+        if (lastDays != null) {
+            final LocalDateTime startDate = LocalDateTime.now().minusDays(lastDays);
+            return factRepository.findBy(organizationId, tenantId, tag, group, elementId, processId, startDate, endDate, valueParameters);
+        }
+        return factRepository.findBy(organizationId, tenantId, tag, group, elementId, processId, null, endDate, valueParameters);
     }
 
     public List<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, String processId, LocalDateTime startDate,
-                                LocalDateTime endDate, Pair<String, Object>... valueParameters) {
+                          LocalDateTime endDate, Pair<String, Object>... valueParameters) {
         return factRepository.findBy(organizationId, tenantId, tag, group, elementId, processId, startDate, endDate, valueParameters);
     }
 
