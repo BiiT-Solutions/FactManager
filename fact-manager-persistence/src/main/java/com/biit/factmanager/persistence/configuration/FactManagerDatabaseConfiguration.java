@@ -32,12 +32,17 @@ public class FactManagerDatabaseConfiguration {
         return DataSourceBuilder.create().build();
     }
 
-    @Bean
+//    @Bean
+//    @ConditionalOnMissingBean
+//    public EntityManagerFactoryBuilder entityManagerFactoryBuilder() {
+//        return new EntityManagerFactoryBuilder(new HibernateJpaVendorAdapter(), new HashMap<>(), null);
+//    }
+
+    @Bean(name = "factmanagerSystemFactory")
     public LocalContainerEntityManagerFactoryBean factmanagerSystemFactory(EntityManagerFactoryBuilder builder,
                                                                            @Qualifier("factmanagerDataSource") DataSource dataSource) {
         final HashMap<String, Object> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", environment.getProperty("spring.factmanager.datasource.jpa.hibernate.ddl-auto"));
-        //Not working!
         properties.put("hibernate.dialect", environment.getProperty("spring.factmanager.datasource.hibernate.dialect"));
         return builder.dataSource(dataSource).properties(properties).packages(PACKAGE).build();
     }

@@ -8,11 +8,13 @@ import com.biit.server.providers.CrudProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
+@Transactional("factmanagerTransactionManager")
 public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactRepository<T>> {
     private final FactRepository<T> factRepository;
 

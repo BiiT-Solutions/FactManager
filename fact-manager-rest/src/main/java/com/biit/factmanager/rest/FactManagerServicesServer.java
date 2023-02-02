@@ -19,7 +19,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @SpringBootApplication
-@ComponentScan({"com.biit.factmanager"})
+@ComponentScan({"com.biit.factmanager", "com.biit.server", "com.biit.messagebird.client"})
 @ConfigurationPropertiesScan({"com.biit.factmanager.rest", "com.biit.factmanager.persistence.configuration"})
 @EntityScan({"com.biit.factmanager.persistence.entities"})
 public class FactManagerServicesServer {

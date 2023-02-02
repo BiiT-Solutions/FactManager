@@ -1,35 +1,32 @@
 package com.biit.factmanager.rest;
 
-import io.swagger.v3.oas.models.ExternalDocumentation;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Info;
-import org.springdoc.core.GroupedOpenApi;
-import org.springframework.context.annotation.Bean;
+import com.biit.server.rest.DefaultSwaggerConfiguration;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class SwaggerConfiguration {
+public class SwaggerConfiguration extends DefaultSwaggerConfiguration {
     private static final String SWAGGER_TITLE = "FactManager";
     private static final String SWAGGER_DESCRIPTION = "Fact Manager Swagger";
+    private static final String SWAGGER_GROUP = "BiiT";
+    private static final String[] PACKAGES_TO_SCAN = new String[]{"com.biit.factmanager", "com.biit.server.rest", "com.biit.server.security.rest"};
 
-    @Bean
-    public GroupedOpenApi publicApi() {
-        return GroupedOpenApi.builder()
-                .group("fact-manager-public")
-                .pathsToMatch("/**")
-                .build();
+    @Override
+    public String getSwaggerTitle() {
+        return SWAGGER_TITLE;
     }
 
-    @Bean
-    public OpenAPI factManagerAPI() {
-        return new OpenAPI()
-                .info(new Info().title(SWAGGER_TITLE)
-                        .description(SWAGGER_DESCRIPTION)
-                        .version(SwaggerConfiguration.class.getPackage().getImplementationVersion() != null ?
-                                SwaggerConfiguration.class.getPackage().getImplementationVersion() : "Dev"))
-                .externalDocs(new ExternalDocumentation()
-                        .description("Fact Manager Readme")
-                        .url("https://git.biit-solutions.com/BiiT/FactManager"));
+    @Override
+    public String getSwaggerDescription() {
+        return SWAGGER_DESCRIPTION;
     }
 
+    @Override
+    public String getSwaggerGroup() {
+        return SWAGGER_GROUP;
+    }
+
+    @Override
+    public String[] getPackagesToScan() {
+        return PACKAGES_TO_SCAN;
+    }
 }
