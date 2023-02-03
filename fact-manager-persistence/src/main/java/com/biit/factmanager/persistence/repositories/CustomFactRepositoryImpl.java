@@ -1,6 +1,7 @@
 package com.biit.factmanager.persistence.repositories;
 
 import com.biit.factmanager.persistence.entities.Fact;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
 
@@ -19,6 +20,7 @@ import java.util.List;
 public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRepository<T> {
 
     @PersistenceContext
+    @Qualifier(value = "factmanagerSystemFactory")
     private EntityManager entityManager;
 
     private Class<T> entityTypeClass;

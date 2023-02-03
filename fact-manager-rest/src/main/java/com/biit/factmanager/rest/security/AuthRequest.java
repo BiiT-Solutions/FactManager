@@ -1,4 +1,4 @@
-package com.biit.factmanager.security;
+package com.biit.factmanager.rest.security;
 
 public class AuthRequest {
     private String username;

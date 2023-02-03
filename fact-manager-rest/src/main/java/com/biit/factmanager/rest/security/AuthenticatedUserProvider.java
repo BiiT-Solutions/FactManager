@@ -1,4 +1,4 @@
-package com.biit.factmanager.security;
+package com.biit.factmanager.rest.security;
 
 import com.biit.server.exceptions.BadRequestException;
 import com.biit.server.exceptions.UserNotFoundException;
@@ -71,7 +71,7 @@ public class AuthenticatedUserProvider implements IAuthenticatedUserProvider {
 
     @Override
     public IAuthenticatedUser updateUser(CreateUserRequest createUserRequest) {
-        AuthenticatedUser user = (AuthenticatedUser) usersOnMemory.stream().filter(iAuthenticatedUser ->
+        final AuthenticatedUser user = (AuthenticatedUser) usersOnMemory.stream().filter(iAuthenticatedUser ->
                 iAuthenticatedUser.getUsername().equals(createUserRequest.getUsername())).findAny().orElseThrow(() ->
                 new UserNotFoundException(this.getClass(), "User with username '" + createUserRequest.getUsername() + "' does not exists"));
         user.setName(createUserRequest.getName());
@@ -81,7 +81,8 @@ public class AuthenticatedUserProvider implements IAuthenticatedUserProvider {
 
     @Override
     public void updatePassword(String username, String oldPassword, String newPassword) {
-        IAuthenticatedUser user = usersOnMemory.stream().filter(iAuthenticatedUser -> iAuthenticatedUser.getUsername().equals(username)).findAny().orElseThrow(() ->
+        final IAuthenticatedUser user = usersOnMemory.stream().filter(iAuthenticatedUser -> iAuthenticatedUser.getUsername().equals(username))
+                .findAny().orElseThrow(() ->
                 new UserNotFoundException(this.getClass(), "User with username '" + username + "' does not exists"));
 
         //Check old password.

@@ -1,4 +1,4 @@
-package com.biit.factmanager.security;
+package com.biit.factmanager.rest.security;
 
 import com.biit.server.security.IAuthenticatedUser;
 import com.fasterxml.jackson.annotation.JsonIgnore;

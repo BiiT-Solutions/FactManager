@@ -6,23 +6,29 @@ import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.persistence.repositories.FactRepository;
 import com.biit.server.providers.CrudProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.util.Pair;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 @Service
-@Transactional("factmanagerTransactionManager")
 public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactRepository<T>> {
     private final FactRepository<T> factRepository;
+    private final LocalContainerEntityManagerFactoryBean entityManagerFactoryBean;
 
 
     @Autowired
-    public FactProvider(FactRepository<T> factRepository) {
+    public FactProvider(FactRepository<T> factRepository,
+                        @Qualifier("factmanagerSystemFactory") LocalContainerEntityManagerFactoryBean entityManagerFactoryBean) {
         super(factRepository);
         this.factRepository = factRepository;
+        this.entityManagerFactoryBean = entityManagerFactoryBean;
     }
 
     public Optional<T> get(Long factId) {
