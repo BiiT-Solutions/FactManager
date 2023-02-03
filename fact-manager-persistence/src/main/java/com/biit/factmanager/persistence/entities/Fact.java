@@ -20,7 +20,14 @@ import java.util.Objects;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = "type")
 @Primary
-@Table(name = "facts")
+@Table(name = "facts", indexes = {
+        @Index(name = "ind_organization", columnList = "organization_id"),
+        @Index(name = "ind_tenant", columnList = "tenant_id"),
+        @Index(name = "ind_process", columnList = "process_id"),
+        @Index(name = "ind_tag", columnList = "tag"),
+        @Index(name = "ind_group", columnList = "grouping"),
+        @Index(name = "ind_element", columnList = "element_id"),
+})
 public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     private static final int MAX_JSON_LENGTH = 10 * 1024 * 1024;
 
