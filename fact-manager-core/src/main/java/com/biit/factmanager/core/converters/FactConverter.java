@@ -5,7 +5,9 @@ import com.biit.factmanager.core.converters.models.FactConverterRequest;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.server.controller.converters.ElementConverter;
 import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FactConverter<ENTITY> extends ElementConverter<Fact<ENTITY>, FactDTO<ENTITY>, FactConverterRequest<ENTITY>> {
 
     @Override

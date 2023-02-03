@@ -48,6 +48,11 @@
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="DAILY"/>
     </logger>
+    <logger name="com.biit.server.logger.RestServerLogger" additivity="false" level="INFO">
+        <appender-ref ref="DAILY"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
     <!-- Default ones -->
     <logger name="org.springframework" additivity="false" level="ERROR">
         <appender-ref ref="CONSOLE"/>
