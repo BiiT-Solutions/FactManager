@@ -21,6 +21,7 @@
         <module>fact-manager-core</module>
         <module>fact-manager-kafka</module>
         <module>fact-manager-rest</module>
+        <module>fact-manager-rest-client</module>
     </modules>
 
 

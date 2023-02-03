@@ -3,12 +3,11 @@
     <test name="FactManager" enabled="true" preserve-order="true">
         <groups>
             <run>
-                <include name="factsServices"/>
-                <include name="restApiTest"/>
+                <include name="clientTest"/>
             </run>
         </groups>
         <classes>
-            <class name="com.biit.factmanager.test.rest.RestApiTest"/>
+            <class name="com.biit.factmanager.client.ClientTests"/>
         </classes>
     </test>
 </suite>
