@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope(value = "singleton")
-public class UrlConstructor {
+public class FactUrlConstructor {
 
     @Value("${factmanager.server.url}")
     private String factServerUrl;
@@ -20,6 +20,6 @@ public class UrlConstructor {
     }
 
     public String findByParameters() {
-        return "";
+        return "/string";
     }
 }

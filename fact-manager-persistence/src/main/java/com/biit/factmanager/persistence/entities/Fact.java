@@ -88,7 +88,7 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
         return value == null ? "" : value;
     }
 
-    protected void setValue(String value) {
+    public void setValue(String value) {
         this.value = value;
     }
 

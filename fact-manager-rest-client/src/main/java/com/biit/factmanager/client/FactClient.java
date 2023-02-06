@@ -1,10 +1,10 @@
 package com.biit.factmanager.client;
 
 
-import com.biit.factmanager.client.exceptions.InvalidResponseException;
 import com.biit.factmanager.client.fact.FactDTO;
 import com.biit.rest.client.RestGenericClient;
 import com.biit.rest.exceptions.EmptyResultException;
+import com.biit.rest.exceptions.InvalidResponseException;
 import com.biit.rest.exceptions.UnprocessableEntityException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -16,40 +16,40 @@ import java.util.*;
 @Service
 public class FactClient {
 
-    private final UrlConstructor urlConstructor;
+    private final FactUrlConstructor factUrlConstructor;
 
     private final ObjectMapper mapper;
 
-    public FactClient(UrlConstructor urlConstructor, ObjectMapper mapper) {
-        this.urlConstructor = urlConstructor;
+    public FactClient(FactUrlConstructor factUrlConstructor, ObjectMapper mapper) {
+        this.factUrlConstructor = factUrlConstructor;
         this.mapper = mapper;
     }
 
-    public Collection<FactDTO> post(Collection<FactDTO> facts) throws UnprocessableEntityException {
+    public List<FactDTO> post(Collection<FactDTO> facts) throws UnprocessableEntityException {
         if (facts == null || facts.isEmpty()) {
             return new ArrayList<>();
         }
         try {
-            final String result = RestGenericClient.post(urlConstructor.getFactServerUrl(), urlConstructor.addFacts(),
+            final String result = RestGenericClient.post(factUrlConstructor.getFactServerUrl(), factUrlConstructor.addFacts(),
                     mapper.writeValueAsString(facts));
             return mapper.readValue(result, new TypeReference<List<FactDTO>>() {
             });
         } catch (JsonProcessingException e) {
-            throw new InvalidResponseException(this.getClass(), e);
+            throw new InvalidResponseException(e);
         } catch (EmptyResultException e) {
             return new ArrayList<>();
         }
     }
 
-    public Collection<FactDTO> get(Map<SearchParameters, Object> filter) throws UnprocessableEntityException {
+    public List<FactDTO> get(Map<SearchParameters, Object> filter) throws UnprocessableEntityException {
         final Map<String, Object> parameters = new HashMap<>();
         filter.forEach((searchParameters, value) -> parameters.put(searchParameters.getParamName(), value));
         try {
-            final String response = RestGenericClient.get(urlConstructor.getFactServerUrl(), urlConstructor.findByParameters(), parameters);
+            final String response = RestGenericClient.get(factUrlConstructor.getFactServerUrl(), factUrlConstructor.findByParameters(), parameters);
             return mapper.readValue(response, new TypeReference<List<FactDTO>>() {
             });
         } catch (JsonProcessingException e) {
-            throw new InvalidResponseException(this.getClass(), e);
+            throw new InvalidResponseException(e);
         } catch (EmptyResultException e) {
             throw new RuntimeException(e);
         }
