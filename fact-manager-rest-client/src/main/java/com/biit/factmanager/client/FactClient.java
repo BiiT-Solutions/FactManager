@@ -2,6 +2,7 @@ package com.biit.factmanager.client;
 
 
 import com.biit.factmanager.client.fact.FactDTO;
+import com.biit.rest.client.Header;
 import com.biit.rest.client.RestGenericClient;
 import com.biit.rest.exceptions.EmptyResultException;
 import com.biit.rest.exceptions.InvalidResponseException;
@@ -41,11 +42,11 @@ public class FactClient {
         }
     }
 
-    public List<FactDTO> get(Map<SearchParameters, Object> filter) throws UnprocessableEntityException {
+    public List<FactDTO> get(Map<SearchParameters, Object> filter, List<Header> headers) throws UnprocessableEntityException {
         final Map<String, Object> parameters = new HashMap<>();
         filter.forEach((searchParameters, value) -> parameters.put(searchParameters.getParamName(), value));
         try {
-            final String response = RestGenericClient.get(factUrlConstructor.getFactServerUrl(), factUrlConstructor.findByParameters(), parameters);
+            final String response = RestGenericClient.get(factUrlConstructor.getFactServerUrl(), factUrlConstructor.findByParameters(), parameters, headers);
             return mapper.readValue(response, new TypeReference<List<FactDTO>>() {
             });
         } catch (JsonProcessingException e) {

@@ -6,6 +6,7 @@ import com.biit.factmanager.client.fact.FactDTO;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.FormrunnerTestFact;
 import com.biit.factmanager.persistence.FormrunnerTestValue;
+import com.biit.rest.client.Header;
 import com.biit.rest.exceptions.UnprocessableEntityException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,20 +29,20 @@ public class FormrunnerVariableProvider {
         this.mapper = mapper;
     }
 
-    public List<FormrunnerTestFact> get(Map<SearchParameters, Object> filter) throws UnprocessableEntityException {
-        List<FactDTO> rawFacts = factClient.get(filter);
+    public List<FormrunnerTestFact> get(Map<SearchParameters, Object> filter, List<Header> headers) throws UnprocessableEntityException {
+        List<FactDTO> rawFacts = factClient.get(filter, headers);
         List<FormrunnerTestFact> result = new ArrayList<>();
 
         rawFacts.forEach(factDTO -> {
-            try {
-                FormrunnerTestValue value = mapper.readValue(factDTO.getValueDTO().getString(), FormrunnerTestValue.class);
+//            try {
+//               FormrunnerTestValue value = mapper.readValue(factDTO.getValueDTO().getString(), FormrunnerTestValue.class);
                 FormrunnerTestFact fact = new FormrunnerTestFact();
                 BeanUtils.copyProperties(factDTO, fact);
                 fact.setValue(factDTO.getValueDTO().getString());
                 result.add(fact);
-            } catch (JsonProcessingException e) {
-                FactManagerLogger.errorMessage(this.getClass(), e);
-            }
+//            } catch (JsonProcessingException e) {
+//                FactManagerLogger.errorMessage(this.getClass(), e);
+//            }
 
         });
 
