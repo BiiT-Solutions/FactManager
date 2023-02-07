@@ -27,13 +27,13 @@ public class FactClient {
         this.mapper = mapper;
     }
 
-    public List<FactDTO> post(Collection<FactDTO> facts) throws UnprocessableEntityException {
+    public List<FactDTO> post(Collection<FactDTO> facts, List<Header> headers) throws UnprocessableEntityException {
         if (facts == null || facts.isEmpty()) {
             return new ArrayList<>();
         }
         try {
             try (final Response result = RestGenericClient.post(factUrlConstructor.getFactServerUrl(), factUrlConstructor.addFacts(),
-                    mapper.writeValueAsString(facts))) {
+                    mapper.writeValueAsString(facts), headers)) {
                 return mapper.readValue(result.readEntity(String.class), new TypeReference<List<FactDTO>>() {
                 });
             }

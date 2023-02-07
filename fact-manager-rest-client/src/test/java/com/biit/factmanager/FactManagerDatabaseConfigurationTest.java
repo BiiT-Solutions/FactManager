@@ -18,9 +18,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.HashMap;
 
-//@Configuration
-//@EnableJpaRepositories(entityManagerFactoryRef = "factmanagerSystemFactoryTest", transactionManagerRef = "factmanagerTransactionManagerTest", basePackages = {
-//        FactManagerDatabaseConfigurationTest.PACKAGE})
+@Configuration
+@EnableJpaRepositories(entityManagerFactoryRef = "factmanagerSystemFactoryTest", transactionManagerRef = "factmanagerTransactionManagerTest", basePackages = {
+        FactManagerDatabaseConfigurationTest.PACKAGE})
 public class FactManagerDatabaseConfigurationTest {
     public static final String PACKAGE = "com.biit.factmanager.persistence";
 

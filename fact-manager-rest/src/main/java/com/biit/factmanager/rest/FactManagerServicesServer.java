@@ -35,26 +35,6 @@ public class FactManagerServicesServer {
 	}
 
 	@Bean
-	public WebMvcConfigurer corsConfigurer() {
-		return new WebMvcConfigurerAdapter() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
-			}
-		};
-	}
-
-	@Bean("threadPoolExecutor")
-	public TaskExecutor getAsyncExecutor() {
-		final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(20);
-		executor.setMaxPoolSize(100);
-		executor.setWaitForTasksToCompleteOnShutdown(true);
-		executor.setThreadNamePrefix("Rest_Async-");
-		return executor;
-	}
-
-	@Bean
 	public ApplicationListener<ContextRefreshedEvent> startupLoggingListener() {
 		return event -> FactManagerLogger.info(FactManagerServicesServer.class, "### Server started ###");
 	}

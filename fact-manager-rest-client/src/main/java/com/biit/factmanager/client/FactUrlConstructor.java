@@ -16,7 +16,7 @@ public class FactUrlConstructor {
     }
 
     public String addFacts() {
-        return "/collection";
+        return "/string/collection";
     }
 
     public String findByParameters() {
