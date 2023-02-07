@@ -1,5 +1,10 @@
 package com.biit.factmanager.client.fact;
 
+import com.biit.factmanager.logger.FactManagerLogger;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.time.LocalDateTime;
 
 
@@ -107,5 +112,16 @@ public class FactDTO {
 
     public void setValueDTO(ValueDTO valueDTO) {
         this.valueDTO = valueDTO;
+    }
+
+    @JsonSetter
+    public void setEntity(Object entityAsJson) {
+        final ValueDTO valueDTO = new ValueDTO();
+        try {
+            valueDTO.setString(new ObjectMapper().writeValueAsString(entityAsJson));
+        } catch (JsonProcessingException e) {
+            FactManagerLogger.errorMessage(this.getClass(), e);
+        }
+        setValueDTO(valueDTO);
     }
 }

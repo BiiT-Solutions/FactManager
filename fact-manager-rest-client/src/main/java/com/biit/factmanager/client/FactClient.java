@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
+import javax.ws.rs.core.Response;
 import java.util.*;
 
 @Service
@@ -31,10 +32,11 @@ public class FactClient {
             return new ArrayList<>();
         }
         try {
-            final String result = RestGenericClient.post(factUrlConstructor.getFactServerUrl(), factUrlConstructor.addFacts(),
-                    mapper.writeValueAsString(facts));
-            return mapper.readValue(result, new TypeReference<List<FactDTO>>() {
-            });
+            try (final Response result = RestGenericClient.post(factUrlConstructor.getFactServerUrl(), factUrlConstructor.addFacts(),
+                    mapper.writeValueAsString(facts))) {
+                return mapper.readValue(result.readEntity(String.class), new TypeReference<List<FactDTO>>() {
+                });
+            }
         } catch (JsonProcessingException e) {
             throw new InvalidResponseException(e);
         } catch (EmptyResultException e) {
@@ -46,9 +48,11 @@ public class FactClient {
         final Map<String, Object> parameters = new HashMap<>();
         filter.forEach((searchParameters, value) -> parameters.put(searchParameters.getParamName(), value));
         try {
-            final String response = RestGenericClient.get(factUrlConstructor.getFactServerUrl(), factUrlConstructor.findByParameters(), parameters, headers);
-            return mapper.readValue(response, new TypeReference<List<FactDTO>>() {
-            });
+            try (final Response response = RestGenericClient.get(factUrlConstructor.getFactServerUrl(),
+                    factUrlConstructor.findByParameters(), parameters, headers)) {
+                return mapper.readValue(response.readEntity(String.class), new TypeReference<List<FactDTO>>() {
+                });
+            }
         } catch (JsonProcessingException e) {
             throw new InvalidResponseException(e);
         } catch (EmptyResultException e) {

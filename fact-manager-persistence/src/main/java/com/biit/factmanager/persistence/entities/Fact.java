@@ -66,6 +66,9 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     @Convert(converter = LocalDateTimeCryptoConverter.class)
     private LocalDateTime createdAt;
 
+    @Transient
+    private transient ENTITY entity;
+
     public Fact() {
         super();
     }
@@ -90,6 +93,7 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
 
     public void setValue(String value) {
         this.value = value;
+        this.entity = null;
     }
 
     public Long getId() {
@@ -163,6 +167,7 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     public void setEntity(ENTITY entity) {
         try {
             setValue(new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).writeValueAsString(entity));
+            this.entity = entity;
         } catch (JsonProcessingException e) {
             throw new FactValueInvalidException(e);
         }
@@ -171,11 +176,14 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     protected abstract TypeReference<ENTITY> getJsonParser();
 
     public ENTITY getEntity() {
-        try {
-            return new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).readValue(getValue(), getJsonParser());
-        } catch (JsonProcessingException e) {
-            throw new FactValueInvalidException(e);
-        }
+        //if (entity != null) {
+            try {
+                entity = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).readValue(getValue(), getJsonParser());
+            } catch (JsonProcessingException e) {
+                throw new FactValueInvalidException(e);
+            }
+      //  }
+        return entity;
     }
 
     @Override

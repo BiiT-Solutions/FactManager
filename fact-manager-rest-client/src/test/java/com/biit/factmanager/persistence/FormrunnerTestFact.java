@@ -2,6 +2,7 @@ package com.biit.factmanager.persistence;
 
 
 import com.biit.eventstructure.event.IKafkaStorable;
+import com.biit.factmanager.client.IFact;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -13,7 +14,7 @@ import javax.persistence.Transient;
 
 @Entity
 @DiscriminatorValue("FormrunnerTestFact")
-public class FormrunnerTestFact extends Fact<FormrunnerTestValue> implements IKafkaStorable {
+public class FormrunnerTestFact extends Fact<FormrunnerTestValue> implements IFact {
 
     @Transient
     private FormrunnerTestValue formrunnerVariableValue;

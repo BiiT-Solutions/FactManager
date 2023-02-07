@@ -80,8 +80,7 @@
         </dependency>
         <dependency>
             <groupId>com.biit</groupId>
-            <artifactId>rest-security-client</artifactId>
-            <version>${biit-rest-server.version}</version>
+            <artifactId>rest-server-security-client</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
