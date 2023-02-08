@@ -3,14 +3,9 @@ package com.biit.factmanager.client.fact;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.deser.std.FromStringDeserializer;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 import java.time.LocalDateTime;
 
@@ -30,7 +25,6 @@ public class FactDTO {
     private String group;
 
     @JsonSerialize(using = JsonValueSerializer.class)
-    //@JsonDeserialize(using = JsonValueDeserializer.class)
     private String value;
 
     private String elementId;
@@ -113,7 +107,7 @@ public class FactDTO {
         this.createdAt = createdAt;
     }
 
-    @JsonSetter
+    @JsonIgnore
     public void setEntity(Object entityAsJson) {
         try {
             setValue(new ObjectMapper().writeValueAsString(entityAsJson));

@@ -164,6 +164,7 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
         return tenantId;
     }
 
+    @JsonIgnore
     public void setEntity(ENTITY entity) {
         try {
             setValue(new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).writeValueAsString(entity));
@@ -175,6 +176,7 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
 
     protected abstract TypeReference<ENTITY> getJsonParser();
 
+    @JsonIgnore
     public ENTITY getEntity() {
         if (getValue() != null && !getValue().isEmpty()) {
             try {

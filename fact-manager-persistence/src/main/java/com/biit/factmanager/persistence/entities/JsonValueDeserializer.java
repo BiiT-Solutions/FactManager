@@ -15,8 +15,6 @@ public class JsonValueDeserializer extends StdDeserializer<String> {
 
     @Override
     public String deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
-//        final String value = p.getValueAsString();
-//        return "{" + value + "}";
         return p.getValueAsString();
     }
 }
