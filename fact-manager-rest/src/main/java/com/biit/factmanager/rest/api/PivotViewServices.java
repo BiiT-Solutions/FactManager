@@ -5,6 +5,7 @@ import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.rest.exceptions.BadRequestException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class PivotViewServices<T extends Fact<?>> {
         this.pivotViewProvider = pivotViewProvider;
     }
 
-    @Operation(summary = "Returns a pivotView view")
+    @Operation(summary = "Returns a pivotView view", security = @SecurityRequirement(name = "bearerAuth"))
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(value = "", produces = MediaType.APPLICATION_XML_VALUE)
     public String getView(

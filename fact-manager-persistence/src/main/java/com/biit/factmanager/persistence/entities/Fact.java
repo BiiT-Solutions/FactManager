@@ -86,7 +86,7 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
         this.group = group;
     }
 
-    @JsonIgnore
+    //@JsonIgnore
     public String getValue() {
         return value == null ? "" : value;
     }
@@ -176,13 +176,13 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     protected abstract TypeReference<ENTITY> getJsonParser();
 
     public ENTITY getEntity() {
-        //if (entity != null) {
+        if (getValue() != null && !getValue().isEmpty()) {
             try {
                 entity = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).readValue(getValue(), getJsonParser());
             } catch (JsonProcessingException e) {
                 throw new FactValueInvalidException(e);
             }
-      //  }
+        }
         return entity;
     }
 

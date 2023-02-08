@@ -2,7 +2,9 @@ package com.biit.factmanager.test;
 
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
+import com.biit.factmanager.persistence.entities.values.FormrunnerQuestionValue;
 import com.biit.factmanager.rest.api.FactServices;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -22,7 +24,7 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
     private static final String FACT_EXAMINATION_GROUP = "examination_name";
 
     @Autowired
-    private FactServices<FormrunnerQuestionFact> factServices;
+    private FactServices<FormrunnerQuestionValue, FormrunnerQuestionFact> factServices;
 
     @Autowired
     private FactProvider<FormrunnerQuestionFact> factProvider;
@@ -34,7 +36,7 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    public void addFacts() {
+    public void addFacts() throws JsonProcessingException {
         Assert.assertEquals(factServices.getFacts(null, null, null, null, FACT_EXAMINATION_GROUP, null, null,
                 null, null, null, null).size(), 0);
         // Save 2 empty facts

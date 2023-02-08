@@ -1,13 +1,20 @@
 package com.biit.factmanager.client.fact;
 
 import com.biit.factmanager.logger.FactManagerLogger;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.deser.std.FromStringDeserializer;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 import java.time.LocalDateTime;
 
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FactDTO {
 
     private Long id;
@@ -22,13 +29,13 @@ public class FactDTO {
 
     private String group;
 
+    @JsonSerialize(using = JsonValueSerializer.class)
+    //@JsonDeserialize(using = JsonValueDeserializer.class)
     private String value;
 
     private String elementId;
 
     private LocalDateTime createdAt;
-
-    private ValueDTO valueDTO;
 
     public FactDTO() {
         super();
@@ -106,22 +113,12 @@ public class FactDTO {
         this.createdAt = createdAt;
     }
 
-    public ValueDTO getValueDTO() {
-        return valueDTO;
-    }
-
-    public void setValueDTO(ValueDTO valueDTO) {
-        this.valueDTO = valueDTO;
-    }
-
     @JsonSetter
     public void setEntity(Object entityAsJson) {
-        final ValueDTO valueDTO = new ValueDTO();
         try {
-            valueDTO.setString(new ObjectMapper().writeValueAsString(entityAsJson));
+            setValue(new ObjectMapper().writeValueAsString(entityAsJson));
         } catch (JsonProcessingException e) {
             FactManagerLogger.errorMessage(this.getClass(), e);
         }
-        setValueDTO(valueDTO);
     }
 }

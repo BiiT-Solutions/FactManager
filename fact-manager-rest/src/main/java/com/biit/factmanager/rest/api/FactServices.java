@@ -2,10 +2,15 @@ package com.biit.factmanager.rest.api;
 
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.logger.FactManagerLogger;
+import com.biit.factmanager.persistence.entities.BasicFact;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.rest.exceptions.BadRequestException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -19,7 +24,10 @@ import java.time.ZoneId;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class FactServices<T extends Fact<?>> {
+public abstract class FactServices<V, T extends Fact<V>> {
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private final FactProvider<T> factProvider;
 
@@ -28,9 +36,9 @@ public abstract class FactServices<T extends Fact<?>> {
     }
 
     @Operation(summary = "Adds a new fact", description = "Parameters:\n"
-            + "fact (required): Fact object to be added")
+            + "fact (required): Fact object to be added", security = @SecurityRequirement(name = "bearerAuth"))
     @ResponseStatus(value = HttpStatus.CREATED)
-    @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public T addFact(@Parameter(name = "Notification Request", required = true) @RequestBody T fact,
                      HttpServletRequest httpRequest) {
         FactManagerLogger.info(this.getClass().getName(), "Adding fact '" + fact + "'.");
@@ -38,19 +46,20 @@ public abstract class FactServices<T extends Fact<?>> {
     }
 
     @Operation(summary = "Save a list of facts", description = "Parameters:\n"
-            + "facts (required): List of Fact objects to be added")
+            + "facts (required): List of Fact objects to be added", security = @SecurityRequirement(name = "bearerAuth"))
     @ResponseStatus(value = HttpStatus.CREATED)
-    @PostMapping(value = "/collection", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<T> addFactList(@Parameter(name = "Fact list", required = true) @RequestBody List<T> facts,
-                               HttpServletRequest httpRequest) {
+    @PostMapping(value = "/collection", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Collection<T> addFactList(@Parameter(name = "Fact list", required = true) @RequestBody List<T> facts,
+                                     HttpServletRequest httpRequest) throws JsonProcessingException {
         FactManagerLogger.debug(this.getClass().getName(), "Saving a list of facts '{}'.", facts);
+        //objectMapper.writeValueAsString(factProvider.save(facts));
         return factProvider.save(facts);
     }
 
     @Operation(summary = "Deletes a fact", description = "Parameters:\n"
-            + "fact (required): Fact object to be removed.")
+            + "fact (required): Fact object to be removed.", security = @SecurityRequirement(name = "bearerAuth"))
     @ResponseStatus(value = HttpStatus.OK)
-    @DeleteMapping(value = "")
+    @DeleteMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void deleteFact(@Parameter(name = "fact", required = true) @RequestBody T fact,
                            HttpServletRequest httpRequest) {
         FactManagerLogger.info(this.getClass().getName(), "Remove fact");

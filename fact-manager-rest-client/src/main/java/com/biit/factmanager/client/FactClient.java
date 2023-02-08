@@ -34,8 +34,10 @@ public class FactClient {
         try {
             try (final Response result = RestGenericClient.post(factUrlConstructor.getFactServerUrl(), factUrlConstructor.addFacts(),
                     mapper.writeValueAsString(facts), headers)) {
-                return mapper.readValue(result.readEntity(String.class), new TypeReference<List<FactDTO>>() {
+                final String res = result.readEntity(String.class);
+                final List<FactDTO> factsResult = mapper.readValue(res, new TypeReference<List<FactDTO>>() {
                 });
+                return factsResult;
             }
         } catch (JsonProcessingException e) {
             throw new InvalidResponseException(e);

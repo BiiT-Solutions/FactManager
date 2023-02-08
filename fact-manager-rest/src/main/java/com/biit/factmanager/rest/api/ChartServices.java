@@ -6,6 +6,7 @@ import com.biit.factmanager.persistence.enums.ChartType;
 import com.biit.factmanager.rest.exceptions.BadRequestException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ public class ChartServices<T extends Fact<?>> {
         this.chartProvider = chartProvider;
     }
 
-    @Operation(summary = "Create html chart based on parameters")
+    @Operation(summary = "Create html chart based on parameters", security = @SecurityRequirement(name = "bearerAuth"))
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
     public String getChart(
