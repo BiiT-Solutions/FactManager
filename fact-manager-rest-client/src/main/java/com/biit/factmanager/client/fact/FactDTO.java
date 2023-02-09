@@ -14,11 +14,15 @@ public class FactDTO {
 
     private Long id;
 
-    private String organizationId;
+    private String organization;
 
-    private String tenantId;
+    private String customer;
 
-    private String processId;
+    private String application;
+
+    private String tenant;
+
+    private String process;
 
     private String tag;
 
@@ -27,7 +31,7 @@ public class FactDTO {
     @JsonSerialize(using = JsonValueSerializer.class)
     private String value;
 
-    private String elementId;
+    private String element;
 
     private LocalDateTime createdAt;
 
@@ -43,28 +47,28 @@ public class FactDTO {
         this.id = id;
     }
 
-    public String getOrganizationId() {
-        return organizationId;
+    public String getOrganization() {
+        return organization;
     }
 
-    public void setOrganizationId(String organizationId) {
-        this.organizationId = organizationId;
+    public void setOrganization(String organization) {
+        this.organization = organization;
     }
 
-    public String getTenantId() {
-        return tenantId;
+    public String getTenant() {
+        return tenant;
     }
 
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
+    public void setTenant(String tenant) {
+        this.tenant = tenant;
     }
 
-    public String getProcessId() {
-        return processId;
+    public String getProcess() {
+        return process;
     }
 
-    public void setProcessId(String processId) {
-        this.processId = processId;
+    public void setProcess(String process) {
+        this.process = process;
     }
 
     public String getTag() {
@@ -91,12 +95,12 @@ public class FactDTO {
         this.value = value;
     }
 
-    public String getElementId() {
-        return elementId;
+    public String getElement() {
+        return element;
     }
 
-    public void setElementId(String elementId) {
-        this.elementId = elementId;
+    public void setElement(String element) {
+        this.element = element;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -105,6 +109,22 @@ public class FactDTO {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(String customer) {
+        this.customer = customer;
+    }
+
+    public String getApplication() {
+        return application;
+    }
+
+    public void setApplication(String application) {
+        this.application = application;
     }
 
     @JsonIgnore

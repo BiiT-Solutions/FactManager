@@ -42,9 +42,9 @@ public class StringFactRepositoryTests extends AbstractTransactionalTestNGSpring
     @Test(dependsOnMethods = "createStringFact")
     private void readFact() {
         StringFact stringFact = new StringFact();
-        stringFact.setElementId(FACT_ELEMENT_ID);
+        stringFact.setElement(FACT_ELEMENT_ID);
         stringFactRepository.save(stringFact);
-        Assert.assertTrue(stringFactRepository.findByElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
+        Assert.assertTrue(stringFactRepository.findByElementAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
                 (FACT_ELEMENT_ID, FACT_TIME_PAST, FACT_TIME_FUTURE).contains(stringFact));
         stringFactRepository.delete(stringFact);
     }

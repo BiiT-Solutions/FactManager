@@ -40,8 +40,8 @@ public class MultipleFactTests extends AbstractTestNGSpringContextTests {
         //Set form scores (image index).
         FormrunnerVariableFact formrunnerVariableFact = new FormrunnerVariableFact();
         formrunnerVariableFact.setGroup("GROUP");
-        formrunnerVariableFact.setElementId("examinationId");
-        formrunnerVariableFact.setTenantId("p");
+        formrunnerVariableFact.setElement("examinationId");
+        formrunnerVariableFact.setTenant("p");
 
         //Forms scores has no question field filled up.
         FormrunnerVariableValue formrunnerVariableValue = new FormrunnerVariableValue();
@@ -59,11 +59,11 @@ public class MultipleFactTests extends AbstractTestNGSpringContextTests {
         FormrunnerQuestionValue formRunnerValue = new FormrunnerQuestionValue();
         formRunnerValue.setAnswer(" ");
         formRunnerValue.setXpath("question");
-        formrunnerQuestionFact.setTenantId("tenantId");
+        formrunnerQuestionFact.setTenant("tenantId");
         formrunnerQuestionFact.setGroup("GROUP");
-        formrunnerQuestionFact.setElementId("ELEMENT_ID");
+        formrunnerQuestionFact.setElement("ELEMENT_ID");
         formrunnerQuestionFact.setTag("TAG");
-        formrunnerQuestionFact.setOrganizationId("ORGANIZATION_ID");
+        formrunnerQuestionFact.setOrganization("ORGANIZATION_ID");
         formrunnerQuestionFact.setEntity(formRunnerValue);
         formrunnerQuestionFactFactProvider.save(formrunnerQuestionFact);
     }
@@ -84,7 +84,7 @@ public class MultipleFactTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void findTypesFromProvider() {
-        List<?> facts = overlordFactProvider.findBy(null, null, null, "GROUP", null, null, null, null);
+        List<?> facts = overlordFactProvider.findBy(null, null, null, null, null, "GROUP", null, null, null, null);
         Assert.assertEquals(facts.size(), 3);
     }
 }

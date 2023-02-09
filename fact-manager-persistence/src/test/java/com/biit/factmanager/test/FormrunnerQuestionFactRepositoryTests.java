@@ -52,14 +52,14 @@ public class FormrunnerQuestionFactRepositoryTests extends AbstractTransactional
         FormrunnerQuestionFact createdAtNowAndTenantIdAndElementId = new FormrunnerQuestionFact();
         FormrunnerQuestionFact createdAtAfterAndElementIdAndCategory = new FormrunnerQuestionFact();
 
-        createdAtBeforeAndTenantIdAndCategory.setTenantId(FACT_TENANT_ID);
+        createdAtBeforeAndTenantIdAndCategory.setTenant(FACT_TENANT_ID);
         createdAtBeforeAndTenantIdAndCategory.setGroup(FACT_CATEGORY);
         createdAtBeforeAndTenantIdAndCategory.setCreatedAt(FACT_DATE_BEFORE);
         createdAtNowAndTenantIdAndElementId.setCreatedAt(FACT_DATE_AFTER);
-        createdAtNowAndTenantIdAndElementId.setTenantId(FACT_TENANT_ID);
-        createdAtNowAndTenantIdAndElementId.setElementId(FACT_ELEMENT_ID);
+        createdAtNowAndTenantIdAndElementId.setTenant(FACT_TENANT_ID);
+        createdAtNowAndTenantIdAndElementId.setElement(FACT_ELEMENT_ID);
         createdAtAfterAndElementIdAndCategory.setCreatedAt(FACT_DATE_AFTER);
-        createdAtAfterAndElementIdAndCategory.setElementId(FACT_ELEMENT_ID);
+        createdAtAfterAndElementIdAndCategory.setElement(FACT_ELEMENT_ID);
         createdAtAfterAndElementIdAndCategory.setGroup(FACT_CATEGORY);
 
         formrunnerQuestionFactRepository.save(createdAtBeforeAndTenantIdAndCategory);
@@ -77,8 +77,8 @@ public class FormrunnerQuestionFactRepositoryTests extends AbstractTransactional
     private void addFactsWithValues() {
         FormrunnerQuestionFact factToSave = new FormrunnerQuestionFact();
         factToSave.setGroup(FACT_EXAMINATION_NAME);
-        factToSave.setElementId(FACT_EXAMINATION_ID + "");
-        factToSave.setTenantId(FACT_PATIENT_ID + "");
+        factToSave.setElement(FACT_EXAMINATION_ID + "");
+        factToSave.setTenant(FACT_PATIENT_ID + "");
 
         FormrunnerQuestionValue formrunnerQuestionValue = new FormrunnerQuestionValue();
         formrunnerQuestionValue.setCompanyId(FACT_COMPANY_ID);
@@ -96,8 +96,8 @@ public class FormrunnerQuestionFactRepositoryTests extends AbstractTransactional
 
         factToSave = new FormrunnerQuestionFact();
         factToSave.setGroup(FACT_EXAMINATION_NAME);
-        factToSave.setElementId(FACT_EXAMINATION_ID + "");
-        factToSave.setTenantId(FACT_PATIENT_ID + "");
+        factToSave.setElement(FACT_EXAMINATION_ID + "");
+        factToSave.setTenant(FACT_PATIENT_ID + "");
 
         formrunnerQuestionValue = new FormrunnerQuestionValue();
         formrunnerQuestionValue.setCompanyId(FACT_COMPANY_ID);
@@ -146,14 +146,14 @@ public class FormrunnerQuestionFactRepositoryTests extends AbstractTransactional
 
     @Test(dependsOnMethods = "searchFactByValueCompany")
     private void searchFactByValueQuestionAndAnswerValidDate() {
-        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findBy(null, null, null, null, null, null, LocalDateTime.now().minus(1, ChronoUnit.HOURS),
+        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findBy(null, null, null, null, null, null, null, null, LocalDateTime.now().minus(1, ChronoUnit.HOURS),
                 LocalDateTime.now(), Pair.of("xpath", FACT_QUESTION_XPATH), Pair.of("answer", FACT_ANSWER));
         Assert.assertEquals(facts.size(), 1);
     }
 
     @Test(dependsOnMethods = "searchFactByValueCompany")
     private void searchFactByValueQuestionAndAnswerInvalidDate() {
-        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findBy(null, null, null, null, null, null, LocalDateTime.now(),
+        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findBy(null, null, null, null, null, null, null, null, LocalDateTime.now(),
                 LocalDateTime.now(), Pair.of("question", FACT_QUESTION_XPATH), Pair.of("answer", FACT_ANSWER));
         Assert.assertEquals(facts.size(), 0);
     }
@@ -162,11 +162,11 @@ public class FormrunnerQuestionFactRepositoryTests extends AbstractTransactional
     @Test(dependsOnMethods = "addFactsWithValues")
     private void getFilteredFacts() {
         Assert.assertEquals(formrunnerQuestionFactRepository.count(), repositorySize);
-        Assert.assertEquals((long) formrunnerQuestionFactRepository.findByTenantIdAndGroupAndCreatedAt
+        Assert.assertEquals((long) formrunnerQuestionFactRepository.findByTenantAndGroupAndCreatedAt
                 (FACT_TENANT_ID, FACT_CATEGORY, FACT_DATE_BEFORE.minusDays(1), FACT_DATE_AFTER).size(), 1);
-        Assert.assertEquals((long) formrunnerQuestionFactRepository.findByTenantIdAndElementIdAndCreatedAt
+        Assert.assertEquals((long) formrunnerQuestionFactRepository.findByTenantIdAndElementAndCreatedAt
                 (FACT_TENANT_ID, FACT_ELEMENT_ID, FACT_DATE_BEFORE, FACT_DATE_AFTER).size(), 1);
-        Assert.assertEquals((long) formrunnerQuestionFactRepository.findByElementIdAndGroupAndCreatedAt
+        Assert.assertEquals((long) formrunnerQuestionFactRepository.findByElementAndGroupAndCreatedAt
                 (FACT_ELEMENT_ID, FACT_CATEGORY, FACT_DATE_NOW, FACT_DATE_AFTER.plusDays(1)).size(), 1);
     }
 

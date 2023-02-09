@@ -28,11 +28,13 @@ public class FindByFactsTests extends AbstractTransactionalTestNGSpringContextTe
         int repositorySize = factRepository.findAll().size();
         for (int i = 1; i <= 3; i++) {
             StringFact stringFact = new StringFact();
-            stringFact.setOrganizationId(String.valueOf(i));
-            stringFact.setTenantId(String.valueOf(i));
+            stringFact.setOrganization(String.valueOf(i));
+            stringFact.setCustomer(String.valueOf(i));
+            stringFact.setApplication(String.valueOf(i));
+            stringFact.setTenant(String.valueOf(i));
             stringFact.setTag(String.valueOf(i));
             stringFact.setGroup(String.valueOf(i));
-            stringFact.setElementId(String.valueOf(i));
+            stringFact.setElement(String.valueOf(i));
             stringFact.setCreatedAt(LocalDateTime.now());
 
             factRepository.save(stringFact);
@@ -42,13 +44,13 @@ public class FindByFactsTests extends AbstractTransactionalTestNGSpringContextTe
 
     @Test
     public void getFindBy() {
-        Collection<StringFact> fact1 = factRepository.findBy("1", "1", "1", "1", "1", null,
+        Collection<StringFact> fact1 = factRepository.findBy("1", "1", "1", "1", "1", "1", "1", null,
                 LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(1));
 
-        Collection<StringFact> fact2 = factRepository.findBy("2", "2", "2", "2", "2", null,
+        Collection<StringFact> fact2 = factRepository.findBy("2", "2", "2", "2", "2", "2", "2", null,
                 LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(1));
 
-        Collection<StringFact> fact3 = factRepository.findBy("3", "3", "3", "3", "3", null,
+        Collection<StringFact> fact3 = factRepository.findBy("3", "3", "3", "3", "3", "3", "3", null,
                 LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(1));
 
         Assert.assertEquals(fact1.size(), 1);
@@ -58,9 +60,9 @@ public class FindByFactsTests extends AbstractTransactionalTestNGSpringContextTe
 
     @Test
     public void getFindbyOrganizationId() {
-        Assert.assertEquals(factRepository.findByOrganizationId("1").size(), 1);
-        Assert.assertEquals(factRepository.findByOrganizationId("2").size(), 1);
-        Assert.assertEquals(factRepository.findByOrganizationId("3").size(), 1);
+        Assert.assertEquals(factRepository.findByOrganization("1").size(), 1);
+        Assert.assertEquals(factRepository.findByOrganization("2").size(), 1);
+        Assert.assertEquals(factRepository.findByOrganization("3").size(), 1);
     }
 
     @AfterClass

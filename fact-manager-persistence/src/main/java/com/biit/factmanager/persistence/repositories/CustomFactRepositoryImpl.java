@@ -70,21 +70,28 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
     }
 
     @Override
-    public List<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, String processId,
+    public List<T> findBy(String organization, String customer, String application,
+                          String tenant, String tag, String group, String element, String process,
                           LocalDateTime startDate, LocalDateTime endDate, Pair<String, Object>... valueParameters) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> query = criteriaBuilder.createQuery(entityTypeClass);
         final Root<T> root = query.from(entityTypeClass);
 
         final List<Predicate> predicates = new ArrayList<>();
-        if (organizationId != null) {
-            predicates.add(criteriaBuilder.equal(root.get("organizationId"), organizationId));
+        if (organization != null) {
+            predicates.add(criteriaBuilder.equal(root.get("organization"), organization));
         }
-        if (tenantId != null) {
-            predicates.add(criteriaBuilder.equal(root.get("tenantId"), tenantId));
+        if (customer != null) {
+            predicates.add(criteriaBuilder.equal(root.get("customer"), customer));
         }
-        if (processId != null) {
-            predicates.add(criteriaBuilder.equal(root.get("processId"), processId));
+        if (application != null) {
+            predicates.add(criteriaBuilder.equal(root.get("application"), application));
+        }
+        if (tenant != null) {
+            predicates.add(criteriaBuilder.equal(root.get("tenant"), tenant));
+        }
+        if (process != null) {
+            predicates.add(criteriaBuilder.equal(root.get("process"), process));
         }
         if (tag != null) {
             predicates.add(criteriaBuilder.equal(root.get("tag"), tag));
@@ -92,8 +99,8 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
         if (group != null) {
             predicates.add(criteriaBuilder.equal(root.get("group"), group));
         }
-        if (elementId != null) {
-            predicates.add(criteriaBuilder.equal(root.get("elementId"), elementId));
+        if (element != null) {
+            predicates.add(criteriaBuilder.equal(root.get("element"), element));
         }
         if (startDate != null) {
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createdAt"), startDate));
@@ -113,7 +120,7 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
         }
 
         query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
-        query.select(root).where(predicates.toArray(new Predicate[predicates.size()]));
+        query.select(root).where(predicates.toArray(new Predicate[0]));
 
         /* For Hibernate */
         System.out.println(entityManager.createQuery(query).unwrap(org.hibernate.query.Query.class).getQueryString());

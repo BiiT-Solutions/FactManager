@@ -49,15 +49,15 @@ public class ChartProviderTest extends AbstractTestNGSpringContextTests {
     private void insertNullFactsByTenant(String tenantId) {
         for (int fact = 0; fact < 5; fact++) {
             FormrunnerQuestionValue formrunnerQuestionValue = new FormrunnerQuestionValue();
-            formrunnerQuestionValue.setXpath("question"+ fact);
+            formrunnerQuestionValue.setXpath("question" + fact);
             formrunnerQuestionValue.setAnswer(null);
 
             FormrunnerQuestionFact formrunnerQuestionFact = new FormrunnerQuestionFact();
-            formrunnerQuestionFact.setTenantId(tenantId);
+            formrunnerQuestionFact.setTenant(tenantId);
             formrunnerQuestionFact.setGroup(GROUP);
-            formrunnerQuestionFact.setElementId(ELEMENT_ID);
+            formrunnerQuestionFact.setElement(ELEMENT_ID);
             formrunnerQuestionFact.setTag(TAG);
-            formrunnerQuestionFact.setOrganizationId(ORGANIZATION_ID);
+            formrunnerQuestionFact.setOrganization(ORGANIZATION_ID);
             formrunnerQuestionFact.setCreatedAt(LocalDateTime.now().minusMonths(fact));
             formrunnerQuestionFact.setEntity(formrunnerQuestionValue);
 
@@ -75,9 +75,9 @@ public class ChartProviderTest extends AbstractTestNGSpringContextTests {
                 formRunnerValue.setAnswer(String.valueOf((questions + patient)));
                 formRunnerValue.setXpath("question" + questions);
 
-                formrunnerQuestionFact.setTenantId("persona" + patient);
+                formrunnerQuestionFact.setTenant("persona" + patient);
                 formrunnerQuestionFact.setGroup("examination" + questions);
-                formrunnerQuestionFact.setElementId("element" + patient);
+                formrunnerQuestionFact.setElement("element" + patient);
                 formrunnerQuestionFact.setEntity(formRunnerValue);
 
                 formrunnerQuestionFacts.add(formrunnerQuestionFact);
@@ -94,15 +94,15 @@ public class ChartProviderTest extends AbstractTestNGSpringContextTests {
     private void insertFactsByTenant(String tenantId) {
         for (int fact = 0; fact < 5; fact++) {
             FormrunnerQuestionValue formrunnerQuestionValue = new FormrunnerQuestionValue();
-            formrunnerQuestionValue.setXpath("question"+ fact);
+            formrunnerQuestionValue.setXpath("question" + fact);
             formrunnerQuestionValue.setAnswer(String.valueOf(fact));
 
             FormrunnerQuestionFact formrunnerQuestionFact = new FormrunnerQuestionFact();
-            formrunnerQuestionFact.setTenantId(tenantId);
+            formrunnerQuestionFact.setTenant(tenantId);
             formrunnerQuestionFact.setGroup(GROUP);
-            formrunnerQuestionFact.setElementId(ELEMENT_ID);
+            formrunnerQuestionFact.setElement(ELEMENT_ID);
             formrunnerQuestionFact.setTag(TAG);
-            formrunnerQuestionFact.setOrganizationId(ORGANIZATION_ID);
+            formrunnerQuestionFact.setOrganization(ORGANIZATION_ID);
             formrunnerQuestionFact.setCreatedAt(LocalDateTime.now().minusMonths(fact));
             formrunnerQuestionFact.setEntity(formrunnerQuestionValue);
 
@@ -114,16 +114,16 @@ public class ChartProviderTest extends AbstractTestNGSpringContextTests {
     private void insertNotNumberFacts(String tenantId) {
         for (int fact = 0; fact < 5; fact++) {
             FormrunnerQuestionValue formrunnerQuestionValue = new FormrunnerQuestionValue();
-            formrunnerQuestionValue.setXpath("question"+ fact);
+            formrunnerQuestionValue.setXpath("question" + fact);
             formrunnerQuestionValue.setItemName(PATIENT_NAME);
             formrunnerQuestionValue.setAnswer(STRING_ANSWER);
 
             FormrunnerQuestionFact formrunnerQuestionFact = new FormrunnerQuestionFact();
-            formrunnerQuestionFact.setTenantId(tenantId);
+            formrunnerQuestionFact.setTenant(tenantId);
             formrunnerQuestionFact.setGroup(GROUP);
-            formrunnerQuestionFact.setElementId(ELEMENT_ID);
+            formrunnerQuestionFact.setElement(ELEMENT_ID);
             formrunnerQuestionFact.setTag(TAG);
-            formrunnerQuestionFact.setOrganizationId(ORGANIZATION_ID);
+            formrunnerQuestionFact.setOrganization(ORGANIZATION_ID);
             formrunnerQuestionFact.setCreatedAt(LocalDateTime.now().minusMonths(fact));
             formrunnerQuestionFact.setEntity(formrunnerQuestionValue);
 
@@ -149,8 +149,8 @@ public class ChartProviderTest extends AbstractTestNGSpringContextTests {
 
     @Test(dependsOnMethods = "addNewFacts")
     public void oneTenantAllExaminations() throws IOException, URISyntaxException {
-        Assert.assertEquals(readFile("charts/OneTenantMultipleExaminationsChart"), chartProvider.getChart(ORGANIZATION_ID, TENANT_ID, TAG, GROUP, ELEMENT_ID,
-               null, LocalDateTime.now().minusYears(1), LocalDateTime.now().plusDays(1), null, ChartType.BAR));
+        Assert.assertEquals(readFile("charts/OneTenantMultipleExaminationsChart"), chartProvider.getChart(ORGANIZATION_ID, null, null, TENANT_ID, TAG, GROUP, ELEMENT_ID,
+                null, LocalDateTime.now().minusYears(1), LocalDateTime.now().plusDays(1), null, ChartType.BAR));
     }
 
     @AfterClass

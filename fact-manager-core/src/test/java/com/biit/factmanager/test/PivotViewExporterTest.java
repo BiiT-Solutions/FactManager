@@ -42,8 +42,8 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
                 //Set form scores (image index).
                 FormrunnerVariableFact formrunnerVariableFact = new FormrunnerVariableFact();
                 formrunnerVariableFact.setGroup("examination" + examination);
-                formrunnerVariableFact.setElementId("examinationId" + examination);
-                formrunnerVariableFact.setTenantId("p" + patient);
+                formrunnerVariableFact.setElement("examinationId" + examination);
+                formrunnerVariableFact.setTenant("p" + patient);
 
                 //Forms scores has not question field filled up.
                 FormrunnerVariableValue formrunnerVariableValue = new FormrunnerVariableValue();
@@ -60,8 +60,8 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
                     //Set category.
                     FormrunnerVariableFact categoryFormrunnerVariableFact = new FormrunnerVariableFact();
                     categoryFormrunnerVariableFact.setGroup("examination" + examination);
-                    categoryFormrunnerVariableFact.setElementId("examinationId" + examination);
-                    categoryFormrunnerVariableFact.setTenantId("p" + patient);
+                    categoryFormrunnerVariableFact.setElement("examinationId" + examination);
+                    categoryFormrunnerVariableFact.setTenant("p" + patient);
 
                     //Categories scores has no question field filled up.
                     FormrunnerVariableValue categoryFormrunnerVariableValue = new FormrunnerVariableValue();
@@ -77,9 +77,9 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
                         String questionXpath = categoryXpath + String.format("/Question_%s_%s_%s", examination, category, question);
                         FormrunnerVariableFact questionFormrunnerVariableFact = new FormrunnerVariableFact();
                         questionFormrunnerVariableFact.setGroup("examination" + examination);
-                        questionFormrunnerVariableFact.setElementId("examinationId" + examination);
+                        questionFormrunnerVariableFact.setElement("examinationId" + examination);
                         questionFormrunnerVariableFact.setTag("tag");
-                        questionFormrunnerVariableFact.setTenantId("p" + patient);
+                        questionFormrunnerVariableFact.setTenant("p" + patient);
 
                         FormrunnerVariableValue questionFormrunnerQuestionValue = new FormrunnerVariableValue();
                         questionFormrunnerQuestionValue.setItemName(FormrunnerVariableValue.SCORE_VALUE);

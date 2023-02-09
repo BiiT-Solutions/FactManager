@@ -2,7 +2,6 @@ package com.biit.factmanager.rest.api;
 
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.logger.FactManagerLogger;
-import com.biit.factmanager.persistence.entities.BasicFact;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.rest.exceptions.BadRequestException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -52,7 +51,6 @@ public abstract class FactServices<V, T extends Fact<V>> {
     public Collection<T> addFactList(@Parameter(name = "Fact list", required = true) @RequestBody List<T> facts,
                                      HttpServletRequest httpRequest) throws JsonProcessingException {
         FactManagerLogger.debug(this.getClass().getName(), "Saving a list of facts '{}'.", facts);
-        //objectMapper.writeValueAsString(factProvider.save(facts));
         return factProvider.save(facts);
     }
 
@@ -67,7 +65,7 @@ public abstract class FactServices<V, T extends Fact<V>> {
     }
 
     @Operation(summary = "Search facts functionality", description = "Parameters:\n"
-            + "- tenantId: the tenant classifier\n"
+            + "- tenant: the tenant classifier\n"
             + "- organizationId: which organization belongs to\n"
             + "- tag: kafka tag\n"
             + "- group: grouping option for the facts\n"
@@ -80,12 +78,14 @@ public abstract class FactServices<V, T extends Fact<V>> {
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<T> getFacts(
             HttpServletRequest httpRequest,
-            @Parameter(name = "tenantId", required = false) @RequestParam(value = "tenantId", required = false) String tenantId,
-            @Parameter(name = "organizationId", required = false) @RequestParam(value = "organizationId", required = false) String organizationId,
+            @Parameter(name = "organization", required = false) @RequestParam(value = "organization", required = false) String organization,
+            @Parameter(name = "customer", required = false) @RequestParam(value = "customer", required = false) String customer,
+            @Parameter(name = "application", required = false) @RequestParam(value = "application", required = false) String application,
+            @Parameter(name = "tenant", required = false) @RequestParam(value = "tenant", required = false) String tenant,
             @Parameter(name = "tag", required = false) @RequestParam(value = "tag", required = false) String tag,
             @Parameter(name = "group", required = false) @RequestParam(value = "group", required = false) String group,
-            @Parameter(name = "elementId", required = false) @RequestParam(value = "elementId", required = false) String elementId,
-            @Parameter(name = "processId", required = false) @RequestParam(value = "processId", required = false) String processId,
+            @Parameter(name = "element", required = false) @RequestParam(value = "element", required = false) String element,
+            @Parameter(name = "process", required = false) @RequestParam(value = "process", required = false) String process,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Parameter(description = "Facts since the selected date", example = "2023-01-01T00:00:00.00Z")
             @RequestParam(value = "from", required = false) OffsetDateTime from,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Parameter(description = "Facts until the selected date", example = "2023-01-31T23:59:59.99Z")
@@ -106,7 +106,7 @@ public abstract class FactServices<V, T extends Fact<V>> {
         } else {
             pairs = null;
         }
-        return factProvider.findBy(organizationId, tenantId, tag, group, elementId, processId,
+        return factProvider.findBy(organization, customer, application, tenant, tag, group, element, process,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
                 lastDays, pairs);

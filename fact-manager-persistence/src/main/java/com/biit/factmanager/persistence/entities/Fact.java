@@ -21,12 +21,14 @@ import java.util.Objects;
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = "type")
 @Primary
 @Table(name = "facts", indexes = {
-        @Index(name = "ind_organization", columnList = "organization_id"),
-        @Index(name = "ind_tenant", columnList = "tenant_id"),
-        @Index(name = "ind_process", columnList = "process_id"),
+        @Index(name = "ind_organization", columnList = "organization"),
+        @Index(name = "ind_customer", columnList = "customer"),
+        @Index(name = "ind_application", columnList = "application"),
+        @Index(name = "ind_tenant", columnList = "tenant"),
+        @Index(name = "ind_process", columnList = "process"),
         @Index(name = "ind_tag", columnList = "tag"),
         @Index(name = "ind_group", columnList = "grouping"),
-        @Index(name = "ind_element", columnList = "element_id"),
+        @Index(name = "ind_element", columnList = "element"),
 })
 public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     private static final int MAX_JSON_LENGTH = 10 * 1024 * 1024;
@@ -35,15 +37,22 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "organization_id")
-    private String organizationId;
+    @Column(name = "organization")
+    private String organization;
+
+    @Column(name = "customer")
+    private String customer;
+
+
+    @Column(name = "application")
+    private String application;
 
     //Patient Id
-    @Column(name = "tenant_id")
-    private String tenantId;
+    @Column(name = "tenant")
+    private String tenant;
 
-    @Column(name = "process_id")
-    private String processId;
+    @Column(name = "process")
+    private String process;
 
     @Column(name = "tag")
     private String tag;
@@ -57,9 +66,9 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     private String value;
 
     // ID of the entity on the fact
-    @Column(name = "element_id")
+    @Column(name = "element")
     @Convert(converter = StringCryptoConverter.class)
-    private String elementId;
+    private String element;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -86,7 +95,6 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
         this.group = group;
     }
 
-    //@JsonIgnore
     public String getValue() {
         return value == null ? "" : value;
     }
@@ -104,28 +112,28 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
         this.id = id;
     }
 
-    public String getTenantId() {
-        return tenantId;
+    public String getTenant() {
+        return tenant;
     }
 
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
+    public void setTenant(String tenant) {
+        this.tenant = tenant;
     }
 
-    public String getOrganizationId() {
-        return organizationId;
+    public String getOrganization() {
+        return organization;
     }
 
-    public void setOrganizationId(String organizationId) {
-        this.organizationId = organizationId;
+    public void setOrganization(String organization) {
+        this.organization = organization;
     }
 
-    public String getElementId() {
-        return elementId;
+    public String getElement() {
+        return element;
     }
 
-    public void setElementId(String elementId) {
-        this.elementId = elementId;
+    public void setElement(String element) {
+        this.element = element;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -144,24 +152,40 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
         this.createdAt = createdAt;
     }
 
-    public String getProcessId() {
-        return processId;
+    public String getProcess() {
+        return process;
     }
 
-    public void setProcessId(String processId) {
-        this.processId = processId;
+    public void setProcess(String process) {
+        this.process = process;
+    }
+
+    public String getApplication() {
+        return application;
+    }
+
+    public void setApplication(String application) {
+        this.application = application;
+    }
+
+    public String getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(String customer) {
+        this.customer = customer;
     }
 
     @Override
     @JsonIgnore
     public String getPivotViewerValueItemId() {
-        return tenantId;
+        return tenant;
     }
 
     @Override
     @JsonIgnore
     public String getPivotViewerItemName() {
-        return tenantId;
+        return tenant;
     }
 
     @JsonIgnore
@@ -191,7 +215,7 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     @Override
     @JsonIgnore
     public String getEventId() {
-        return getElementId();
+        return getElement();
     }
 
     @Override
@@ -210,15 +234,15 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
             return false;
         }
         final Fact<?> fact = (Fact<?>) o;
-        return getCreatedAt().equals(fact.getCreatedAt()) && Objects.equals(getOrganizationId(), fact.getOrganizationId()) &&
-                Objects.equals(getTenantId(), fact.getTenantId()) && Objects.equals(getTag(), fact.getTag()) &&
-                Objects.equals(getGroup(), fact.getGroup()) && Objects.equals(getElementId(), fact.getElementId()) &&
+        return getCreatedAt().equals(fact.getCreatedAt()) && Objects.equals(getOrganization(), fact.getOrganization()) &&
+                Objects.equals(getTenant(), fact.getTenant()) && Objects.equals(getTag(), fact.getTag()) &&
+                Objects.equals(getGroup(), fact.getGroup()) && Objects.equals(getElement(), fact.getElement()) &&
                 getValue().equals(fact.getValue());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getOrganizationId(), getTenantId(), getTag(), getGroup(), getValue(), getElementId(), getCreatedAt());
+        return Objects.hash(getOrganization(), getTenant(), getTag(), getGroup(), getValue(), getElement(), getCreatedAt());
     }
 
     @Override

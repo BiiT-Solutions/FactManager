@@ -33,12 +33,14 @@ public class ChartServices<T extends Fact<?>> {
     @GetMapping(value = "", produces = MediaType.TEXT_HTML_VALUE)
     public String getChart(
             HttpServletRequest httpRequest,
-            @Parameter(description = "organizationId", required = false) @RequestParam(value = "organizationId", required = false) String organizationId,
-            @Parameter(description = "tenantId", required = false) @RequestParam(value = "tenantId", required = false) String tenantId,
+            @Parameter(description = "organization", required = false) @RequestParam(value = "organization", required = false) String organization,
+            @Parameter(name = "customer", required = false) @RequestParam(value = "customer", required = false) String customer,
+            @Parameter(name = "application", required = false) @RequestParam(value = "application", required = false) String application,
+            @Parameter(description = "tenant", required = false) @RequestParam(value = "tenant", required = false) String tenant,
             @Parameter(description = "tag", required = false) @RequestParam(value = "tag", required = false) String tag,
             @Parameter(description = "group", required = false) @RequestParam(value = "group", required = false) String group,
-            @Parameter(description = "elementId", required = false) @RequestParam(value = "elementId", required = false) String elementId,
-            @Parameter(description = "processId", required = false) @RequestParam(value = "processId", required = false) String processId,
+            @Parameter(description = "element", required = false) @RequestParam(value = "element", required = false) String element,
+            @Parameter(description = "process", required = false) @RequestParam(value = "process", required = false) String process,
             @Parameter(description = "startDate", required = false) @RequestParam(value = "startDate", required = false) LocalDateTime startDate,
             @Parameter(description = "endDate", required = false) @RequestParam(value = "endDate", required = false) LocalDateTime endDate,
             @Parameter(description = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
@@ -54,6 +56,6 @@ public class ChartServices<T extends Fact<?>> {
             pairs[i] = Pair.of(valueParameters.get(i), valueParameters.get(i + 1));
         }
 
-        return chartProvider.getChart(organizationId, tenantId, tag, group, elementId, processId, startDate, endDate, lastDays, type, pairs);
+        return chartProvider.getChart(organization, customer, application, tenant, tag, group, element, process, startDate, endDate, lastDays, type, pairs);
     }
 }

@@ -32,12 +32,14 @@ public class PivotViewServices<T extends Fact<?>> {
     @GetMapping(value = "", produces = MediaType.APPLICATION_XML_VALUE)
     public String getView(
             HttpServletRequest httpRequest,
-            @Parameter(name = "tenantId", required = false) @RequestParam(value = "tenantId", required = false) String tenantId,
-            @Parameter(name = "organizationId", required = false) @RequestParam(value = "organizationId", required = false) String organizationId,
+            @Parameter(name = "organization", required = false) @RequestParam(value = "organization", required = false) String organization,
+            @Parameter(name = "customer", required = false) @RequestParam(value = "customer", required = false) String customer,
+            @Parameter(name = "application", required = false) @RequestParam(value = "application", required = false) String application,
+            @Parameter(name = "tenant", required = false) @RequestParam(value = "tenant", required = false) String tenant,
             @Parameter(name = "tag", required = false) @RequestParam(value = "tag", required = false) String tag,
             @Parameter(name = "group", required = false) @RequestParam(value = "group", required = false) String group,
-            @Parameter(name = "elementId", required = false) @RequestParam(value = "elementId", required = false) String elementId,
-            @Parameter(name = "processId", required = false) @RequestParam(value = "processId", required = false) String processId,
+            @Parameter(name = "element", required = false) @RequestParam(value = "element", required = false) String element,
+            @Parameter(name = "process", required = false) @RequestParam(value = "process", required = false) String process,
             @Parameter(name = "startDate", required = false) @RequestParam(value = "startDate", required = false) LocalDateTime startDate,
             @Parameter(name = "endDate", required = false) @RequestParam(value = "endDate", required = false) LocalDateTime endDate,
             @Parameter(name = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
@@ -56,7 +58,7 @@ public class PivotViewServices<T extends Fact<?>> {
             pairs[i] = Pair.of(valueParameters.get(i), valueParameters.get(i + 1));
         }
 
-        return pivotViewProvider.get(organizationId, tenantId, tag, group, elementId, processId, startDate, endDate, lastDays, pairs);
+        return pivotViewProvider.get(organization, customer, application, tenant, tag, group, element, process, startDate, endDate, lastDays, pairs);
     }
 
 

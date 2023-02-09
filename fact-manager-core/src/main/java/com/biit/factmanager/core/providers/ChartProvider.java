@@ -27,17 +27,18 @@ public class ChartProvider<T extends Fact<?>> {
     }
 
     @SafeVarargs
-    public final String getChart(String organizationId, String tenantId, String tag, String group, String elementId, String processId,
+    public final String getChart(String organization, String customer, String application, String tenant, String tag,
+                                 String group, String element, String process,
                                  LocalDateTime startDate, LocalDateTime endDate, Integer lastDays, ChartType type,
                                  Pair<String, Object>... valueParameters) {
-        if (!organizationId.isEmpty() && tenantId.isEmpty() && tag.isEmpty() && group.isEmpty() && elementId.isEmpty()) {
-            return htmlFromformrunnerQuestionFactsByQuestion(factProvider.findByOrganizationId(organizationId), type);
+        if (!organization.isEmpty() && tenant.isEmpty() && tag.isEmpty() && group.isEmpty() && element.isEmpty()) {
+            return htmlFromformrunnerQuestionFactsByQuestion(factProvider.findByOrganization(organization), type);
         }
-        if (organizationId.isEmpty() && tenantId.isEmpty() && tag.isEmpty() && group.isEmpty() && elementId.isEmpty()) {
+        if (organization.isEmpty() && tenant.isEmpty() && tag.isEmpty() && group.isEmpty() && element.isEmpty()) {
             return htmlFromformrunnerQuestionFactsByQuestion(factProvider.getAll(), type);
         }
         return htmlFromformrunnerQuestionFactsByQuestion(factProvider.
-                findBy(organizationId, tenantId, tag, group, elementId, processId, startDate, endDate, lastDays, valueParameters), type);
+                findBy(organization, customer, application, tenant, tag, group, element, process, startDate, endDate, lastDays, valueParameters), type);
     }
 
     public String htmlFromformrunnerQuestionFactsByQuestion(Collection<T> facts, ChartType type) {
@@ -70,7 +71,7 @@ public class ChartProvider<T extends Fact<?>> {
         uniqueTenants.forEach(tenant -> {
             html.append("   [").append("'").append(tenant).append("', ");
             formrunnerQuestionFacts.forEach(formrunnerQuestionFact -> {
-                if (formrunnerQuestionFact.getTenantId().compareTo(tenant) == 0) {
+                if (formrunnerQuestionFact.getTenant().compareTo(tenant) == 0) {
                     final FormrunnerQuestionValue formrunnerQuestionValue = (FormrunnerQuestionValue) formrunnerQuestionFact.getEntity();
                     if (formrunnerQuestionValue.getAnswer() != null && formrunnerQuestionValue.getAnswer().matches("[+-]?\\d*(\\.\\d+)?")) {
                         html.append(formrunnerQuestionValue.getAnswer());
@@ -99,9 +100,9 @@ public class ChartProvider<T extends Fact<?>> {
     }
 
     private List<String> getUniqueTenants(Collection<T> facts) {
-        final ArrayList<String> tenantIds = new ArrayList<>();
-        facts.forEach(fact -> tenantIds.add(fact.getTenantId()));
-        return tenantIds.stream().distinct().collect(Collectors.toList());
+        final ArrayList<String> tenants = new ArrayList<>();
+        facts.forEach(fact -> tenants.add(fact.getTenant()));
+        return tenants.stream().distinct().collect(Collectors.toList());
     }
 
     private List<String> getUniqueQuestions(Collection<T> formrunnerQuestionFacts) {

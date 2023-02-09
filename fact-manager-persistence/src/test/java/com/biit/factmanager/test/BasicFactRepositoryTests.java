@@ -4,7 +4,6 @@ import com.biit.factmanager.persistence.entities.BasicFact;
 import com.biit.factmanager.persistence.repositories.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.util.Pair;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.testng.Assert;
@@ -12,7 +11,6 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 
 @SpringBootTest
@@ -42,9 +40,9 @@ public class BasicFactRepositoryTests extends AbstractTransactionalTestNGSpringC
     @Test(dependsOnMethods = "createStringFact")
     private void readFact() {
         BasicFact basicFact = new BasicFact();
-        basicFact.setElementId(FACT_ELEMENT_ID);
+        basicFact.setElement(FACT_ELEMENT_ID);
         basicFactFactRepository.save(basicFact);
-        Assert.assertTrue(basicFactFactRepository.findByElementIdAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
+        Assert.assertTrue(basicFactFactRepository.findByElementAndCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual
                 (FACT_ELEMENT_ID, FACT_TIME_PAST, FACT_TIME_FUTURE).contains(basicFact));
         basicFactFactRepository.delete(basicFact);
     }

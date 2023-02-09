@@ -39,8 +39,8 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
         return factRepository.findAll();
     }
 
-    public List<T> getFiltered(String group, String elementId) {
-        return factRepository.findByElementIdAndGroup(elementId, group);
+    public List<T> getFiltered(String group, String element) {
+        return factRepository.findByElementAndGroup(element, group);
     }
 
     public List<T> getByValueParameter(Object... pairParameterValues) {
@@ -54,33 +54,36 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
         return factRepository.findByValueParameters(pairs);
     }
 
-    public List<T> findByOrganizationId(String organizationId) {
-        return factRepository.findByOrganizationId(organizationId);
+    public List<T> findByOrganization(String organization) {
+        return factRepository.findByOrganization(organization);
     }
 
-    public List<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, String processId, LocalDateTime startDate,
+    public List<T> findBy(String organization, String customer, String application, String tenant, String tag, String group,
+                          String element, String process, LocalDateTime startDate,
                           LocalDateTime endDate, Integer lastDays, Pair<String, Object>... valueParameters) {
         if (lastDays == null) {
-            return findBy(organizationId, tenantId, tag, group, elementId, processId, startDate, endDate, valueParameters);
+            return findBy(organization, customer, application, tenant, tag, group, element, process, startDate, endDate, valueParameters);
         } else {
-            return findBy(organizationId, tenantId, tag, group, elementId, processId, lastDays, valueParameters);
+            return findBy(organization, customer, application, tenant, tag, group, element, process, lastDays, valueParameters);
         }
     }
 
 
-    public List<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, String processId, Integer lastDays,
+    public List<T> findBy(String organization, String customer, String application, String tenant, String tag, String group,
+                          String element, String process, Integer lastDays,
                           Pair<String, Object>... valueParameters) {
         final LocalDateTime endDate = LocalDateTime.now();
         if (lastDays != null) {
             final LocalDateTime startDate = LocalDateTime.now().minusDays(lastDays);
-            return factRepository.findBy(organizationId, tenantId, tag, group, elementId, processId, startDate, endDate, valueParameters);
+            return factRepository.findBy(organization, customer, application, tenant, tag, group, element, process, startDate, endDate, valueParameters);
         }
-        return factRepository.findBy(organizationId, tenantId, tag, group, elementId, processId, null, endDate, valueParameters);
+        return factRepository.findBy(organization, customer, application, tenant, tag, group, element, process, null, endDate, valueParameters);
     }
 
-    public List<T> findBy(String organizationId, String tenantId, String tag, String group, String elementId, String processId, LocalDateTime startDate,
+    public List<T> findBy(String organization, String customer, String application, String tenant, String tag, String group,
+                          String element, String process, LocalDateTime startDate,
                           LocalDateTime endDate, Pair<String, Object>... valueParameters) {
-        return factRepository.findBy(organizationId, tenantId, tag, group, elementId, processId, startDate, endDate, valueParameters);
+        return factRepository.findBy(organization, customer, application, tenant, tag, group, element, process, startDate, endDate, valueParameters);
     }
 
     /**

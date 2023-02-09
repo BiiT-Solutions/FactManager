@@ -20,12 +20,13 @@ public class PivotViewProvider<T extends Fact<?>> {
         this.factProvider = factProvider;
     }
 
-    public String get(String organizationId, String tenantId, String tag, String group, String elementId, String processId,
+    public String get(String organization, String customer, String application, String tenant, String tag, String group, String element, String process,
                       LocalDateTime startDate, LocalDateTime endDate, Integer lastDays, Pair<String, Object>... valueParameters) {
-        if (organizationId.isEmpty() && tenantId.isEmpty() && tag.isEmpty() && group.isEmpty() && elementId.isEmpty()) {
+        if (organization.isEmpty() && tenant.isEmpty() && tag.isEmpty() && group.isEmpty() && element.isEmpty()) {
             return xmlFormFacts(factProvider.getAll());
         }
-        return xmlFormFacts(factProvider.findBy(organizationId, tenantId, tag, group, elementId, processId, startDate, endDate, lastDays, valueParameters));
+        return xmlFormFacts(factProvider.findBy(organization, customer, application, tenant, tag, group, element, process, startDate,
+                endDate, lastDays, valueParameters));
     }
 
     public String xmlFormFacts(Collection<T> facts) {
@@ -42,11 +43,11 @@ public class PivotViewProvider<T extends Fact<?>> {
 
         for (final T fact : facts) {
             elementsByItem.add(fact.getPivotViewerTag());
-            tenantsIds.computeIfAbsent(fact.getTenantId(), k -> new ArrayList<>());
-            tenantsIds.get(fact.getTenantId()).add(fact);
+            tenantsIds.computeIfAbsent(fact.getTenant(), k -> new ArrayList<>());
+            tenantsIds.get(fact.getTenant()).add(fact);
             if (fact.getPivotViewerItemImageIndex() != null) {
-                imageIndexes.computeIfAbsent(fact.getTenantId(), k -> new ArrayList<>());
-                imageIndexes.get(fact.getTenantId()).add(fact.getPivotViewerItemImageIndex());
+                imageIndexes.computeIfAbsent(fact.getTenant(), k -> new ArrayList<>());
+                imageIndexes.get(fact.getTenant()).add(fact.getPivotViewerItemImageIndex());
             }
         }
         xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -57,16 +58,16 @@ public class PivotViewProvider<T extends Fact<?>> {
         }
         xml.append("    </FacetCategories>\n");
         xml.append("    <Items ImgBase=\"").append("./factManager/fact_manager.dzc").append("\">\n");
-        tenantsIds.keySet().forEach(tenantId -> {
+        tenantsIds.keySet().forEach(tenant -> {
             try {
                 //Get item information from form fact.
-                final T scoreFacts = tenantsIds.get(tenantId).stream().filter(f -> f.getPivotViewerItemImageIndex() != null).findAny().orElseThrow(() ->
-                        new FactNotFoundException(this.getClass(), "No facts for tenant '" + tenantId + "' with score."));
+                final T scoreFacts = tenantsIds.get(tenant).stream().filter(f -> f.getPivotViewerItemImageIndex() != null).findAny().orElseThrow(() ->
+                        new FactNotFoundException(this.getClass(), "No facts for tenant '" + tenant + "' with score."));
                 xml.append("        <Item Id=\"").append(scoreFacts.getPivotViewerValueItemId()).append("\" Img=\"")
-                        .append(Collections.min(imageIndexes.get(tenantId))).append("\"")
+                        .append(Collections.min(imageIndexes.get(tenant))).append("\"")
                         .append(" Href=\"/usmo\" Name=\"").append(scoreFacts.getPivotViewerItemName()).append("\">\n");
                 xml.append("            <Facets>\n");
-                tenantsIds.get(tenantId).forEach(fact -> {
+                tenantsIds.get(tenant).forEach(fact -> {
                     if (fact.getPivotViewerTag() != null && fact.getPivotViewerValue() != null) {
                         xml.append("                <Facet Name=\"").append(fact.getPivotViewerTag()).append("\">\n");
                         xml.append("                    <Number Value=\"").append(fact.getPivotViewerValue()).append("\"/>\n");
@@ -76,7 +77,7 @@ public class PivotViewProvider<T extends Fact<?>> {
                 xml.append("            </Facets>\n");
                 xml.append("        </Item>\n");
             } catch (FactNotFoundException e) {
-                FactManagerLogger.warning(this.getClass().getName(), "No facts defined for tenantId '" + tenantId + "'.");
+                FactManagerLogger.warning(this.getClass().getName(), "No facts defined for tenant '" + tenant + "'.");
             }
         });
         xml.append("    </Items>\n");
