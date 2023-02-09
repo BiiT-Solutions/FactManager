@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.util.Pair;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import java.util.List;
 public class BasicFactServices extends FactServices<String, BasicFact> {
 
     @Autowired
+    @Qualifier("basicFactProvider")
     private FactProvider<BasicFact> factProvider;
 
     public BasicFactServices(FactProvider<BasicFact> factProvider) {

@@ -1,7 +1,9 @@
 package com.biit.factmanager.persistence.repositories;
 
+import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.GenericTypeResolver;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +14,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +38,7 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
             field = this.getClass().getDeclaredField("data");
             entityTypeClass = (Class<T>) field.getType();
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            FactManagerLogger.errorMessage(this.getClass(), e);
         }
 
     }
@@ -70,12 +73,12 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
     }
 
     @Override
-    public List<T> findBy(String organization, String customer, String application, String tenant, String tag,
+    public List<T> findBy(Class<T> entityTypeClass, String organization, String customer, String application, String tenant, String tag,
                           String group, String element, String process, LocalDateTime startDate, LocalDateTime endDate,
                           Boolean discriminatorValue, Pair<String, Object>... valueParameters) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        final CriteriaQuery<T> query = criteriaBuilder.createQuery(entityTypeClass);
-        final Root<T> root = query.from(entityTypeClass);
+        final CriteriaQuery<T> query = criteriaBuilder.createQuery(entityTypeClass == null ? this.entityTypeClass : entityTypeClass);
+        final Root<T> root = query.from(entityTypeClass == null ? this.entityTypeClass : entityTypeClass);
 
         final List<Predicate> predicates = new ArrayList<>();
         if (organization != null) {
@@ -109,15 +112,19 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), endDate));
         }
         if (discriminatorValue != null) {
-            predicates.add(criteriaBuilder.equal(root.type(), entityTypeClass));
+            predicates.add(criteriaBuilder.equal(root.type(), entityTypeClass == null ? this.entityTypeClass : entityTypeClass));
         }
         if (valueParameters != null) {
             for (final Pair<String, Object> condition : valueParameters) {
                 //ON JSON numbers are not using quotes.
-                if (condition.getSecond() instanceof Number) {
-                    predicates.add(criteriaBuilder.like(root.get("value"), String.format("%%\"%s\":%s%%", condition.getFirst(), condition.getSecond())));
-                } else {
-                    predicates.add(criteriaBuilder.like(root.get("value"), String.format("%%\"%s\":\"%s\"%%", condition.getFirst(), condition.getSecond())));
+                if (condition != null) {
+                    if (condition.getSecond() instanceof Number) {
+                        predicates.add(criteriaBuilder.like(root.get("value"),
+                                String.format("%%\"%s\":%s%%", condition.getFirst(), condition.getSecond())));
+                    } else {
+                        predicates.add(criteriaBuilder.like(root.get("value"),
+                                String.format("%%\"%s\":\"%s\"%%", condition.getFirst(), condition.getSecond())));
+                    }
                 }
             }
         }

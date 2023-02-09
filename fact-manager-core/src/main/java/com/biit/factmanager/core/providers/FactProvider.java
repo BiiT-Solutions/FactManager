@@ -7,10 +7,12 @@ import com.biit.factmanager.persistence.repositories.FactRepository;
 import com.biit.server.providers.CrudProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.util.Pair;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,15 +20,34 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Primary
 public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactRepository<T>> {
     private final FactRepository<T> factRepository;
     private final LocalContainerEntityManagerFactoryBean entityManagerFactoryBean;
 
+    private Class<T> entityClass = null;
+
+
+    public FactProvider(Class<T> entityClass,
+                        FactRepository<T> factRepository,
+                        @Qualifier("factmanagerSystemFactory") LocalContainerEntityManagerFactoryBean entityManagerFactoryBean) {
+        super(factRepository);
+        this.entityClass = entityClass;
+        this.factRepository = factRepository;
+        this.entityManagerFactoryBean = entityManagerFactoryBean;
+    }
 
     @Autowired
     public FactProvider(FactRepository<T> factRepository,
                         @Qualifier("factmanagerSystemFactory") LocalContainerEntityManagerFactoryBean entityManagerFactoryBean) {
         super(factRepository);
+        Field field;
+        try {
+            field = this.getClass().getDeclaredField("data");
+            entityClass = (Class<T>) field.getType();
+        } catch (NoSuchFieldException e) {
+            entityClass = null;
+        }
         this.factRepository = factRepository;
         this.entityManagerFactoryBean = entityManagerFactoryBean;
     }
@@ -75,17 +96,17 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
         final LocalDateTime endDate = LocalDateTime.now();
         if (lastDays != null) {
             final LocalDateTime startDate = LocalDateTime.now().minusDays(lastDays);
-            return factRepository.findBy(organization, customer, application, tenant, tag, group, element, process, startDate, endDate,
+            return factRepository.findBy(entityClass, organization, customer, application, tenant, tag, group, element, process, startDate, endDate,
                     discriminatorValue, valueParameters);
         }
-        return factRepository.findBy(organization, customer, application, tenant, tag, group, element, process, null, endDate,
+        return factRepository.findBy(entityClass, organization, customer, application, tenant, tag, group, element, process, null, endDate,
                 discriminatorValue, valueParameters);
     }
 
     public List<T> findBy(String organization, String customer, String application, String tenant, String tag, String group,
                           String element, String process, LocalDateTime startDate, LocalDateTime endDate,
                           Boolean discriminatorValue, Pair<String, Object>... valueParameters) {
-        return factRepository.findBy(organization, customer, application, tenant, tag, group, element, process, startDate, endDate,
+        return factRepository.findBy(entityClass, organization, customer, application, tenant, tag, group, element, process, startDate, endDate,
                 discriminatorValue, valueParameters);
     }
 

@@ -1,7 +1,11 @@
 package com.biit.factmanager.rest;
 
 
+import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.logger.FactManagerLogger;
+import com.biit.factmanager.persistence.entities.BasicFact;
+import com.biit.factmanager.persistence.repositories.FactRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -12,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -37,5 +42,12 @@ public class FactManagerServicesServer {
 	@Bean
 	public ApplicationListener<ContextRefreshedEvent> startupLoggingListener() {
 		return event -> FactManagerLogger.info(FactManagerServicesServer.class, "### Server started ###");
+	}
+
+	@Bean
+	@Qualifier("basicFactProvider")
+	public FactProvider<BasicFact> getBasicFactProvider(FactRepository<BasicFact> factRepository,
+														@Qualifier("factmanagerSystemFactory") LocalContainerEntityManagerFactoryBean entityManagerFactoryBean){
+		return new FactProvider<>(BasicFact.class, factRepository, entityManagerFactoryBean);
 	}
 }

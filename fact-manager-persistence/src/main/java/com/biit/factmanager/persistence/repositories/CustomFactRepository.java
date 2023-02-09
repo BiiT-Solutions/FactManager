@@ -10,7 +10,7 @@ public interface CustomFactRepository<T extends Fact<?>> {
 
     List<T> findByValueParameters(Pair<String, Object>... valueParameters);
 
-    List<T> findBy(String organizationId, String customer, String application, String tenantId, String tag,
+    List<T> findBy(Class<T> entityTypeClass, String organizationId, String customer, String application, String tenantId, String tag,
                    String group, String elementId, String processId, LocalDateTime startDate, LocalDateTime endDate,
                    Boolean discriminatorValue, Pair<String, Object>... valueParameters);
 }
