@@ -70,9 +70,9 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
     }
 
     @Override
-    public List<T> findBy(String organization, String customer, String application,
-                          String tenant, String tag, String group, String element, String process,
-                          LocalDateTime startDate, LocalDateTime endDate, Pair<String, Object>... valueParameters) {
+    public List<T> findBy(String organization, String customer, String application, String tenant, String tag,
+                          String group, String element, String process, LocalDateTime startDate, LocalDateTime endDate,
+                          String discriminatorValue, Pair<String, Object>... valueParameters) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> query = criteriaBuilder.createQuery(entityTypeClass);
         final Root<T> root = query.from(entityTypeClass);
@@ -107,6 +107,9 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
         }
         if (endDate != null) {
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), endDate));
+        }
+        if (discriminatorValue != null) {
+            predicates.add(criteriaBuilder.equal(root.type(), entityTypeClass));
         }
         if (valueParameters != null) {
             for (final Pair<String, Object> condition : valueParameters) {

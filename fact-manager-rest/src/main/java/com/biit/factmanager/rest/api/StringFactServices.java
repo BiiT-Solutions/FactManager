@@ -10,7 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class StringFactServices extends FactServices<StringValue, StringFact> {
 
+    protected final String DISCRIMINATOR_VALUE = new StringFact().getDiscriminatorValue();
+
     public StringFactServices(FactProvider<StringFact> factProvider) {
         super(factProvider);
+    }
+
+    @Override
+    public String getDiscriminatorValue() {
+        return DISCRIMINATOR_VALUE;
     }
 }

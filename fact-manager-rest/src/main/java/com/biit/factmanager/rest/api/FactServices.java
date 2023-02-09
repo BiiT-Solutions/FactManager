@@ -65,15 +65,18 @@ public abstract class FactServices<V, T extends Fact<V>> {
     }
 
     @Operation(summary = "Search facts functionality", description = "Parameters:\n"
+            + "- organization: which organization belongs to\n"
+            + "- customer: which customer is the owner of the application\n"
+            + "- application: which application is generating the facts\n"
             + "- tenant: the tenant classifier\n"
-            + "- organizationId: which organization belongs to\n"
             + "- tag: kafka tag\n"
             + "- group: grouping option for the facts\n"
-            + "- elementId: if of the element that actions the fact\n"
+            + "- element: if of the element that actions the fact\n"
             + "- startDate: filtering facts from this day\n"
             + "- endDate: filtering facts to this day\n"
             + "- lastDays: if set, replaces startDate and endDate\n"
-            + "- parameters: set of parameters/value pairs that are specific for each fact\n")
+            + "- parameters: set of parameters/value pairs that are specific for each fact\n",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<T> getFacts(
@@ -109,7 +112,9 @@ public abstract class FactServices<V, T extends Fact<V>> {
         return factProvider.findBy(organization, customer, application, tenant, tag, group, element, process,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
-                lastDays, pairs);
+                lastDays, getDiscriminatorValue(), pairs);
     }
+
+    public abstract String getDiscriminatorValue();
 
 }

@@ -4,9 +4,13 @@ import java.time.LocalDateTime;
 
 public class FactDTO<ENTITY> {
 
-    private String organizationId;
+    private String organization;
 
-    private String tenantId;
+    private String customer;
+
+    private String application;
+
+    private String tenant;
 
     private String tag;
 
@@ -14,24 +18,24 @@ public class FactDTO<ENTITY> {
 
     private String value;
 
-    private String elementId;
+    private String element;
 
     private LocalDateTime createdAt;
 
-    public String getOrganizationId() {
-        return organizationId;
+    public String getOrganization() {
+        return organization;
     }
 
-    public void setOrganizationId(String organizationId) {
-        this.organizationId = organizationId;
+    public void setOrganization(String organization) {
+        this.organization = organization;
     }
 
-    public String getTenantId() {
-        return tenantId;
+    public String getTenant() {
+        return tenant;
     }
 
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
+    public void setTenant(String tenant) {
+        this.tenant = tenant;
     }
 
     public String getTag() {
@@ -58,12 +62,12 @@ public class FactDTO<ENTITY> {
         this.value = value;
     }
 
-    public String getElementId() {
-        return elementId;
+    public String getElement() {
+        return element;
     }
 
-    public void setElementId(String elementId) {
-        this.elementId = elementId;
+    public void setElement(String element) {
+        this.element = element;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -73,4 +77,6 @@ public class FactDTO<ENTITY> {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
+
+
 }

@@ -27,7 +27,19 @@ public class PivotViewServices<T extends Fact<?>> {
         this.pivotViewProvider = pivotViewProvider;
     }
 
-    @Operation(summary = "Returns a pivotView view", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Returns a pivotView view", security = @SecurityRequirement(name = "bearerAuth"),
+            description = "Parameters:\n"
+                    + "- organization: which organization belongs to\n"
+                    + "- customer: which customer is the owner of the application\n"
+                    + "- application: which application is generating the facts\n"
+                    + "- tenant: the tenant classifier\n"
+                    + "- tag: kafka tag\n"
+                    + "- group: grouping option for the facts\n"
+                    + "- element: if of the element that actions the fact\n"
+                    + "- startDate: filtering facts from this day\n"
+                    + "- endDate: filtering facts to this day\n"
+                    + "- lastDays: if set, replaces startDate and endDate\n"
+                    + "- parameters: set of parameters/value pairs that are specific for each fact\n")
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(value = "", produces = MediaType.APPLICATION_XML_VALUE)
     public String getView(

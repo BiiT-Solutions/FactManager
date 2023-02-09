@@ -43,7 +43,6 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     @Column(name = "customer")
     private String customer;
 
-
     @Column(name = "application")
     private String application;
 
@@ -248,5 +247,12 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     @Override
     public String toString() {
         return getId() == null ? "Fact(" + getCreatedAt() + ")" : "Fact(" + getId() + ")";
+    }
+
+    @Transient
+    @JsonIgnore
+    public String getDiscriminatorValue() {
+        final DiscriminatorValue val = this.getClass().getAnnotation(DiscriminatorValue.class);
+        return val == null ? null : val.value();
     }
 }
