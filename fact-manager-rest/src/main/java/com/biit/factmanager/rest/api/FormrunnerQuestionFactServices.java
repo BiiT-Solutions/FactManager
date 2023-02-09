@@ -10,14 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FormrunnerQuestionFactServices extends FactServices<FormrunnerQuestionValue, FormrunnerQuestionFact> {
 
-    protected final String DISCRIMINATOR_VALUE = new FormrunnerQuestionFact().getDiscriminatorValue();
-
     public FormrunnerQuestionFactServices(FactProvider<FormrunnerQuestionFact> factProvider) {
         super(factProvider);
-    }
-
-    @Override
-    public String getDiscriminatorValue() {
-        return DISCRIMINATOR_VALUE;
     }
 }

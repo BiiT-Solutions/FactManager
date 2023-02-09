@@ -27,8 +27,6 @@ public class BasicFactServices extends FactServices<String, BasicFact> {
     @Autowired
     private FactProvider<BasicFact> factProvider;
 
-    protected final String DISCRIMINATOR_VALUE = new BasicFact().getDiscriminatorValue();
-
     public BasicFactServices(FactProvider<BasicFact> factProvider) {
         super(factProvider);
     }
@@ -81,13 +79,8 @@ public class BasicFactServices extends FactServices<String, BasicFact> {
         final Collection<BasicFact> facts = factProvider.findBy(organization, customer, application, tenant, tag, group, element, process,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
-                lastDays, getDiscriminatorValue(), pairs);
+                lastDays, true, pairs);
 
         return facts;
-    }
-
-    @Override
-    public String getDiscriminatorValue() {
-        return DISCRIMINATOR_VALUE;
     }
 }

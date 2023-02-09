@@ -60,7 +60,7 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
 
     public List<T> findBy(String organization, String customer, String application, String tenant, String tag, String group,
                           String element, String process, LocalDateTime startDate,
-                          LocalDateTime endDate, Integer lastDays, String discriminatorValue, Pair<String, Object>... valueParameters) {
+                          LocalDateTime endDate, Integer lastDays, Boolean discriminatorValue, Pair<String, Object>... valueParameters) {
         if (lastDays == null) {
             return findBy(organization, customer, application, tenant, tag, group, element, process, startDate, endDate, discriminatorValue, valueParameters);
         } else {
@@ -70,7 +70,7 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
 
 
     public List<T> findBy(String organization, String customer, String application, String tenant, String tag, String group,
-                          String element, String process, Integer lastDays, String discriminatorValue,
+                          String element, String process, Integer lastDays, Boolean discriminatorValue,
                           Pair<String, Object>... valueParameters) {
         final LocalDateTime endDate = LocalDateTime.now();
         if (lastDays != null) {
@@ -84,7 +84,7 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
 
     public List<T> findBy(String organization, String customer, String application, String tenant, String tag, String group,
                           String element, String process, LocalDateTime startDate, LocalDateTime endDate,
-                          String discriminatorValue, Pair<String, Object>... valueParameters) {
+                          Boolean discriminatorValue, Pair<String, Object>... valueParameters) {
         return factRepository.findBy(organization, customer, application, tenant, tag, group, element, process, startDate, endDate,
                 discriminatorValue, valueParameters);
     }

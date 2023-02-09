@@ -25,9 +25,6 @@ import java.util.List;
 
 public abstract class FactServices<V, T extends Fact<V>> {
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     private final FactProvider<T> factProvider;
 
     public FactServices(FactProvider<T> factProvider) {
@@ -112,9 +109,7 @@ public abstract class FactServices<V, T extends Fact<V>> {
         return factProvider.findBy(organization, customer, application, tenant, tag, group, element, process,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
-                lastDays, getDiscriminatorValue(), pairs);
+                lastDays, true, pairs);
     }
-
-    public abstract String getDiscriminatorValue();
 
 }

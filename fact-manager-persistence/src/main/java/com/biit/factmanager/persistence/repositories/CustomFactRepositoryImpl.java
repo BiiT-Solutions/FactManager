@@ -72,7 +72,7 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
     @Override
     public List<T> findBy(String organization, String customer, String application, String tenant, String tag,
                           String group, String element, String process, LocalDateTime startDate, LocalDateTime endDate,
-                          String discriminatorValue, Pair<String, Object>... valueParameters) {
+                          Boolean discriminatorValue, Pair<String, Object>... valueParameters) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> query = criteriaBuilder.createQuery(entityTypeClass);
         final Root<T> root = query.from(entityTypeClass);

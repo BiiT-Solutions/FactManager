@@ -12,5 +12,5 @@ public interface CustomFactRepository<T extends Fact<?>> {
 
     List<T> findBy(String organizationId, String customer, String application, String tenantId, String tag,
                    String group, String elementId, String processId, LocalDateTime startDate, LocalDateTime endDate,
-                   String discriminatorValue, Pair<String, Object>... valueParameters);
+                   Boolean discriminatorValue, Pair<String, Object>... valueParameters);
 }
