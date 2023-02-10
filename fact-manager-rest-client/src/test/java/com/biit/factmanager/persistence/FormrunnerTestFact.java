@@ -1,7 +1,6 @@
 package com.biit.factmanager.persistence;
 
 
-import com.biit.eventstructure.event.IKafkaStorable;
 import com.biit.factmanager.client.IFact;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;

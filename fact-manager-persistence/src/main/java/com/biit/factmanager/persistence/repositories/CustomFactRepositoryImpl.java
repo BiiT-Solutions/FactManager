@@ -3,7 +3,6 @@ package com.biit.factmanager.persistence.repositories;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.GenericTypeResolver;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +13,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
