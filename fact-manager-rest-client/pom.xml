@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <name>FactManager (Rest Client)</name>
@@ -23,7 +24,7 @@
         </dependency>
         <dependency>
             <groupId>com.biit</groupId>
-            <artifactId>rest-generic-client</artifactId>
+            <artifactId>rest-server-security-client</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -76,11 +77,6 @@
             <groupId>com.biit</groupId>
             <artifactId>fact-manager-rest</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.biit</groupId>
-            <artifactId>rest-server-security-client</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

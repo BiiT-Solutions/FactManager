@@ -32,8 +32,24 @@ public abstract class CustomFactProvider<T extends IFact> {
         return factory.create();
     }
 
+    public List<T> add(T fact) throws UnprocessableEntityException {
+        final List<FactDTO> rawFacts = factClient.post(Collections.singletonList(convert(fact)), null);
+
+        final List<T> result = new ArrayList<>();
+        rawFacts.forEach(factDTO -> result.add(convert(factDTO)));
+        return result;
+    }
+
     public List<T> add(T fact, List<Header> headers) throws UnprocessableEntityException {
         final List<FactDTO> rawFacts = factClient.post(Collections.singletonList(convert(fact)), headers);
+
+        final List<T> result = new ArrayList<>();
+        rawFacts.forEach(factDTO -> result.add(convert(factDTO)));
+        return result;
+    }
+
+    public List<T> get(Map<SearchParameters, Object> filter) throws UnprocessableEntityException {
+        final List<FactDTO> rawFacts = factClient.get(filter, null);
 
         final List<T> result = new ArrayList<>();
         rawFacts.forEach(factDTO -> result.add(convert(factDTO)));

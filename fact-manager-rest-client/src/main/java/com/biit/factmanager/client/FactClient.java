@@ -7,6 +7,7 @@ import com.biit.rest.client.RestGenericClient;
 import com.biit.rest.exceptions.EmptyResultException;
 import com.biit.rest.exceptions.InvalidResponseException;
 import com.biit.rest.exceptions.UnprocessableEntityException;
+import com.biit.server.client.SecurityClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,12 +28,15 @@ public class FactClient {
 
     private final String customerName;
 
+    private final SecurityClient securityClient;
+
     public FactClient(@Value("${facts.application:null}") String applicationName, @Value("${facts.customer:null}") String customerName,
-                      FactUrlConstructor factUrlConstructor, ObjectMapper mapper) {
+                      FactUrlConstructor factUrlConstructor, ObjectMapper mapper, SecurityClient securityClient) {
         this.factUrlConstructor = factUrlConstructor;
         this.mapper = mapper;
         this.applicationName = applicationName;
         this.customerName = customerName;
+        this.securityClient = securityClient;
     }
 
     public List<FactDTO> post(Collection<FactDTO> facts, List<Header> headers) throws UnprocessableEntityException {
@@ -44,7 +48,7 @@ public class FactClient {
             factDTO.setApplication(applicationName);
         });
         try {
-            try (final Response result = RestGenericClient.post(factUrlConstructor.getFactServerUrl(), factUrlConstructor.addFacts(),
+            try (final Response result = securityClient.post(factUrlConstructor.getFactServerUrl(), factUrlConstructor.addFacts(),
                     mapper.writeValueAsString(facts), headers)) {
                 final String res = result.readEntity(String.class);
                 return mapper.readValue(res, new TypeReference<List<FactDTO>>() {
@@ -63,7 +67,7 @@ public class FactClient {
         filter.putIfAbsent(SearchParameters.CUSTOMER, customerName);
         filter.putIfAbsent(SearchParameters.APPLICATION, applicationName);
         try {
-            try (final Response response = RestGenericClient.get(factUrlConstructor.getFactServerUrl(),
+            try (final Response response = securityClient.get(factUrlConstructor.getFactServerUrl(),
                     factUrlConstructor.findByParameters(), parameters, headers)) {
                 return mapper.readValue(response.readEntity(String.class), new TypeReference<List<FactDTO>>() {
                 });
