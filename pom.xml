@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.biit</groupId>
     <artifactId>fact-manager</artifactId>
-    <version>0.3.5-SNAPSHOT</version>
+    <version>0.3.5</version>
     <name>FactManager</name>
     <packaging>pom</packaging>
     <description>Application for handling facts as events and store them on database.</description>
@@ -41,7 +41,7 @@
     <scm>
         <connection>scm:git:git.biit-solutions.com:BiiT/FactManager.git</connection>
         <developerConnection>scm:git:git.biit-solutions.com:BiiT/FactManager.git</developerConnection>
-        <tag>FactManager</tag>
+        <tag>fact-manager-0.3.5</tag>
     </scm>
 
 
