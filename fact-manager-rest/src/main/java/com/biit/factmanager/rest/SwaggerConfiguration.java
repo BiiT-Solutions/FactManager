@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfiguration extends DefaultSwaggerConfiguration {
-    private static final String SWAGGER_TITLE = "FactManager22";
-    private static final String SWAGGER_DESCRIPTION = "Fact Manager Swagger22";
+    private static final String SWAGGER_TITLE = "FactManager";
+    private static final String SWAGGER_DESCRIPTION = "Fact Manager Swagger";
     private static final String SWAGGER_GROUP = "BiiT";
     private static final String[] PACKAGES_TO_SCAN = new String[]{"com.biit.factmanager", "com.biit.server.rest", "com.biit.server.security.rest"};
 
