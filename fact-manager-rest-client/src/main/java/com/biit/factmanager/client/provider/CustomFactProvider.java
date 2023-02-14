@@ -8,10 +8,7 @@ import com.biit.rest.client.Header;
 import com.biit.rest.exceptions.UnprocessableEntityException;
 import org.springframework.beans.BeanUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class CustomFactProvider<T extends IFact> {
 
@@ -32,43 +29,48 @@ public abstract class CustomFactProvider<T extends IFact> {
         return factory.create();
     }
 
-    public List<T> add(T fact) throws UnprocessableEntityException {
+    public T add(T fact) throws UnprocessableEntityException {
         final List<FactDTO> rawFacts = factClient.post(Collections.singletonList(convert(fact)), null);
-
-        final List<T> result = new ArrayList<>();
-        rawFacts.forEach(factDTO -> result.add(convert(factDTO)));
-        return result;
+        if (rawFacts.size() > 0) {
+            return convertDTO(rawFacts.get(0));
+        }
+        return null;
     }
 
-    public List<T> add(T fact, List<Header> headers) throws UnprocessableEntityException {
-        final List<FactDTO> rawFacts = factClient.post(Collections.singletonList(convert(fact)), headers);
+    public List<T> add(List<T> facts) throws UnprocessableEntityException {
+        final List<FactDTO> rawFacts = factClient.post(convert(facts), null);
+        return convertDTO(rawFacts);
+    }
 
-        final List<T> result = new ArrayList<>();
-        rawFacts.forEach(factDTO -> result.add(convert(factDTO)));
-        return result;
+    public T add(T fact, List<Header> headers) throws UnprocessableEntityException {
+        final List<FactDTO> rawFacts = factClient.post(Collections.singletonList(convert(fact)), headers);
+        if (rawFacts.size() > 0) {
+            return convertDTO(rawFacts.get(0));
+        }
+        return null;
     }
 
     public List<T> get(Map<SearchParameters, Object> filter) throws UnprocessableEntityException {
         final List<FactDTO> rawFacts = factClient.get(filter, null);
-
-        final List<T> result = new ArrayList<>();
-        rawFacts.forEach(factDTO -> result.add(convert(factDTO)));
-        return result;
+        return convertDTO(rawFacts);
     }
 
     public List<T> get(Map<SearchParameters, Object> filter, List<Header> headers) throws UnprocessableEntityException {
         final List<FactDTO> rawFacts = factClient.get(filter, headers);
-
-        final List<T> result = new ArrayList<>();
-        rawFacts.forEach(factDTO -> result.add(convert(factDTO)));
-        return result;
+        return convertDTO(rawFacts);
     }
 
-    protected T convert(FactDTO factDTO) {
+    protected T convertDTO(FactDTO factDTO) {
         final T fact = createInstance();
         BeanUtils.copyProperties(factDTO, fact);
         fact.setValue(factDTO.getValue());
         return fact;
+    }
+
+    protected List<T> convertDTO(Collection<FactDTO> factsDTO) {
+        final List<T> convertedFacts = new ArrayList<>();
+        factsDTO.forEach(factDTO -> convertedFacts.add(convertDTO(factDTO)));
+        return convertedFacts;
     }
 
     protected FactDTO convert(T fact) {
@@ -76,5 +78,11 @@ public abstract class CustomFactProvider<T extends IFact> {
         BeanUtils.copyProperties(fact, factDTO);
         factDTO.setValue(fact.getValue());
         return factDTO;
+    }
+
+    protected List<FactDTO> convert(Collection<T> facts) {
+        final List<FactDTO> convertedFacts = new ArrayList<>();
+        facts.forEach(fact -> convertedFacts.add(convert(fact)));
+        return convertedFacts;
     }
 }
