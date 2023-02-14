@@ -30,7 +30,7 @@ public class FactClient {
 
     private final SecurityClient securityClient;
 
-    public FactClient(@Value("${facts.application:null}") String applicationName, @Value("${facts.customer:null}") String customerName,
+    public FactClient(@Value("${spring.application.name:null}") String applicationName, @Value("${facts.customer:null}") String customerName,
                       FactUrlConstructor factUrlConstructor, ObjectMapper mapper, SecurityClient securityClient) {
         this.factUrlConstructor = factUrlConstructor;
         this.mapper = mapper;
