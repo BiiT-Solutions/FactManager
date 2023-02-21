@@ -2,8 +2,8 @@ package com.biit.factmanager.client;
 
 
 import com.biit.factmanager.client.fact.FactDTO;
+import com.biit.factmanager.logger.FactClientLogger;
 import com.biit.rest.client.Header;
-import com.biit.rest.client.RestGenericClient;
 import com.biit.rest.exceptions.EmptyResultException;
 import com.biit.rest.exceptions.InvalidResponseException;
 import com.biit.rest.exceptions.UnprocessableEntityException;
@@ -51,6 +51,8 @@ public class FactClient {
             try (final Response result = securityClient.post(factUrlConstructor.getFactServerUrl(), factUrlConstructor.addFacts(),
                     mapper.writeValueAsString(facts), headers)) {
                 final String res = result.readEntity(String.class);
+                FactClientLogger.debug(this.getClass(), "Response obtained from '{}' is '{}'.",
+                        factUrlConstructor.getFactServerUrl() + factUrlConstructor.addFacts(), result.getStatus());
                 return mapper.readValue(res, new TypeReference<List<FactDTO>>() {
                 });
             }
@@ -67,9 +69,11 @@ public class FactClient {
         filter.putIfAbsent(SearchParameters.CUSTOMER, customerName);
         filter.putIfAbsent(SearchParameters.APPLICATION, applicationName);
         try {
-            try (final Response response = securityClient.get(factUrlConstructor.getFactServerUrl(),
+            try (final Response result = securityClient.get(factUrlConstructor.getFactServerUrl(),
                     factUrlConstructor.findByParameters(), parameters, headers)) {
-                return mapper.readValue(response.readEntity(String.class), new TypeReference<List<FactDTO>>() {
+                FactClientLogger.debug(this.getClass(), "Response obtained from '{}' is '{}'.",
+                        factUrlConstructor.getFactServerUrl() + factUrlConstructor.findByParameters(), result.getStatus());
+                return mapper.readValue(result.readEntity(String.class), new TypeReference<List<FactDTO>>() {
                 });
             }
         } catch (JsonProcessingException e) {
