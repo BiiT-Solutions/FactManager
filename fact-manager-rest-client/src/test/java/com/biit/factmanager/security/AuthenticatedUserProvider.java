@@ -35,6 +35,11 @@ public class AuthenticatedUserProvider implements IAuthenticatedUserProvider {
     }
 
     @Override
+    public Optional<IAuthenticatedUser> findByUsername(String username, String applicationName) {
+        return findByUsername(username);
+    }
+
+    @Override
     public Optional<IAuthenticatedUser> findByUID(String uid) {
         return usersOnMemory.stream().filter(user -> Objects.equals(uid, user.getUID())).findAny();
     }
@@ -83,7 +88,7 @@ public class AuthenticatedUserProvider implements IAuthenticatedUserProvider {
     public void updatePassword(String username, String oldPassword, String newPassword) {
         final IAuthenticatedUser user = usersOnMemory.stream().filter(iAuthenticatedUser -> iAuthenticatedUser.getUsername().equals(username))
                 .findAny().orElseThrow(() ->
-                new UserNotFoundException(this.getClass(), "User with username '" + username + "' does not exists"));
+                        new UserNotFoundException(this.getClass(), "User with username '" + username + "' does not exists"));
 
         //Check old password.
         if (!BCrypt.checkpw(oldPassword, user.getPassword())) {
@@ -101,18 +106,18 @@ public class AuthenticatedUserProvider implements IAuthenticatedUserProvider {
     }
 
     @Override
-    public void deleteUser(String name, String username) {
-        delete(findByUsername(username).orElse(null));
+    public boolean deleteUser(String name, String username) {
+        return delete(findByUsername(username).orElse(null));
     }
 
     @Override
-    public Set<String> getRoles(String name) {
+    public boolean delete(IAuthenticatedUser authenticatedUser) {
+        return usersOnMemory.remove(authenticatedUser);
+    }
+
+    @Override
+    public Set<String> getRoles(String username, String organizationName, String application) {
         return null;
-    }
-
-    @Override
-    public void delete(IAuthenticatedUser authenticatedUser) {
-        usersOnMemory.remove(authenticatedUser);
     }
 
 
