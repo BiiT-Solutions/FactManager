@@ -10,7 +10,7 @@
     <parent>
         <groupId>com.biit</groupId>
         <artifactId>fact-manager</artifactId>
-        <version>0.3.10-SNAPSHOT</version>
+        <version>0.3.11-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -26,6 +26,7 @@
     </properties>
 
     <build>
+        <finalName>factManager</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
