@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
-@Repository
 public class AuthenticatedUserProvider implements IAuthenticatedUserProvider {
 
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
