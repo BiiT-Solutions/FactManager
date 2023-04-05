@@ -114,6 +114,11 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.biit</groupId>
+            <artifactId>user-manager-system-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
