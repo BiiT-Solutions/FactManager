@@ -7,8 +7,10 @@ import com.biit.factmanager.kafka.consumers.FormAnswerConsumerListeners;
 import com.biit.factmanager.kafka.consumers.FormAnswerConsumerListeners2;
 import com.biit.factmanager.kafka.producers.FormAnswerProducer;
 import com.biit.factmanager.kafka.producers.FormAnswerProducer2;
+import com.biit.factmanager.kafka.producers.FormrunnerQuestionFactEvent;
 import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
 import com.biit.factmanager.persistence.entities.values.FormrunnerQuestionValue;
+import com.biit.kafka.events.KafkaEventTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -41,16 +43,14 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
     private FactProvider<FormrunnerQuestionFact> factProvider;
 
     @Autowired
-    private FormAnswerProducer formAnswerProducer;
+    private KafkaEventTemplate<String, FormrunnerQuestionFactEvent> kafkaTemplate;
+    private KafkaEventTemplate<String, FormrunnerQuestionFactEvent> kafkaTemplate2;
 
     @Autowired
     private FormAnswerConsumerListeners formAnswerConsumerListeners;
 
     @Autowired
     private FormAnswerConsumerListeners2 formAnswerConsumerListeners2;
-
-    @Autowired
-    private FormAnswerProducer2 formAnswerProducer2;
 
     @Autowired
     private FormAnswerConsumer formAnswerConsumer;
@@ -110,7 +110,7 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         for (int i = 0; i < EVENTS_QUANTITY; i++) {
             FormrunnerQuestionFact generatedEvent = generateEvent(i);
             producerEvents.add(generatedEvent);
-            formAnswerProducer.sendFact(generatedEvent);
+            kafkaTemplate.send(new FormrunnerQuestionFactEvent(generatedEvent));
         }
 
         wait(consumerEvents);
@@ -126,10 +126,10 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         for (int i = 0; i < EVENTS_QUANTITY; i++) {
             FormrunnerQuestionFact generatedEvent = generateEvent(i);
             producerEvents.add(generatedEvent);
-            formAnswerProducer.sendFact(generatedEvent);
+            kafkaTemplate.send(new FormrunnerQuestionFactEvent(generatedEvent));
             FormrunnerQuestionFact generatedEvent2 = generateEvent(i);
             producerEvents2.add(generatedEvent2);
-            formAnswerProducer2.sendFact(generatedEvent2);
+            kafkaTemplate2.send(new FormrunnerQuestionFactEvent(generatedEvent2));
         }
         producerEvents.addAll(producerEvents2);
         wait(consumerEvents);
@@ -146,7 +146,7 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         for (int i = 0; i < EVENTS_QUANTITY; i++) {
             FormrunnerQuestionFact generatedEvent = generateEvent(i);
             producerEvents.add(generatedEvent);
-            formAnswerProducer.sendFact(generatedEvent);
+            kafkaTemplate.send(new FormrunnerQuestionFactEvent(generatedEvent));
         }
         wait(consumerEvents);
         Assert.assertEquals(consumerEvents, producerEvents);
@@ -168,8 +168,7 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         for (int i = 0; i < EVENTS_QUANTITY; i++) {
             FormrunnerQuestionFact eventInRange = generateEvent(i, initialDate, finalDate);
             producerEvents.add(eventInRange);
-            formAnswerProducer.sendFact(eventInRange);
-            formAnswerProducer.sendFact(eventInRange);
+            kafkaTemplate.send(new FormrunnerQuestionFactEvent(eventInRange));
         }
         wait(consumerEvents);
         Assert.assertEquals(consumerEvents, producerEvents);

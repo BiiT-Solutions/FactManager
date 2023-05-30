@@ -1,8 +1,10 @@
 package com.biit.factmanager.core.controllers.models;
 
+import com.biit.server.controllers.models.ElementDTO;
+
 import java.time.LocalDateTime;
 
-public class FactDTO<ENTITY> {
+public class FactDTO<ENTITY> extends ElementDTO {
 
     private String organization;
 

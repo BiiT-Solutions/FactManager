@@ -1,6 +1,7 @@
 package com.biit.factmanager.kafka.consumers;
 
 import com.biit.factmanager.core.providers.FactProvider;
+import com.biit.factmanager.kafka.producers.FormrunnerQuestionFactEvent;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
 import com.biit.kafka.consumers.EventListener;
@@ -20,10 +21,8 @@ public class FormAnswerConsumerListeners2 extends EventListener<FormrunnerQuesti
         this.factProvider = factProvider;
     }
 
-    @Override
-    @KafkaListener(topics = "${kafka.topic}", groupId = "2", clientIdPrefix = "firstListener", containerFactory = "eventListenerContainerFactory")
+    @KafkaListener(topics = "${kafka.topic}", groupId = "2", clientIdPrefix = "firstListener", containerFactory = "templateEventListenerContainerFactory")
     public void eventsListener(FormrunnerQuestionFact fact) {
-        super.eventsListener(fact);
         final FormrunnerQuestionFact savedFact = factProvider.save(fact);
         FactManagerLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
     }
