@@ -11,11 +11,15 @@ import com.biit.server.client.SecurityClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.ws.rs.core.Response;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class FactClient {
@@ -48,7 +52,7 @@ public class FactClient {
             factDTO.setApplication(applicationName);
         });
         try {
-            try (final Response result = securityClient.post(factUrlConstructor.getFactServerUrl(), factUrlConstructor.addFacts(),
+            try (Response result = securityClient.post(factUrlConstructor.getFactServerUrl(), factUrlConstructor.addFacts(),
                     mapper.writeValueAsString(facts), headers)) {
                 final String res = result.readEntity(String.class);
                 FactClientLogger.debug(this.getClass(), "Response obtained from '{}' is '{}'.",
@@ -69,7 +73,7 @@ public class FactClient {
         filter.putIfAbsent(SearchParameters.CUSTOMER, customerName);
         filter.putIfAbsent(SearchParameters.APPLICATION, applicationName);
         try {
-            try (final Response result = securityClient.get(factUrlConstructor.getFactServerUrl(),
+            try (Response result = securityClient.get(factUrlConstructor.getFactServerUrl(),
                     factUrlConstructor.findByParameters(), parameters, headers)) {
                 FactClientLogger.debug(this.getClass(), "Response obtained from '{}' is '{}'.",
                         factUrlConstructor.getFactServerUrl() + factUrlConstructor.findByParameters(), result.getStatus());

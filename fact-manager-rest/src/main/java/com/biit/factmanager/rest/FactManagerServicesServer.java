@@ -24,25 +24,26 @@ import org.springframework.web.servlet.DispatcherServlet;
 @EntityScan({"com.biit.factmanager.persistence.entities"})
 public class FactManagerServicesServer {
 
-	public static void main(String[] args) {
-		SpringApplication.run(FactManagerServicesServer.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(FactManagerServicesServer.class, args);
+    }
 
 
-	@Bean(name = DispatcherServletAutoConfiguration.DEFAULT_DISPATCHER_SERVLET_BEAN_NAME)
-	public DispatcherServlet dispatcherServlet() {
-		return new LoggableDispatcherServlet();
-	}
+    @Bean(name = DispatcherServletAutoConfiguration.DEFAULT_DISPATCHER_SERVLET_BEAN_NAME)
+    public DispatcherServlet dispatcherServlet() {
+        return new LoggableDispatcherServlet();
+    }
 
-	@Bean
-	public ApplicationListener<ContextRefreshedEvent> startupLoggingListener() {
-		return event -> FactManagerLogger.info(FactManagerServicesServer.class, "### Server started ###");
-	}
+    @Bean
+    public ApplicationListener<ContextRefreshedEvent> startupLoggingListener() {
+        return event -> FactManagerLogger.info(FactManagerServicesServer.class, "### Server started ###");
+    }
 
-	@Bean
-	@Qualifier("basicFactProvider")
-	public FactProvider<BasicFact> getBasicFactProvider(FactRepository<BasicFact> factRepository,
-														@Qualifier("factmanagerSystemFactory") LocalContainerEntityManagerFactoryBean entityManagerFactoryBean){
-		return new FactProvider<>(BasicFact.class, factRepository, entityManagerFactoryBean);
-	}
+    @Bean
+    @Qualifier("basicFactProvider")
+    public FactProvider<BasicFact> getBasicFactProvider(FactRepository<BasicFact> factRepository,
+                                                        @Qualifier("factmanagerSystemFactory")
+                                                        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean) {
+        return new FactProvider<>(BasicFact.class, factRepository, entityManagerFactoryBean);
+    }
 }

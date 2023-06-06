@@ -21,7 +21,8 @@ public class FormAnswerConsumerListeners extends EventListener<FormrunnerQuestio
     }
 
     @Override
-    @KafkaListener(topics = "${kafka.topic}", groupId = "1", clientIdPrefix = "firstListener", containerFactory = "eventListenerContainerFactory")
+    @KafkaListener(topics = "${spring.kafka.topic}", groupId = "${spring.kafka.group.id}", clientIdPrefix = "firstListener",
+            containerFactory = "templateEventListenerContainerFactory")
     public void eventsListener(FormrunnerQuestionFact fact) {
         super.eventsListener(fact);
         final FormrunnerQuestionFact savedFact = factProvider.save(fact);

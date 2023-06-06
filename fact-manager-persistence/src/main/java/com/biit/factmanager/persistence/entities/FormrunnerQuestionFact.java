@@ -5,10 +5,10 @@ import com.biit.eventstructure.event.IKafkaStorable;
 import com.biit.factmanager.persistence.entities.values.FormrunnerQuestionValue;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.core.type.TypeReference;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Transient;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Transient;
 
 /**
  * Tag is from Kafka
@@ -63,18 +63,13 @@ public class FormrunnerQuestionFact extends Fact<FormrunnerQuestionValue> implem
             final String answer = getFormrunnerQuestionValue().getAnswer();
             if ("A".compareTo(answer) == 0 || "B".compareTo(answer) == 0
                     || "C".compareTo(answer) == 0 || "D".compareTo(answer) == 0) {
-                switch (answer) {
-                    case "A":
-                        return "1";
-                    case "B":
-                        return "2";
-                    case "C":
-                        return "3";
-                    case "D":
-                        return "4";
-                    default:
-                        return "5";
-                }
+                return switch (answer) {
+                    case "A" -> "1";
+                    case "B" -> "2";
+                    case "C" -> "3";
+                    case "D" -> "4";
+                    default -> "5";
+                };
             } else if (answer.matches("[+-]?\\d*(\\.\\d+)?")) {
                 return getFormrunnerQuestionValue().getAnswer();
             } else {
@@ -94,33 +89,7 @@ public class FormrunnerQuestionFact extends Fact<FormrunnerQuestionValue> implem
 
     @Override
     public Integer getPivotViewerItemImageIndex() {
-        final String answer = getFormrunnerQuestionValue().getAnswer();
-        if ("A".compareTo(answer) == 0 || "B".compareTo(answer) == 0
-                || "C".compareTo(answer) == 0 || "D".compareTo(answer) == 0) {
-            switch (answer) {
-                case "A":
-                    return 1;
-                case "B":
-                    return 2;
-                case "C":
-                    return 3;
-                case "D":
-                    return 4;
-                default:
-                    return 5;
-            }
-        } else if (answer.matches("[+-]?\\d*(\\.\\d+)?")) {
-            final int numericAnswer = Integer.parseInt(answer);
-            if (numericAnswer > 0 && numericAnswer <= 5) {
-                return numericAnswer;
-            }
-            if (numericAnswer > 5) {
-                return 5;
-            } else {
-                return 1;
-            }
-        } else {
-            return null;
-        }
+        //This method must be redone.
+        return 0;
     }
 }

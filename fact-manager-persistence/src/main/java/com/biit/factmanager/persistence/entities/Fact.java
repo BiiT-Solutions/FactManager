@@ -9,10 +9,23 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.context.annotation.Primary;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -26,7 +39,7 @@ import java.util.Objects;
         @Index(name = "ind_application", columnList = "application"),
         @Index(name = "ind_tenant", columnList = "tenant"),
         @Index(name = "ind_process", columnList = "process"),
-        @Index(name = "ind_tag", columnList = "tag"),
+        @Index(name = "ind_tag", columnList = "fact_tag"),
         @Index(name = "ind_group", columnList = "grouping"),
         @Index(name = "ind_element", columnList = "element"),
 })
@@ -53,14 +66,14 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     @Column(name = "process")
     private String process;
 
-    @Column(name = "tag")
+    @Column(name = "fact_tag")
     private String tag;
 
     //Examination Name
     @Column(name = "grouping")
     private String group;
 
-    @Column(name = "value", length = MAX_JSON_LENGTH)
+    @Column(name = "fact_value", length = MAX_JSON_LENGTH)
     @Convert(converter = StringCryptoConverter.class)
     private String value;
 
@@ -233,10 +246,10 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
             return false;
         }
         final Fact<?> fact = (Fact<?>) o;
-        return getCreatedAt().equals(fact.getCreatedAt()) && Objects.equals(getOrganization(), fact.getOrganization()) &&
-                Objects.equals(getTenant(), fact.getTenant()) && Objects.equals(getTag(), fact.getTag()) &&
-                Objects.equals(getGroup(), fact.getGroup()) && Objects.equals(getElement(), fact.getElement()) &&
-                getValue().equals(fact.getValue());
+        return getCreatedAt().equals(fact.getCreatedAt()) && Objects.equals(getOrganization(), fact.getOrganization())
+                && Objects.equals(getTenant(), fact.getTenant()) && Objects.equals(getTag(), fact.getTag())
+                && Objects.equals(getGroup(), fact.getGroup()) && Objects.equals(getElement(), fact.getElement())
+                && getValue().equals(fact.getValue());
     }
 
     @Override

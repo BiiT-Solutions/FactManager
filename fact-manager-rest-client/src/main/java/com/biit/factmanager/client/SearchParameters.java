@@ -16,7 +16,7 @@ public enum SearchParameters {
 
     private final String paramName;
 
-    private SearchParameters(String paramName) {
+    SearchParameters(String paramName) {
         this.paramName = paramName;
     }
 

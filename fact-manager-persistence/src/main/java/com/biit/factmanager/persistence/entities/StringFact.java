@@ -2,10 +2,10 @@ package com.biit.factmanager.persistence.entities;
 
 import com.biit.factmanager.persistence.entities.values.StringValue;
 import com.fasterxml.jackson.core.type.TypeReference;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Transient;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Transient;
 
 @Entity
 @DiscriminatorValue("StringFact")
@@ -52,6 +52,7 @@ public class StringFact extends Fact<StringValue> {
 
     @Override
     protected TypeReference<StringValue> getJsonParser() {
-        return new TypeReference<StringValue>(){};
+        return new TypeReference<>() {
+        };
     }
 }

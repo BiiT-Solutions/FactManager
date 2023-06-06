@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.biit</groupId>
     <artifactId>fact-manager</artifactId>
-    <version>0.3.14-SNAPSHOT</version>
+    <version>0.4.1-SNAPSHOT</version>
     <name>FactManager</name>
     <packaging>pom</packaging>
     <description>Application for handling facts as events and store them on database.</description>
@@ -11,7 +11,7 @@
     <parent>
         <groupId>com.biit</groupId>
         <artifactId>versions</artifactId>
-        <version>[0.1,0.2)</version>
+        <version>[1.0,1.1)</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
@@ -45,6 +45,10 @@
         <tag>FactManager</tag>
     </scm>
 
+    <properties>
+        <main.basedir>${project.basedir}</main.basedir>
+    </properties>
+
 
     <build>
         <finalName>factManager</finalName>
@@ -63,7 +67,6 @@
                 <version>${maven-checkstyle.version}</version>
                 <configuration>
                     <configLocation>${main.basedir}/checkstyle.xml</configLocation>
-                    <encoding>UTF-8</encoding>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
                     <linkXRef>false</linkXRef>

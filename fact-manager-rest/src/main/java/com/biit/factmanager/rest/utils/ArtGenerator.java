@@ -1,6 +1,10 @@
 package com.biit.factmanager.rest.utils;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 public class ArtGenerator {
@@ -37,7 +41,7 @@ public class ArtGenerator {
             return value;
         }
 
-        private ASCIIArtFont(String value) {
+        ASCIIArtFont(String value) {
             this.value = value;
         }
     }

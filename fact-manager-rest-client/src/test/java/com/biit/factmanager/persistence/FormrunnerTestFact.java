@@ -6,10 +6,10 @@ import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.core.type.TypeReference;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Transient;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Transient;
 
 @Entity
 @DiscriminatorValue("FormrunnerTestFact")
@@ -39,7 +39,7 @@ public class FormrunnerTestFact extends Fact<FormrunnerTestValue> implements IFa
 
     @Override
     protected TypeReference<FormrunnerTestValue> getJsonParser() {
-        return new TypeReference<FormrunnerTestValue>() {
+        return new TypeReference<>() {
         };
     }
 
@@ -54,7 +54,7 @@ public class FormrunnerTestFact extends Fact<FormrunnerTestValue> implements IFa
     @Override
     public String getPivotViewerValue() {
         if (getFormrunnerVariableValue() != null && getFormrunnerVariableValue().getValue() != null) {
-            return getFormrunnerVariableValue().getValue().toString();
+            return getFormrunnerVariableValue().getValue();
         }
         return null;
     }
@@ -65,7 +65,7 @@ public class FormrunnerTestFact extends Fact<FormrunnerTestValue> implements IFa
         if (getFormrunnerVariableValue() != null && getFormrunnerVariableValue().getXpath() != null
                 && getFormrunnerVariableValue().getValue() != null) {
             try {
-                return (int) Double.parseDouble(getFormrunnerVariableValue().getValue().toString());
+                return (int) Double.parseDouble(getFormrunnerVariableValue().getValue());
             } catch (NumberFormatException e) {
                 FactManagerLogger.warning(this.getClass().getName(), "Not a numerical value '"
                         + getFormrunnerVariableValue().getValue()

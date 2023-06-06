@@ -7,6 +7,7 @@ import com.biit.factmanager.rest.exceptions.BadRequestException;
 import com.biit.server.exceptions.ServerExceptionControllerAdvice;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -19,8 +20,7 @@ public class ExceptionControllerAdvice extends ServerExceptionControllerAdvice {
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(
-            HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status,
-            WebRequest request) {
+            HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         FactManagerLogger.errorMessage(this.getClass(), ex);
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
@@ -70,7 +70,7 @@ public class ExceptionControllerAdvice extends ServerExceptionControllerAdvice {
 
     @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
-            HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status,
+            HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatusCode status,
             WebRequest request) {
         FactManagerLogger.errorMessage(this.getClass(), ex);
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.METHOD_NOT_ALLOWED);
@@ -78,7 +78,7 @@ public class ExceptionControllerAdvice extends ServerExceptionControllerAdvice {
 
     @Override
     protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(
-            HttpMediaTypeNotSupportedException ex, HttpHeaders headers, HttpStatus status,
+            HttpMediaTypeNotSupportedException ex, HttpHeaders headers, HttpStatusCode status,
             WebRequest request) {
         FactManagerLogger.errorMessage(this.getClass(), ex);
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);

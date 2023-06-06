@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TelemetryLogger extends BasicLogger {
 
-    private static final Logger logger = LoggerFactory.getLogger(TelemetryLogger.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TelemetryLogger.class);
 
     /**
      * Events that have business meaning (i.e. creating category, deleting form,
@@ -19,7 +19,7 @@ public class TelemetryLogger extends BasicLogger {
      * @param arguments       parameters to fill up the template
      */
     public static void info(String className, String messageTemplate, Object... arguments) {
-        info(logger, className, messageTemplate, arguments);
+        info(LOGGER, className, messageTemplate, arguments);
     }
 
     /**
@@ -31,7 +31,7 @@ public class TelemetryLogger extends BasicLogger {
      * @param arguments       parameters to fill up the template
      */
     public static void warning(String className, String messageTemplate, Object... arguments) {
-        warning(logger, className, messageTemplate, arguments);
+        warning(LOGGER, className, messageTemplate, arguments);
     }
 
     /**
@@ -43,7 +43,7 @@ public class TelemetryLogger extends BasicLogger {
      * @param arguments       parameters to fill up the template
      */
     public static void debug(String className, String messageTemplate, Object... arguments) {
-        debug(logger, className, messageTemplate, arguments);
+        debug(LOGGER, className, messageTemplate, arguments);
     }
 
     /**
@@ -54,7 +54,7 @@ public class TelemetryLogger extends BasicLogger {
      * @param arguments       parameters to fill up the template
      */
     public static void severe(String className, String messageTemplate, Object... arguments) {
-        severe(logger, className, messageTemplate, arguments);
+        severe(LOGGER, className, messageTemplate, arguments);
     }
 
     /**
@@ -65,11 +65,11 @@ public class TelemetryLogger extends BasicLogger {
      * @param throwable the exception
      */
     public static void errorMessage(String className, Throwable throwable) {
-        errorMessageNotification(logger, className, throwable);
+        errorMessageNotification(LOGGER, className, throwable);
     }
 
     public static void errorMessage(Class<?> clazz, Throwable throwable) {
-        errorMessageNotification(logger, clazz.getName(), throwable);
+        errorMessageNotification(LOGGER, clazz.getName(), throwable);
     }
 
     /**
@@ -81,14 +81,14 @@ public class TelemetryLogger extends BasicLogger {
      * @param arguments       parameters to fill up the template
      */
     public static void errorMessage(String className, String messageTemplate, Object... arguments) {
-        errorMessageNotification(logger, className, messageTemplate, arguments);
+        errorMessageNotification(LOGGER, className, messageTemplate, arguments);
     }
 
     public static void errorMessage(Object object, Throwable throwable) {
-        errorMessageNotification(logger, object.getClass().getName(), throwable);
+        errorMessageNotification(LOGGER, object.getClass().getName(), throwable);
     }
 
     public static boolean isDebugEnabled() {
-        return logger.isDebugEnabled();
+        return LOGGER.isDebugEnabled();
     }
 }

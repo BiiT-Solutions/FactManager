@@ -21,8 +21,8 @@ public class StringValue {
 
     @Override
     public String toString() {
-        return "StringValue{" +
-                "string='" + string + '\'' +
-                '}';
+        return "StringValue{"
+                + "string='" + string + '\''
+                + '}';
     }
 }

@@ -6,10 +6,10 @@ import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.values.FormrunnerVariableValue;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.core.type.TypeReference;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Transient;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Transient;
 
 /**
  * Tag is from Kafka
