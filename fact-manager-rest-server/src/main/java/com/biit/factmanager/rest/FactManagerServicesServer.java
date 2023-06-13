@@ -20,7 +20,8 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 @SpringBootApplication
 @ComponentScan({"com.biit.factmanager", "com.biit.server", "com.biit.messagebird.client", "com.biit.usermanager.client", "com.biit.kafka"})
-@ConfigurationPropertiesScan({"com.biit.factmanager.rest", "com.biit.factmanager.persistence.configuration", "com.biit.server.security.userguard", "com.biit.kafka"})
+@ConfigurationPropertiesScan({"com.biit.factmanager.rest", "com.biit.factmanager.persistence.configuration", "com.biit.server.security.userguard",
+        "com.biit.kafka"})
 @EntityScan({"com.biit.factmanager.persistence.entities"})
 public class FactManagerServicesServer {
 
