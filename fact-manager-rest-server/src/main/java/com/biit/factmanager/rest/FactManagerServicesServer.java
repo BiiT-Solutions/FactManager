@@ -5,6 +5,8 @@ import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.BasicFact;
 import com.biit.factmanager.persistence.repositories.FactRepository;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,6 +20,8 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.web.servlet.DispatcherServlet;
 
+//Avoid Swagger redirecting https to http
+@OpenAPIDefinition(servers = {@Server(url = "${server.servlet.context-path}", description = "Default Server URL")})
 @SpringBootApplication
 @ComponentScan({"com.biit.factmanager", "com.biit.server", "com.biit.messagebird.client", "com.biit.usermanager.client", "com.biit.kafka"})
 @ConfigurationPropertiesScan({"com.biit.factmanager.rest", "com.biit.factmanager.persistence.configuration", "com.biit.server.security.userguard",
