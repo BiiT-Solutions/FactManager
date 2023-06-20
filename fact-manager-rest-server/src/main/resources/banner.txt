@@ -10,6 +10,8 @@ d88'      `?88P'`88b`?888P'  `?8b      d88' d88'  88b`?88P'`88bd88'   88b`?88P'`
                                                                                           )88
                                                                                          ,88P
                                                                                      `?8888P
-${application.title} ${application.version}
-Powered by Spring Boot ${spring-boot.version}
+${AnsiColor.BRIGHT_YELLOW}${AnsiStyle.BOLD}
+::  Fact Manager         ::  (v${application.version})
+::  Java                 ::  (v${java.version})
+::  Spring Boot          ::  (v${spring-boot.version})
 ${AnsiStyle.NORMAL}
