@@ -41,7 +41,7 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
     public FactProvider(FactRepository<T> factRepository,
                         @Qualifier("factmanagerSystemFactory") LocalContainerEntityManagerFactoryBean entityManagerFactoryBean) {
         super(factRepository);
-        Field field;
+        final Field field;
         try {
             field = this.getClass().getDeclaredField("data");
             entityClass = (Class<T>) field.getType();

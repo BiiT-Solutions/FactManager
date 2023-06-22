@@ -35,7 +35,7 @@ import java.util.Objects;
 @Primary
 @Table(name = "facts", indexes = {
         @Index(name = "ind_organization", columnList = "organization"),
-        @Index(name = "ind_customer", columnList = "customer"),
+        @Index(name = "ind_issuer", columnList = "issuer"),
         @Index(name = "ind_application", columnList = "application"),
         @Index(name = "ind_tenant", columnList = "tenant"),
         @Index(name = "ind_process", columnList = "process"),
@@ -53,24 +53,24 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     @Column(name = "organization")
     private String organization;
 
-    @Column(name = "customer")
-    private String customer;
+    @Column(name = "issuer")  //Issuer
+    private String issuer;
 
-    @Column(name = "application")
+    @Column(name = "application") //ReplyTo
     private String application;
 
     //Patient Id
-    @Column(name = "tenant")
+    @Column(name = "tenant")  // Tenant
     private String tenant;
 
     @Column(name = "process")
     private String process;
 
-    @Column(name = "fact_tag")
+    @Column(name = "fact_tag") // Subject
     private String tag;
 
     //Examination Name
-    @Column(name = "grouping")
+    @Column(name = "grouping") //Session Id
     private String group;
 
     @Column(name = "fact_value", length = MAX_JSON_LENGTH)
@@ -89,6 +89,8 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
 
     @Transient
     private transient ENTITY entity;
+
+    private static ObjectMapper objectMapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
     public Fact() {
         super();
@@ -180,12 +182,12 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
         this.application = application;
     }
 
-    public String getCustomer() {
-        return customer;
+    public String getIssuer() {
+        return issuer;
     }
 
-    public void setCustomer(String customer) {
-        this.customer = customer;
+    public void setIssuer(String issuer) {
+        this.issuer = issuer;
     }
 
     @Override
@@ -203,7 +205,7 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     @JsonIgnore
     public void setEntity(ENTITY entity) {
         try {
-            setValue(new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).writeValueAsString(entity));
+            setValue(objectMapper.writeValueAsString(entity));
             this.entity = entity;
         } catch (JsonProcessingException e) {
             throw new FactValueInvalidException(e);
@@ -216,7 +218,7 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     public ENTITY getEntity() {
         if (getValue() != null && !getValue().isEmpty()) {
             try {
-                entity = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).readValue(getValue(), getJsonParser());
+                entity = objectMapper.readValue(getValue(), getJsonParser());
             } catch (JsonProcessingException e) {
                 throw new FactValueInvalidException(e);
             }

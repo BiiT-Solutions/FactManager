@@ -32,7 +32,7 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
 
     public CustomFactRepositoryImpl() {
         //Get class from T.
-        Field field;
+        final Field field;
         try {
             field = this.getClass().getDeclaredField("data");
             entityTypeClass = (Class<T>) field.getType();
