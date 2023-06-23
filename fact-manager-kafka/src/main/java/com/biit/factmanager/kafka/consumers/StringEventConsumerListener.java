@@ -31,19 +31,24 @@ public class StringEventConsumerListener extends EventListener<StringEvent> {
     @Override
     @KafkaListener(topics = "*", groupId = "${spring.kafka.group.id}", clientIdPrefix = "firstListener",
             containerFactory = "templateEventListenerContainerFactory")
-    public void eventsListener(StringEvent event, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
-        super.eventsListener(event, topic);
-        final StringFact savedFact = factProvider.save(convert(event));
+    public void eventsListener(StringEvent event,
+                               final @Header(KafkaHeaders.OFFSET) Integer offset,
+                               final @Header(value = KafkaHeaders.KEY, required = false) String key,
+                               final @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
+                               final @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+                               final @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long timeStamp) {
+        super.eventsListener(event, offset, key, partition, topic, timeStamp);
+        final StringFact savedFact = factProvider.save(convert(event, topic));
         FactManagerLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
     }
 
-    private StringFact convert(StringEvent event) {
+    private StringFact convert(StringEvent event, String topic) {
         final StringFact stringFact = new StringFact();
         stringFact.setIssuer(event.getIssuer());
         stringFact.setApplication(event.getReplyTo());
         stringFact.setTenant(event.getTenant());
         stringFact.setTag(event.getSubject());
-        stringFact.setGroup(event.getSessionId() != null ? event.getSessionId().toString() : null);
+        stringFact.setGroup(topic);
         stringFact.setElement(event.getMessageId() != null ? event.getMessageId().toString() : null);
         stringFact.setValue(event.getPayload());
         if (event.getCreateAt() != null) {

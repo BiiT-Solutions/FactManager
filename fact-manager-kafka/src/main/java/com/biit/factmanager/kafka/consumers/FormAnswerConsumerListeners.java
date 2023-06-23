@@ -25,8 +25,13 @@ public class FormAnswerConsumerListeners extends EventListener<FormrunnerQuestio
     @Override
     @KafkaListener(topics = "${spring.kafka.topic}", groupId = "${spring.kafka.group.id}", clientIdPrefix = "firstListener",
             containerFactory = "templateEventListenerContainerFactory")
-    public void eventsListener(FormrunnerQuestionFact fact, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
-        super.eventsListener(fact, topic);
+    public void eventsListener(FormrunnerQuestionFact fact,
+                               final @Header(KafkaHeaders.OFFSET) Integer offset,
+                               final @Header(value = KafkaHeaders.KEY, required = false) String key,
+                               final @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
+                               final @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+                               final @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long timeStamp) {
+        super.eventsListener(fact, offset, key, partition, topic, timeStamp);
         final FormrunnerQuestionFact savedFact = factProvider.save(fact);
         FactManagerLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
     }
