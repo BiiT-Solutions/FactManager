@@ -29,7 +29,7 @@ public class StringEventConsumerListener extends EventListener<StringEvent> {
     }
 
     @Override
-    @KafkaListener(topics = ".*", groupId = "${spring.kafka.group.id}", clientIdPrefix = "firstListener",
+    @KafkaListener(topicPattern = ".*", groupId = "${spring.kafka.group.id}", clientIdPrefix = "firstListener",
             containerFactory = "templateEventListenerContainerFactory")
     public void eventsListener(StringEvent event,
                                final @Header(KafkaHeaders.OFFSET) Integer offset,
