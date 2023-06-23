@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
 
 @EnableKafka
 @Configuration
@@ -23,8 +25,8 @@ public class FormAnswerConsumerListeners extends EventListener<FormrunnerQuestio
     @Override
     @KafkaListener(topics = "${spring.kafka.topic}", groupId = "${spring.kafka.group.id}", clientIdPrefix = "firstListener",
             containerFactory = "templateEventListenerContainerFactory")
-    public void eventsListener(FormrunnerQuestionFact fact) {
-        super.eventsListener(fact);
+    public void eventsListener(FormrunnerQuestionFact fact, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
+        super.eventsListener(fact, topic);
         final FormrunnerQuestionFact savedFact = factProvider.save(fact);
         FactManagerLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
     }

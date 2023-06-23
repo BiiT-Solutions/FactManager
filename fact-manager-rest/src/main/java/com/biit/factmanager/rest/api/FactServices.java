@@ -66,7 +66,7 @@ public abstract class FactServices<V, T extends Fact<V>> {
 
     @Operation(summary = "Search facts functionality", description = "Parameters:\n"
             + "- organization: which organization belongs to\n"
-            + "- customer: which customer is the owner of the application\n"
+            + "- issuer: whom generate the fact\n"
             + "- application: which application is generating the facts\n"
             + "- tenant: the tenant classifier\n"
             + "- tag: kafka tag\n"
@@ -82,7 +82,7 @@ public abstract class FactServices<V, T extends Fact<V>> {
     public Collection<T> getFacts(
             HttpServletRequest httpRequest,
             @Parameter(name = "organization", required = false) @RequestParam(value = "organization", required = false) String organization,
-            @Parameter(name = "customer", required = false) @RequestParam(value = "customer", required = false) String customer,
+            @Parameter(name = "customer", required = false) @RequestParam(value = "issuer", required = false) String issuer,
             @Parameter(name = "application", required = false) @RequestParam(value = "application", required = false) String application,
             @Parameter(name = "tenant", required = false) @RequestParam(value = "tenant", required = false) String tenant,
             @Parameter(name = "tag", required = false) @RequestParam(value = "tag", required = false) String tag,
@@ -109,7 +109,7 @@ public abstract class FactServices<V, T extends Fact<V>> {
         } else {
             pairs = null;
         }
-        return factProvider.findBy(organization, customer, application, tenant, tag, group, element, process,
+        return factProvider.findBy(organization, issuer, application, tenant, tag, group, element, process,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
                 lastDays, true, pairs);
