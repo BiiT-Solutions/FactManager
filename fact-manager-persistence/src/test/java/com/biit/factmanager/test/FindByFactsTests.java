@@ -29,7 +29,7 @@ public class FindByFactsTests extends AbstractTransactionalTestNGSpringContextTe
         for (int i = 1; i <= 3; i++) {
             StringFact stringFact = new StringFact();
             stringFact.setOrganization(String.valueOf(i));
-            stringFact.setIssuer(String.valueOf(i));
+            stringFact.setCreatedBy(String.valueOf(i));
             stringFact.setApplication(String.valueOf(i));
             stringFact.setTenant(String.valueOf(i));
             stringFact.setTag(String.valueOf(i));

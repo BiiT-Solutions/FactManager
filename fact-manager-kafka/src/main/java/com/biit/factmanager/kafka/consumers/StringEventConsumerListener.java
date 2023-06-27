@@ -44,7 +44,7 @@ public class StringEventConsumerListener extends EventListener<StringEvent> {
 
     private StringFact convert(StringEvent event, String topic) {
         final StringFact stringFact = new StringFact();
-        stringFact.setIssuer(event.getIssuer());
+        stringFact.setCreatedBy(event.getCreatedBy());
         stringFact.setApplication(event.getReplyTo());
         stringFact.setTenant(event.getTenant());
         stringFact.setTag(event.getSubject());

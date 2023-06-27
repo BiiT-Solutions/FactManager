@@ -53,9 +53,6 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     @Column(name = "organization")
     private String organization;
 
-    @Column(name = "issuer")  //Issuer
-    private String issuer;
-
     @Column(name = "application") //ReplyTo
     private String application;
 
@@ -81,6 +78,9 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     @Column(name = "element")
     @Convert(converter = StringCryptoConverter.class)
     private String element;
+
+    @Column(name = "created_by")  //Issuer
+    private String createdBy;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -182,12 +182,12 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
         this.application = application;
     }
 
-    public String getIssuer() {
-        return issuer;
+    public String getCreatedBy() {
+        return createdBy;
     }
 
-    public void setIssuer(String issuer) {
-        this.issuer = issuer;
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
     @Override
