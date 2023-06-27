@@ -35,7 +35,7 @@ import java.util.Objects;
 @Primary
 @Table(name = "facts", indexes = {
         @Index(name = "ind_organization", columnList = "organization"),
-        @Index(name = "ind_issuer", columnList = "issuer"),
+        @Index(name = "ind_created_by", columnList = "created_by"),
         @Index(name = "ind_application", columnList = "application"),
         @Index(name = "ind_tenant", columnList = "tenant"),
         @Index(name = "ind_process", columnList = "process"),
