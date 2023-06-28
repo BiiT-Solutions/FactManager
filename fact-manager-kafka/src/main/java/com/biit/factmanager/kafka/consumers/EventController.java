@@ -8,6 +8,10 @@ import com.biit.kafka.events.Event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.TimeZone;
+
 
 @Controller
 public class EventController {
@@ -15,26 +19,31 @@ public class EventController {
     private static final String PROCESS = "process";
 
     private final EventListener eventListener;
-    private final StringEventConsumerListener stringEventConsumerListener;
+    private final EventConsumerListener eventConsumerListener;
 
     private final FactProvider<StringFact> factProvider;
     private final ObjectMapper objectMapper;
 
 
-    public EventController(EventListener eventListener, StringEventConsumerListener stringEventConsumerListener,
+    public EventController(EventListener eventListener, EventConsumerListener eventConsumerListener,
                            FactProvider<StringFact> factProvider, ObjectMapper objectMapper) {
         this.eventListener = eventListener;
-        this.stringEventConsumerListener = stringEventConsumerListener;
+        this.eventConsumerListener = eventConsumerListener;
         this.factProvider = factProvider;
         this.objectMapper = objectMapper;
 
         //Listen to topic
         eventListener.addListener((event, offset, key, partition, topic, timeStamp) -> {
-
+            FactManagerLogger.debug(this.getClass(), "Received event '{}' on topic '{}', key '{}', partition '{}' at '{}'",
+                    event, topic, key, partition, LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp),
+                            TimeZone.getDefault().toZoneId()));
         });
 
         //Listens to all events on Kafka Streams.
-        stringEventConsumerListener.addListener((event, offset, key, partition, topic, timeStamp) -> {
+        eventConsumerListener.addListener((event, offset, key, partition, topic, timeStamp) -> {
+            FactManagerLogger.debug(this.getClass(), "Received event '{}' on topic '{}', key '{}', partition '{}' at '{}'",
+                    event, topic, key, partition, LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp),
+                            TimeZone.getDefault().toZoneId()));
             final StringFact savedFact = factProvider.save(convert(event, topic));
             FactManagerLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
         });

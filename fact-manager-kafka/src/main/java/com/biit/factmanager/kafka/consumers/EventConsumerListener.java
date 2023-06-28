@@ -10,7 +10,7 @@ import org.springframework.messaging.handler.annotation.Header;
 
 @EnableKafka
 @Configuration
-public class StringEventConsumerListener extends EventListener {
+public class EventConsumerListener extends EventListener {
 
     @Override
     @KafkaListener(topicPattern = ".*", groupId = "${spring.kafka.group.id}", clientIdPrefix = "firstListener",

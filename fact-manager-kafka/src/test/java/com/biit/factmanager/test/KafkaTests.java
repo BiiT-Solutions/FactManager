@@ -15,6 +15,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -27,6 +28,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.awaitility.Awaitility.await;
@@ -34,7 +36,7 @@ import static org.awaitility.Awaitility.await;
 @SpringBootTest
 @Test(groups = {"kafkaEvents"})
 public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
-    private static final int EVENTS_WAITING_TIME = 100;
+    private static final int EVENTS_WAITING_TIME = 10;
     private static final int EVENTS_QUANTITY = 100;
     private static final String QUESTION = "/form/category/questionA ";
     private static final String ANSWER = "Answer: ";
@@ -104,7 +106,7 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
     }
 
     @Test
-    public synchronized void factTest() {
+    public synchronized void factTest() throws InterruptedException, ExecutionException {
         Set<Event> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
         Set<Event> producerEvents = new HashSet<>(EVENTS_QUANTITY);
         //Store received events into set.
@@ -114,7 +116,8 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
             FormrunnerQuestionFact generatedFact = generateFact(i);
             Event event = new Event(generatedFact);
             producerEvents.add(event);
-            kafkaTemplate.send(event);
+            SendResult<String, Event> sendResult = kafkaTemplate.send(event).get();
+            Assert.assertEquals(sendResult.getProducerRecord().value(), event);
         }
 
         await().atMost(Duration.ofSeconds(EVENTS_WAITING_TIME)).untilAsserted(() -> {
