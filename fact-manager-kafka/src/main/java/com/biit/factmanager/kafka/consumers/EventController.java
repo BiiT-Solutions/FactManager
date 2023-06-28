@@ -3,8 +3,10 @@ package com.biit.factmanager.kafka.consumers;
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.StringFact;
+import com.biit.kafka.config.ObjectMapperFactory;
 import com.biit.kafka.consumers.EventListener;
 import com.biit.kafka.events.Event;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
 
@@ -58,7 +60,11 @@ public class EventController {
         stringFact.setTag(event.getSubject());
         stringFact.setGroup(topic);
         stringFact.setElement(event.getMessageId() != null ? event.getMessageId().toString() : null);
-        stringFact.setValue(event.getPayload());
+        try {
+            stringFact.setValue(ObjectMapperFactory.getObjectMapper().writeValueAsString(event.getPayload()));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         if (event.getCreatedAt() != null) {
             stringFact.setCreatedAt(event.getCreatedAt());
         }
