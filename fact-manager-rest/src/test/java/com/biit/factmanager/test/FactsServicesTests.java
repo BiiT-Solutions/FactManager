@@ -7,7 +7,7 @@ import com.biit.factmanager.rest.api.FactServices;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -19,7 +19,7 @@ import java.util.List;
 
 @SpringBootTest
 @Test(groups = {"factsServices"})
-public class FactsServicesTests extends AbstractTestNGSpringContextTests {
+public class FactsServicesTests extends AbstractTransactionalTestNGSpringContextTests {
 
     private static final String FACT_EXAMINATION_GROUP = "examination_name";
 
@@ -49,6 +49,7 @@ public class FactsServicesTests extends AbstractTestNGSpringContextTests {
         facts.add(FormrunnerQuestionFact);
         Assert.assertEquals(facts.size(), 2);
         factServices.addFactList(facts, null);
+        Assert.assertEquals(factProvider.count(), 2);
         // 2 saved + the one added at the beginning
         Assert.assertEquals(factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null,
                 null, null, null, null).size(), 2);

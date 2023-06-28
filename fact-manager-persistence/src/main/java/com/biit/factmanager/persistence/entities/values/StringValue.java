@@ -1,6 +1,8 @@
 package com.biit.factmanager.persistence.entities.values;
 
-public class StringValue {
+import com.biit.kafka.events.EventPayload;
+
+public class StringValue implements EventPayload {
     private String string;
 
     public StringValue() {

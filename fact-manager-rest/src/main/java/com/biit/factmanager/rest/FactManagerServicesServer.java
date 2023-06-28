@@ -15,7 +15,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.web.servlet.DispatcherServlet;
 
 @SpringBootApplication
@@ -41,9 +40,7 @@ public class FactManagerServicesServer {
 
     @Bean
     @Qualifier("basicFactProvider")
-    public FactProvider<BasicFact> getBasicFactProvider(FactRepository<BasicFact> factRepository,
-                                                        @Qualifier("factmanagerSystemFactory")
-                                                        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean) {
-        return new FactProvider<>(BasicFact.class, factRepository, entityManagerFactoryBean);
+    public FactProvider<BasicFact> getBasicFactProvider(FactRepository<BasicFact> factRepository) {
+        return new FactProvider<>(BasicFact.class, factRepository);
     }
 }

@@ -9,6 +9,7 @@
         </groups>
         <classes>
             <class name="com.biit.factmanager.test.rest.RestApiTest"/>
+            <class name="com.biit.factmanager.test.FactsServicesTests"/>
         </classes>
     </test>
 </suite>

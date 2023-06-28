@@ -1,6 +1,8 @@
 package com.biit.factmanager.persistence.entities.values;
 
-public class FormrunnerValue {
+import com.biit.kafka.events.EventPayload;
+
+public class FormrunnerValue implements EventPayload {
     private String formName;
 
     private String version;

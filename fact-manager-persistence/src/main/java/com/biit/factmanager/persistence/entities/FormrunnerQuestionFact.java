@@ -3,6 +3,7 @@ package com.biit.factmanager.persistence.entities;
 
 import com.biit.eventstructure.event.IKafkaStorable;
 import com.biit.factmanager.persistence.entities.values.FormrunnerQuestionValue;
+import com.biit.kafka.events.EventPayload;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.persistence.DiscriminatorValue;
@@ -18,8 +19,8 @@ import jakarta.persistence.Transient;
  * OrganizationId is Organization Id.
  */
 @Entity
-@DiscriminatorValue("FormRunnerQuestionFact")
-public class FormrunnerQuestionFact extends Fact<FormrunnerQuestionValue> implements IKafkaStorable {
+@DiscriminatorValue("FormrunnerQuestionFact")
+public class FormrunnerQuestionFact extends Fact<FormrunnerQuestionValue> implements IKafkaStorable, EventPayload {
 
     @Transient
     private FormrunnerQuestionValue formrunnerQuestionValue;

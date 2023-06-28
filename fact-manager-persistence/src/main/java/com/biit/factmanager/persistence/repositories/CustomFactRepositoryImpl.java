@@ -110,9 +110,9 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
         if (endDate != null) {
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), endDate));
         }
-        if (discriminatorValue != null) {
-            predicates.add(criteriaBuilder.equal(root.type(), entityTypeClass == null ? this.entityTypeClass : entityTypeClass));
-        }
+//        if (discriminatorValue != null) {
+//            predicates.add(criteriaBuilder.equal(root.type(), entityTypeClass == null ? this.entityTypeClass : entityTypeClass));
+//        }
         if (valueParameters != null) {
             for (final Pair<String, Object> condition : valueParameters) {
                 //ON JSON numbers are not using quotes.
@@ -128,7 +128,7 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
             }
         }
 
-        query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
+       // query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
         query.select(root).where(predicates.toArray(new Predicate[0]));
 
         /* For Hibernate */

@@ -6,10 +6,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication
-@ComponentScan({"com.biit.factmanager", "com.biit.server"})
-@ConfigurationPropertiesScan({"com.biit.factmanager"})
-@EntityScan({"com.biit.factmanager.persistence.entities"})
+@SpringBootApplication(scanBasePackages = {"com.biit.factmanager", "com.biit.kafka"})
 public class FactManagerServer {
 
     public static void main(String[] args) {

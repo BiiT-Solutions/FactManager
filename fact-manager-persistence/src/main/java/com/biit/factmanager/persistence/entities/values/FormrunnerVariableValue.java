@@ -1,8 +1,9 @@
 package com.biit.factmanager.persistence.entities.values;
 
+import com.biit.kafka.events.EventPayload;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class FormrunnerVariableValue {
+public class FormrunnerVariableValue implements EventPayload {
     public static final String SCORE_VALUE = "Score";
     protected static final String DEFAULT_PATH_SEPARATOR = "/";
 

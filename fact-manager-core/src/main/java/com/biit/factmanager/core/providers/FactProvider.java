@@ -6,10 +6,8 @@ import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.persistence.repositories.FactRepository;
 import com.biit.server.providers.CrudProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.util.Pair;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -23,23 +21,19 @@ import java.util.Optional;
 @Primary
 public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactRepository<T>> {
     private final FactRepository<T> factRepository;
-    private final LocalContainerEntityManagerFactoryBean entityManagerFactoryBean;
 
     private Class<T> entityClass = null;
 
 
     public FactProvider(Class<T> entityClass,
-                        FactRepository<T> factRepository,
-                        @Qualifier("factmanagerSystemFactory") LocalContainerEntityManagerFactoryBean entityManagerFactoryBean) {
+                        FactRepository<T> factRepository) {
         super(factRepository);
         this.entityClass = entityClass;
         this.factRepository = factRepository;
-        this.entityManagerFactoryBean = entityManagerFactoryBean;
     }
 
     @Autowired
-    public FactProvider(FactRepository<T> factRepository,
-                        @Qualifier("factmanagerSystemFactory") LocalContainerEntityManagerFactoryBean entityManagerFactoryBean) {
+    public FactProvider(FactRepository<T> factRepository) {
         super(factRepository);
         final Field field;
         try {
@@ -49,7 +43,6 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
             entityClass = null;
         }
         this.factRepository = factRepository;
-        this.entityManagerFactoryBean = entityManagerFactoryBean;
     }
 
     public Optional<T> get(Long factId) {
@@ -127,7 +120,7 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
      * entity instance completely.
      *
      * @param facts must not be {@literal null}.
-     * @return the List of saved entitis; will never be {@literal null}.
+     * @return the List of saved entities; will never be {@literal null}.
      * @throws IllegalArgumentException in case the given {@literal entity} is {@literal null}.
      */
     public List<T> save(List<T> facts) {

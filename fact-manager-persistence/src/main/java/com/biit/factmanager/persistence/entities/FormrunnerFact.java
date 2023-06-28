@@ -10,7 +10,7 @@ import jakarta.persistence.Transient;
 
 
 @Entity
-@DiscriminatorValue("FormRunnerFact")
+@DiscriminatorValue("FormrunnerFact")
 public class FormrunnerFact extends Fact<FormrunnerValue> implements IKafkaStorable {
 
     @Transient

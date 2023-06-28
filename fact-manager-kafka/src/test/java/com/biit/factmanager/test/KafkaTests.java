@@ -1,15 +1,11 @@
 package com.biit.factmanager.test;
 
 import com.biit.factmanager.core.providers.FactProvider;
-import com.biit.factmanager.kafka.consumers.FormAnswerConsumer;
-import com.biit.factmanager.kafka.consumers.FormAnswerConsumer2;
-import com.biit.factmanager.kafka.consumers.FormAnswerConsumerListeners;
-import com.biit.factmanager.kafka.consumers.FormAnswerConsumerListeners2;
-import com.biit.factmanager.kafka.producers.FormAnswerProducer;
-import com.biit.factmanager.kafka.producers.FormAnswerProducer2;
-import com.biit.factmanager.kafka.producers.FormrunnerQuestionFactEvent;
 import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
 import com.biit.factmanager.persistence.entities.values.FormrunnerQuestionValue;
+import com.biit.factmanager.test.listener.TestEventListener;
+import com.biit.kafka.consumers.EventListener;
+import com.biit.kafka.events.Event;
 import com.biit.kafka.events.KafkaEventTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +19,7 @@ import org.springframework.test.context.testng.AbstractTransactionalTestNGSpring
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -32,9 +29,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static org.awaitility.Awaitility.await;
+
 @SpringBootTest
 @Test(groups = {"kafkaEvents"})
 public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
+    private static final int EVENTS_WAITING_TIME = 100;
     private static final int EVENTS_QUANTITY = 100;
     private static final String QUESTION = "/form/category/questionA ";
     private static final String ANSWER = "Answer: ";
@@ -43,34 +43,35 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
     private FactProvider<FormrunnerQuestionFact> factProvider;
 
     @Autowired
-    private KafkaEventTemplate<String, FormrunnerQuestionFactEvent> kafkaTemplate;
-    private KafkaEventTemplate<String, FormrunnerQuestionFactEvent> kafkaTemplate2;
+    private KafkaEventTemplate kafkaTemplate;
 
     @Autowired
-    private FormAnswerConsumerListeners formAnswerConsumerListeners;
+    private EventListener eventListener;
 
     @Autowired
-    private FormAnswerConsumerListeners2 formAnswerConsumerListeners2;
-
-    @Autowired
-    private FormAnswerConsumer formAnswerConsumer;
-
-    @Autowired
-    private FormAnswerConsumer2 formAnswerConsumer2;
+    private TestEventListener testEventListener;
 
     private ObjectMapper objectMapper;
 
-    private FormrunnerQuestionFact generateEvent(int value) {
-        FormrunnerQuestionFact FormrunnerQuestionFact = new FormrunnerQuestionFact();
+    private FormrunnerQuestionValue generatePayload(int value) {
         FormrunnerQuestionValue FormrunnerQuestionValue = new FormrunnerQuestionValue();
         FormrunnerQuestionValue.setXpath(QUESTION + value);
         FormrunnerQuestionValue.setAnswer(ANSWER + value);
-        FormrunnerQuestionFact.setEntity(FormrunnerQuestionValue);
-        return FormrunnerQuestionFact;
+        return FormrunnerQuestionValue;
     }
 
-    public FormrunnerQuestionFact generateEvent(int value, LocalDateTime minTimestamp, LocalDateTime maxTimestamp) {
-        FormrunnerQuestionFact FormrunnerQuestionFact = generateEvent(value);
+    private Event generateEvent(int value) {
+        return new Event(generatePayload(value));
+    }
+
+    private FormrunnerQuestionFact generateFact(int value) {
+        FormrunnerQuestionFact formrunnerQuestionFact = new FormrunnerQuestionFact();
+        formrunnerQuestionFact.setEntity(generatePayload(value));
+        return formrunnerQuestionFact;
+    }
+
+    private Event generateEvent(int value, LocalDateTime minTimestamp, LocalDateTime maxTimestamp) {
+        Event formrunnerQuestionEvent = new Event(generatePayload(value));
 
         //Create a random day.
         // create ZoneId
@@ -78,8 +79,8 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         long randomSecond = ThreadLocalRandom.current().nextLong(minTimestamp.toEpochSecond(zone), maxTimestamp.toEpochSecond(zone));
         LocalDateTime randomDate = LocalDateTime.ofEpochSecond(randomSecond, 0, zone);
 
-        FormrunnerQuestionFact.setCreatedAt(randomDate);
-        return FormrunnerQuestionFact;
+        formrunnerQuestionEvent.setCreatedAt(randomDate);
+        return formrunnerQuestionEvent;
     }
 
     private ObjectMapper getObjectMapper() {
@@ -95,90 +96,106 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         return objectMapper;
     }
 
+    @Test
     public void checkDeserializer() throws JsonProcessingException {
         String value = "{\"value\":\"{\\\"answer\\\":\\\"Answer: 0\\\",\\\"question\\\":\\\"Question? 0\\\"}\",\"createdAt\":\"03-03-2022 16:10:23\",\"entity\":{\"answer\":\"Answer: 0\",\"question\":\"Question? 0\"},\"createdAt\":\"03-03-2022 16:10:24\"}";
         getObjectMapper().readValue(value, FormrunnerQuestionFact.class);
         //No serialization exception found.
     }
 
-    public synchronized void factTest() throws InterruptedException {
-        Set<FormrunnerQuestionFact> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
-        Set<FormrunnerQuestionFact> producerEvents = new HashSet<>(EVENTS_QUANTITY);
+    @Test
+    public synchronized void factTest() {
+        Set<Event> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
+        Set<Event> producerEvents = new HashSet<>(EVENTS_QUANTITY);
         //Store received events into set.
-        formAnswerConsumerListeners.addListener(consumerEvents::add);
+        eventListener.addListener((event, offset, key, partition, topic, timeStamp) -> consumerEvents.add(event));
 
         for (int i = 0; i < EVENTS_QUANTITY; i++) {
-            FormrunnerQuestionFact generatedEvent = generateEvent(i);
-            producerEvents.add(generatedEvent);
-            kafkaTemplate.send(new FormrunnerQuestionFactEvent(generatedEvent));
+            FormrunnerQuestionFact generatedFact = generateFact(i);
+            Event event = new Event(generatedFact);
+            producerEvents.add(event);
+            kafkaTemplate.send(event);
         }
 
-        wait(consumerEvents);
-        Assert.assertEquals(consumerEvents.size(), producerEvents.size());
-        Assert.assertEquals(consumerEvents, producerEvents);
+        await().atMost(Duration.ofSeconds(EVENTS_WAITING_TIME)).untilAsserted(() -> {
+            Assert.assertEquals(consumerEvents.size(), producerEvents.size());
+            Assert.assertEquals(consumerEvents, producerEvents);
+        });
     }
 
-    public synchronized void multipleProducerTest() throws InterruptedException {
-        Set<FormrunnerQuestionFact> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY * 2));
-        Set<FormrunnerQuestionFact> producerEvents = new HashSet<>(EVENTS_QUANTITY);
-        Set<FormrunnerQuestionFact> producerEvents2 = new HashSet<>(EVENTS_QUANTITY);
-        formAnswerConsumerListeners.addListener(consumerEvents::add);
+    @Test
+    public synchronized void multipleProducerTest() {
+        Set<Event> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY * 2));
+        Set<Event> producerEvents = new HashSet<>(EVENTS_QUANTITY);
+        Set<Event> producerEvents2 = new HashSet<>(EVENTS_QUANTITY);
+
+        eventListener.addListener((event, offset, key, partition, topic, timeStamp) -> consumerEvents.add(event));
+
         for (int i = 0; i < EVENTS_QUANTITY; i++) {
-            FormrunnerQuestionFact generatedEvent = generateEvent(i);
-            producerEvents.add(generatedEvent);
-            kafkaTemplate.send(new FormrunnerQuestionFactEvent(generatedEvent));
-            FormrunnerQuestionFact generatedEvent2 = generateEvent(i);
-            producerEvents2.add(generatedEvent2);
-            kafkaTemplate2.send(new FormrunnerQuestionFactEvent(generatedEvent2));
+            FormrunnerQuestionFact generatedFact = generateFact(i);
+            Event event = new Event(generatedFact);
+            producerEvents.add(event);
+            kafkaTemplate.send(event);
+            FormrunnerQuestionFact generatedEvent2 = generateFact(i);
+            event = new Event(generatedEvent2);
+            producerEvents2.add(event);
+            kafkaTemplate.send(event);
         }
         producerEvents.addAll(producerEvents2);
-        wait(consumerEvents);
-        Assert.assertEquals(consumerEvents, producerEvents);
+        //Check both listeners read the same event.
+        await().atMost(Duration.ofSeconds(EVENTS_WAITING_TIME)).untilAsserted(() -> {
+            Assert.assertEquals(consumerEvents.size(), producerEvents.size());
+            Assert.assertEquals(consumerEvents, producerEvents);
+        });
     }
 
-    public synchronized void multipleConsumerTest() throws InterruptedException {
-        Set<FormrunnerQuestionFact> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
-        Set<FormrunnerQuestionFact> consumerEvents2 = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
-        Set<FormrunnerQuestionFact> producerEvents = new HashSet<>(EVENTS_QUANTITY);
-        formAnswerConsumerListeners.addListener(consumerEvents::add);
-        formAnswerConsumerListeners2.addListener(consumerEvents2::add);
+    @Test
+    public synchronized void multipleConsumerTest() {
+        Set<Event> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
+        Set<Event> consumerEvents2 = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
+        Set<Event> producerEvents = new HashSet<>(EVENTS_QUANTITY);
+
+        eventListener.addListener((event, offset, key, partition, topic, timeStamp) -> consumerEvents.add(event));
+        testEventListener.addListener((event, offset, key, partition, topic, timeStamp) -> consumerEvents2.add(event));
 
         for (int i = 0; i < EVENTS_QUANTITY; i++) {
-            FormrunnerQuestionFact generatedEvent = generateEvent(i);
-            producerEvents.add(generatedEvent);
-            kafkaTemplate.send(new FormrunnerQuestionFactEvent(generatedEvent));
+            FormrunnerQuestionValue generatedFact = generatePayload(i);
+            Event event = new Event(generatedFact);
+            producerEvents.add(event);
+            kafkaTemplate.send(event);
         }
-        wait(consumerEvents);
-        Assert.assertEquals(consumerEvents, producerEvents);
-        Assert.assertEquals(consumerEvents2, producerEvents);
+
+        await().atMost(Duration.ofSeconds(EVENTS_WAITING_TIME)).untilAsserted(() -> {
+            Assert.assertEquals(consumerEvents.size(), producerEvents.size());
+            Assert.assertEquals(consumerEvents2.size(), producerEvents.size());
+            Assert.assertEquals(consumerEvents, producerEvents);
+            Assert.assertEquals(consumerEvents2, producerEvents);
+        });
     }
 
+    @Test
     public synchronized void simulationTest() throws InterruptedException {
         LocalDateTime initialDate = LocalDateTime.of(2022, Calendar.FEBRUARY, 1, 0, 0, 0);
         LocalDateTime finalDate = LocalDateTime.of(2022, Calendar.MAY, 1, 23, 59, 59);
 
-        Set<FormrunnerQuestionFact> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
-        Set<FormrunnerQuestionFact> producerEvents = new HashSet<>(EVENTS_QUANTITY);
-        formAnswerConsumerListeners.addListener(fact -> {
-            if (fact.getCreationTime().isAfter(initialDate) && fact.getCreationTime().isBefore(finalDate)) {
-                consumerEvents.add(fact);
+        Set<Event> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
+        Set<Event> producerEvents = new HashSet<>(EVENTS_QUANTITY);
+
+        eventListener.addListener((event, offset, key, partition, topic, timeStamp) -> {
+            if (event.getCreatedAt().isAfter(initialDate) && event.getCreatedAt().isBefore(finalDate)) {
+                consumerEvents.add(event);
             }
         });
 
         for (int i = 0; i < EVENTS_QUANTITY; i++) {
-            FormrunnerQuestionFact eventInRange = generateEvent(i, initialDate, finalDate);
+            Event eventInRange = generateEvent(i, initialDate, finalDate);
             producerEvents.add(eventInRange);
-            kafkaTemplate.send(new FormrunnerQuestionFactEvent(eventInRange));
+            kafkaTemplate.send(eventInRange);
         }
-        wait(consumerEvents);
-        Assert.assertEquals(consumerEvents, producerEvents);
-    }
 
-    private void wait(Set<FormrunnerQuestionFact> consumerEvents) throws InterruptedException {
-        int i = 0;
-        do {
-            wait(1000);
-            i++;
-        } while (consumerEvents.size() < EVENTS_QUANTITY && i < 10);
+        await().atMost(Duration.ofSeconds(EVENTS_WAITING_TIME)).untilAsserted(() -> {
+            Assert.assertEquals(consumerEvents.size(), producerEvents.size());
+            Assert.assertEquals(consumerEvents, producerEvents);
+        });
     }
 }

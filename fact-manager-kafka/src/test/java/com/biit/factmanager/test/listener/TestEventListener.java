@@ -1,4 +1,4 @@
-package com.biit.factmanager.kafka.consumers;
+package com.biit.factmanager.test.listener;
 
 import com.biit.kafka.consumers.EventListener;
 import com.biit.kafka.events.Event;
@@ -10,10 +10,10 @@ import org.springframework.messaging.handler.annotation.Header;
 
 @EnableKafka
 @Configuration
-public class StringEventConsumerListener extends EventListener {
+public class TestEventListener extends EventListener {
 
     @Override
-    @KafkaListener(topicPattern = ".*", groupId = "${spring.kafka.group.id}", clientIdPrefix = "firstListener",
+    @KafkaListener(topics = "${spring.kafka.topic}", clientIdPrefix = "#{T(java.util.UUID).randomUUID().toString()}",
             containerFactory = "templateEventListenerContainerFactory")
     public void eventsListener(Event event,
                                final @Header(KafkaHeaders.OFFSET) Integer offset,

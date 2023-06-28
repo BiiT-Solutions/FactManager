@@ -1,8 +1,9 @@
 package com.biit.factmanager.persistence.entities.values;
 
+import com.biit.kafka.events.EventPayload;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class FormrunnerQuestionValue {
+public class FormrunnerQuestionValue implements EventPayload {
     protected static final String DEFAULT_PATH_SEPARATOR = "/";
 
     private String answer;
