@@ -1,5 +1,10 @@
 package com.biit.factmanager.rest;
 
+import com.biit.factmanager.core.providers.FactProvider;
+import com.biit.factmanager.persistence.entities.BasicFact;
+import com.biit.factmanager.persistence.entities.FormrunnerFact;
+import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
+import com.biit.factmanager.persistence.repositories.FactRepository;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -49,6 +54,26 @@ public class FactManagerDatabaseConfigurationApp {
     public PlatformTransactionManager factmanagerTransactionManagerApp(
             @Qualifier("factmanagerSystemFactoryApp") EntityManagerFactory factmanagerSystemFactoryApp) {
         return new JpaTransactionManager(factmanagerSystemFactoryApp);
+    }
+
+    //These beans are needed to populate the discriminator value of Fact JPA Table, as needs the entityClass to be defined.
+    @Bean
+    @Qualifier("basicFactProvider")
+    public FactProvider<BasicFact> getBasicFactProvider(FactRepository<BasicFact> factRepository) {
+        return new FactProvider<>(BasicFact.class, factRepository);
+    }
+
+
+    @Bean
+    @Qualifier("formRunnerFactProvider")
+    public FactProvider<FormrunnerFact> getFormRunnerFactProvider(FactRepository<FormrunnerFact> factRepository) {
+        return new FactProvider<>(FormrunnerFact.class, factRepository);
+    }
+
+    @Bean
+    @Qualifier("formRunnerQuestionFactProvider")
+    public FactProvider<FormrunnerQuestionFact> getFormRunnerQuestionFactProvider(FactRepository<FormrunnerQuestionFact> factRepository) {
+        return new FactProvider<>(FormrunnerQuestionFact.class, factRepository);
     }
 
 }

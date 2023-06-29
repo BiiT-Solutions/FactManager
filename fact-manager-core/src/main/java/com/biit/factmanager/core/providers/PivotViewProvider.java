@@ -33,7 +33,7 @@ public class PivotViewProvider<T extends Fact<?>> {
             return xmlFormFacts(factProvider.getAll());
         }
         return xmlFormFacts(factProvider.findBy(organization, customer, application, tenant, tag, group, element, process, startDate,
-                endDate, lastDays, null, valueParameters));
+                endDate, lastDays, null, null, valueParameters));
     }
 
     public String xmlFormFacts(Collection<T> facts) {

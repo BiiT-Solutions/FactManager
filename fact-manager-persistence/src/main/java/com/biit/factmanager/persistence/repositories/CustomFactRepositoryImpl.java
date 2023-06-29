@@ -131,8 +131,9 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
         if (endDate != null) {
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), endDate));
         }
+        //To work, ensure that a specific bean with entityClass is defined. Check FactManagerServicesServer beans declaration.
         if (discriminatorValue != null) {
-            predicates.add(criteriaBuilder.equal(root.type(), entityTypeClass == null ? this.entityTypeClass : entityTypeClass));
+            predicates.add(criteriaBuilder.equal(root.type(), entityTypeClass == null ? this.entityTypeClass.getName() : entityTypeClass));
         }
         if (customProperties != null) {
             for (final Map.Entry<String, String> entry : customProperties.entrySet()) {

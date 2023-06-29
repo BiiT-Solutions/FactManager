@@ -4,8 +4,8 @@ import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
 import com.biit.factmanager.persistence.entities.values.FormrunnerQuestionValue;
 import com.biit.factmanager.rest.api.FactServices;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.testng.Assert;
@@ -27,6 +27,7 @@ public class FactsServicesTests extends AbstractTransactionalTestNGSpringContext
     private FactServices<FormrunnerQuestionValue, FormrunnerQuestionFact> factServices;
 
     @Autowired
+    @Qualifier("formRunnerQuestionFactProvider")
     private FactProvider<FormrunnerQuestionFact> factProvider;
 
 
@@ -36,9 +37,9 @@ public class FactsServicesTests extends AbstractTransactionalTestNGSpringContext
     }
 
     @Test
-    public void addFacts() throws JsonProcessingException {
+    public void addFacts() {
         Assert.assertEquals(factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null,
-                null, null, null, null).size(), 0);
+                null, null, null, null, null).size(), 0);
         // Save 2 empty facts
         FormrunnerQuestionFact FormrunnerQuestionFact = new FormrunnerQuestionFact();
         FormrunnerQuestionFact.setGroup(FACT_EXAMINATION_GROUP);
@@ -48,22 +49,23 @@ public class FactsServicesTests extends AbstractTransactionalTestNGSpringContext
         FormrunnerQuestionFact.setGroup(FACT_EXAMINATION_GROUP);
         facts.add(FormrunnerQuestionFact);
         Assert.assertEquals(facts.size(), 2);
-        factServices.addFactList(facts, null);
+        factServices.addFactList(facts, null, null);
         Assert.assertEquals(factProvider.count(), 2);
-        // 2 saved + the one added at the beginning
+        // 2 saved
         Assert.assertEquals(factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null,
-                null, null, null, null).size(), 2);
+                null, null, null, null, null).size(), 2);
     }
 
     @Test(dependsOnMethods = "addFacts")
     public void removeFact() {
-        Collection<FormrunnerQuestionFact> facts = factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null, null, null, null, null);
+        Collection<FormrunnerQuestionFact> facts = factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null,
+                null, null, null, null, null, null);
         Assert.assertEquals(facts.size(), 2);
         Assert.assertNotNull(facts);
         for (FormrunnerQuestionFact fact : facts) {
             factServices.deleteFact(fact, null);
         }
-        Assert.assertEquals(factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null, null, null, null, null).size(), 0);
+        Assert.assertEquals(factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null, null, null, null, null, null).size(), 0);
     }
 
 

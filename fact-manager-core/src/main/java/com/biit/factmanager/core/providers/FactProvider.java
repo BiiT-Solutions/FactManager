@@ -77,9 +77,11 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
                           String element, String process, LocalDateTime startDate, LocalDateTime endDate, Integer lastDays,
                           Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>... valueParameters) {
         if (lastDays == null) {
-            return findBy(organization, issuer, application, tenant, tag, group, element, process, startDate, endDate, discriminatorValue, customProperties, valueParameters);
+            return findBy(organization, issuer, application, tenant, tag, group, element, process, startDate, endDate, discriminatorValue,
+                    customProperties, valueParameters);
         } else {
-            return findBy(organization, issuer, application, tenant, tag, group, element, process, lastDays, discriminatorValue, customProperties, valueParameters);
+            return findBy(organization, issuer, application, tenant, tag, group, element, process, lastDays, discriminatorValue,
+                    customProperties, valueParameters);
         }
     }
 

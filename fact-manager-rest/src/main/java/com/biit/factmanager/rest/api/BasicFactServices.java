@@ -24,6 +24,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping(value = "/basic")
 @RestController
@@ -37,18 +38,21 @@ public class BasicFactServices extends FactServices<String, BasicFact> {
         super(factProvider);
     }
 
-    @Operation(summary = "Search facts functionality", description = "Parameters:\n"
-            + "- organization: which organization belongs to\n"
-            + "- customer: which customer is the owner of the application\n"
-            + "- application: which application is generating the facts\n"
-            + "- tenant: the tenant classifier\n"
-            + "- tag: kafka tag\n"
-            + "- group: grouping option for the facts\n"
-            + "- element: if of the element that actions the fact\n"
-            + "- startDate: filtering facts from this day\n"
-            + "- endDate: filtering facts to this day\n"
-            + "- lastDays: if set, replaces startDate and endDate\n"
-            + "- parameters: set of parameters/value pairs that are specific for each fact\n",
+    @Operation(summary = "Search facts functionality", description = """
+            Parameters:
+            - organization: which organization belongs to
+            - issuer: whom generate the fact
+            - application: which application is generating the facts
+            - tenant: the tenant classifier
+            - tag: kafka tag
+            - group: grouping option for the facts
+            - element: if of the element that actions the fact
+            - startDate: filtering facts from this day
+            - endDate: filtering facts to this day
+            - lastDays: if set, replaces startDate and endDate
+            - customProperties: map of properties that are specific for each fact (search in custom properties)
+            - parameters: set of parameters/value pairs that are specific for each fact (search in the value)",
+            """,
             security = @SecurityRequirement(name = "bearerAuth"))
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -67,6 +71,8 @@ public class BasicFactServices extends FactServices<String, BasicFact> {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Parameter(description = "Facts until the selected date", example = "2023-01-31T23:59:59.99Z")
             @RequestParam(value = "to", required = false) OffsetDateTime to,
             @Parameter(name = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
+            @Parameter(name = "custom-properties", required = false) @RequestParam(value = "custom-properties", required = false)
+            Map<String, String> customProperties,
             @Parameter(name = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters) {
 
         final Pair<String, Object>[] pairs;
@@ -85,7 +91,7 @@ public class BasicFactServices extends FactServices<String, BasicFact> {
         final Collection<BasicFact> facts = factProvider.findBy(organization, customer, application, tenant, tag, group, element, process,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
-                lastDays, true, pairs);
+                lastDays, true, customProperties, pairs);
 
         return facts;
     }
