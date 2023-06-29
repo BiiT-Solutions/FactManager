@@ -9,12 +9,12 @@ import jakarta.persistence.Transient;
 
 @Entity
 @DiscriminatorValue("StringFact")
-public class StringFact extends Fact<StringValue> {
+public class LogFact extends Fact<StringValue> {
 
     @Transient
     private StringValue stringValue;
 
-    public StringFact() {
+    public LogFact() {
         super();
     }
 

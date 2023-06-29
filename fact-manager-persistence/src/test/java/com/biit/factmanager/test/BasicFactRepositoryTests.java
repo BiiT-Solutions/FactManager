@@ -11,7 +11,9 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 @Test(groups = "factRepository")
@@ -69,9 +71,8 @@ public class BasicFactRepositoryTests extends AbstractTransactionalTestNGSpringC
         Assert.assertEquals(basicFactFactRepository.count(), stringFactRepositorySize -= 1);
     }
 
-    @AfterClass
+    @AfterClass(alwaysRun = true)
     private void clean() {
-        basicFactFactRepository.findAll().
-                forEach(stringValueFact -> basicFactFactRepository.delete(stringValueFact));
+        basicFactFactRepository.deleteAll();
     }
 }

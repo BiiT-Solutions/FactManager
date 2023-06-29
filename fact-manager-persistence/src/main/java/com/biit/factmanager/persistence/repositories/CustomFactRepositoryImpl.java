@@ -12,11 +12,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
 
-
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRepository<T> {
@@ -51,6 +51,27 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
     }
 
     @Override
+    public List<T> findByCustomProperties(Map<String, String> customProperties) {
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        final CriteriaQuery<T> query = criteriaBuilder.createQuery(entityTypeClass);
+        final Root<T> root = query.from(entityTypeClass);
+
+        final List<Predicate> predicates = new ArrayList<>();
+        if (customProperties != null) {
+            for (final Map.Entry<String, String> entry : customProperties.entrySet()) {
+                if (entry != null) {
+                    predicates.add(criteriaBuilder.like(root.get("customPropertiesValue"),
+                            String.format("%%\"%s\":\"%s\"%%", entry.getKey(), entry.getValue())));
+                }
+            }
+        }
+
+        query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
+        query.select(root).where(predicates.toArray(new Predicate[predicates.size()]));
+        return entityManager.createQuery(query).getResultList();
+    }
+
+    @Override
     public List<T> findByValueParameters(Pair<String, Object>... valueParameters) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> query = criteriaBuilder.createQuery(entityTypeClass);
@@ -74,7 +95,7 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
     @Override
     public List<T> findBy(Class<T> entityTypeClass, String organization, String issuer, String application, String tenant, String tag,
                           String group, String element, String process, LocalDateTime startDate, LocalDateTime endDate,
-                          Boolean discriminatorValue, Pair<String, Object>... valueParameters) {
+                          Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>... valueParameters) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> query = criteriaBuilder.createQuery(entityTypeClass == null ? this.entityTypeClass : entityTypeClass);
         final Root<T> root = query.from(entityTypeClass == null ? this.entityTypeClass : entityTypeClass);
@@ -110,9 +131,17 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
         if (endDate != null) {
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), endDate));
         }
-//        if (discriminatorValue != null) {
-//            predicates.add(criteriaBuilder.equal(root.type(), entityTypeClass == null ? this.entityTypeClass : entityTypeClass));
-//        }
+        if (discriminatorValue != null) {
+            predicates.add(criteriaBuilder.equal(root.type(), entityTypeClass == null ? this.entityTypeClass : entityTypeClass));
+        }
+        if (customProperties != null) {
+            for (final Map.Entry<String, String> entry : customProperties.entrySet()) {
+                if (entry != null) {
+                    predicates.add(criteriaBuilder.like(root.get("customPropertiesValue"),
+                            String.format("%%\"%s\":\"%s\"%%", entry.getKey(), entry.getValue())));
+                }
+            }
+        }
         if (valueParameters != null) {
             for (final Pair<String, Object> condition : valueParameters) {
                 //ON JSON numbers are not using quotes.
@@ -128,7 +157,7 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
             }
         }
 
-       // query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
+        // query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
         query.select(root).where(predicates.toArray(new Predicate[0]));
 
         /* For Hibernate */

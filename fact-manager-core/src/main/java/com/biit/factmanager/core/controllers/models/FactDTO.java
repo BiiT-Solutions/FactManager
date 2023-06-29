@@ -3,6 +3,7 @@ package com.biit.factmanager.core.controllers.models;
 import com.biit.server.controllers.models.ElementDTO;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 public class FactDTO<ENTITY> extends ElementDTO {
 
@@ -14,15 +15,21 @@ public class FactDTO<ENTITY> extends ElementDTO {
 
     private String tenant;
 
+    private String process;
+
     private String tag;
 
     private String group;
 
-    private String value;
-
     private String element;
 
+    private String createdBy;
+
     private LocalDateTime createdAt;
+
+    private ENTITY entity;
+
+    private Map<String, String> customProperties;
 
     public String getOrganization() {
         return organization;
@@ -56,14 +63,6 @@ public class FactDTO<ENTITY> extends ElementDTO {
         this.group = group;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
     public String getElement() {
         return element;
     }
@@ -80,5 +79,53 @@ public class FactDTO<ENTITY> extends ElementDTO {
         this.createdAt = createdAt;
     }
 
+    public String getCustomer() {
+        return customer;
+    }
 
+    public void setCustomer(String customer) {
+        this.customer = customer;
+    }
+
+    public String getApplication() {
+        return application;
+    }
+
+    public void setApplication(String application) {
+        this.application = application;
+    }
+
+    public ENTITY getEntity() {
+        return entity;
+    }
+
+    public void setEntity(ENTITY entity) {
+        this.entity = entity;
+    }
+
+    public Map<String, String> getCustomProperties() {
+        return customProperties;
+    }
+
+    public void setCustomProperties(Map<String, String> customProperties) {
+        this.customProperties = customProperties;
+    }
+
+    public String getProcess() {
+        return process;
+    }
+
+    public void setProcess(String process) {
+        this.process = process;
+    }
+
+    @Override
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    @Override
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 }

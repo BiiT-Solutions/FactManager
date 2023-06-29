@@ -3,7 +3,7 @@ package com.biit.factmanager.test;
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
 import com.biit.factmanager.persistence.entities.FormrunnerVariableFact;
-import com.biit.factmanager.persistence.entities.StringFact;
+import com.biit.factmanager.persistence.entities.LogFact;
 import com.biit.factmanager.persistence.entities.values.FormrunnerQuestionValue;
 import com.biit.factmanager.persistence.entities.values.FormrunnerVariableValue;
 import com.biit.factmanager.persistence.repositories.FactRepository;
@@ -30,7 +30,7 @@ public class MultipleFactTests extends AbstractTestNGSpringContextTests {
     private FactProvider<FormrunnerVariableFact> formrunnerVariableFactProvider;
 
     @Autowired
-    private FactProvider<StringFact> stringFactFactProvider;
+    private FactProvider<LogFact> stringFactFactProvider;
 
     @Autowired
     private FactProvider<FormrunnerQuestionFact> formrunnerQuestionFactFactProvider;
@@ -50,10 +50,10 @@ public class MultipleFactTests extends AbstractTestNGSpringContextTests {
         formrunnerVariableFact.setEntity(formrunnerVariableValue);
         formrunnerVariableFactProvider.save(formrunnerVariableFact);
 
-        StringFact stringFact = new StringFact();
-        stringFact.setString("Content of fact");
-        stringFact.setGroup("GROUP");
-        stringFactFactProvider.save(stringFact);
+        LogFact logFact = new LogFact();
+        logFact.setString("Content of fact");
+        logFact.setGroup("GROUP");
+        stringFactFactProvider.save(logFact);
 
         FormrunnerQuestionFact formrunnerQuestionFact = new FormrunnerQuestionFact();
         FormrunnerQuestionValue formRunnerValue = new FormrunnerQuestionValue();

@@ -1,6 +1,5 @@
 package com.biit.factmanager.persistence.entities;
 
-import com.biit.database.encryption.LocalDateTimeCryptoConverter;
 import com.biit.database.encryption.StringCryptoConverter;
 import com.biit.eventstructure.event.IKafkaStorable;
 import com.biit.factmanager.persistence.entities.exceptions.FactValueInvalidException;
@@ -27,6 +26,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.context.annotation.Primary;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
@@ -84,11 +85,17 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
 
     @CreationTimestamp
     @Column(name = "created_at")
-    @Convert(converter = LocalDateTimeCryptoConverter.class)
     private LocalDateTime createdAt;
 
     @Transient
     private transient ENTITY entity;
+
+    @Transient
+    private transient Map<String, String> customProperties;
+
+    @Column(name = "custom_properties")
+    @Convert(converter = StringCryptoConverter.class)
+    private String customPropertiesValue;
 
     private static ObjectMapper objectMapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
@@ -224,6 +231,36 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
             }
         }
         return entity;
+    }
+
+    public Map<String, String> getCustomProperties() {
+        if (getCustomPropertiesValue() != null && !getCustomPropertiesValue().isEmpty()) {
+            try {
+                customProperties = objectMapper.readValue(getCustomPropertiesValue(),
+                        new TypeReference<HashMap<String, String>>() {
+                        });
+            } catch (JsonProcessingException e) {
+                throw new FactValueInvalidException(e);
+            }
+        }
+        return customProperties;
+    }
+
+    public void setCustomProperties(Map<String, String> customProperties) {
+        this.customProperties = customProperties;
+        try {
+            setCustomPropertiesValue(objectMapper.writeValueAsString(customProperties));
+        } catch (JsonProcessingException e) {
+            throw new FactValueInvalidException(e);
+        }
+    }
+
+    private String getCustomPropertiesValue() {
+        return customPropertiesValue;
+    }
+
+    private void setCustomPropertiesValue(String customPropertiesValue) {
+        this.customPropertiesValue = customPropertiesValue;
     }
 
     @Override

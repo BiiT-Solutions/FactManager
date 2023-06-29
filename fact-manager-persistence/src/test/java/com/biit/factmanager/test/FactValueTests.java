@@ -50,7 +50,7 @@ public class FactValueTests extends AbstractTransactionalTestNGSpringContextTest
         });
     }
 
-    @AfterClass
+    @AfterClass(alwaysRun = true)
     public void tearDown() {
         formrunnerQuestionFactRepository.deleteAll();
     }
