@@ -8,26 +8,28 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.context.annotation.Primary;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
 import java.util.Objects;
 
 @Entity
@@ -39,8 +41,9 @@ import java.util.Objects;
         @Index(name = "ind_created_by", columnList = "created_by"),
         @Index(name = "ind_application", columnList = "application"),
         @Index(name = "ind_tenant", columnList = "tenant"),
-        @Index(name = "ind_process", columnList = "process"),
-        @Index(name = "ind_tag", columnList = "fact_tag"),
+        @Index(name = "ind_session", columnList = "session"),
+        @Index(name = "ind_subject", columnList = "subject"),
+        @Index(name = "ind_fact_type", columnList = "fact_type"),
         @Index(name = "ind_group", columnList = "grouping"),
         @Index(name = "ind_element", columnList = "element"),
 })
@@ -61,15 +64,19 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     @Column(name = "tenant")  // Tenant
     private String tenant;
 
-    @Column(name = "process")
-    private String process;
+    @Column(name = "session")  // SessionId
+    private String session;
 
-    @Column(name = "fact_tag") // Subject
-    private String tag;
+    @Column(name = "subject")  // Subject
+    private String subject;
 
     //Examination Name
-    @Column(name = "grouping") //Session Id
+    @Column(name = "grouping")
     private String group;
+
+    //Answers // Timing // ...
+    @Column(name = "fact_type")
+    private String factType;
 
     @Column(name = "fact_value", length = MAX_JSON_LENGTH)
     @Convert(converter = StringCryptoConverter.class)
@@ -90,12 +97,8 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     @Transient
     private transient ENTITY entity;
 
-    @Transient
-    private transient Map<String, String> customProperties;
-
-    @Column(name = "custom_properties")
-    @Convert(converter = StringCryptoConverter.class)
-    private String customPropertiesValue;
+    @OneToMany(mappedBy = "fact", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Collection<CustomProperty> customProperties;
 
     private static ObjectMapper objectMapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
@@ -161,26 +164,6 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
         return createdAt;
     }
 
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public String getProcess() {
-        return process;
-    }
-
-    public void setProcess(String process) {
-        this.process = process;
-    }
-
     public String getApplication() {
         return application;
     }
@@ -195,6 +178,34 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public String getSession() {
+        return session;
+    }
+
+    public void setSession(String session) {
+        this.session = session;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getFactType() {
+        return factType;
+    }
+
+    public void setFactType(String factType) {
+        this.factType = factType;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     @Override
@@ -233,34 +244,12 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
         return entity;
     }
 
-    public Map<String, String> getCustomProperties() {
-        if (getCustomPropertiesValue() != null && !getCustomPropertiesValue().isEmpty()) {
-            try {
-                customProperties = objectMapper.readValue(getCustomPropertiesValue(),
-                        new TypeReference<HashMap<String, String>>() {
-                        });
-            } catch (JsonProcessingException e) {
-                throw new FactValueInvalidException(e);
-            }
-        }
+    public Collection<CustomProperty> getCustomProperties() {
         return customProperties;
     }
 
-    public void setCustomProperties(Map<String, String> customProperties) {
+    public void setCustomProperties(Collection<CustomProperty> customProperties) {
         this.customProperties = customProperties;
-        try {
-            setCustomPropertiesValue(objectMapper.writeValueAsString(customProperties));
-        } catch (JsonProcessingException e) {
-            throw new FactValueInvalidException(e);
-        }
-    }
-
-    private String getCustomPropertiesValue() {
-        return customPropertiesValue;
-    }
-
-    private void setCustomPropertiesValue(String customPropertiesValue) {
-        this.customPropertiesValue = customPropertiesValue;
     }
 
     @Override
@@ -281,19 +270,41 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Fact<?> fact)) {
             return false;
         }
-        final Fact<?> fact = (Fact<?>) o;
-        return getCreatedAt().equals(fact.getCreatedAt()) && Objects.equals(getOrganization(), fact.getOrganization())
-                && Objects.equals(getTenant(), fact.getTenant()) && Objects.equals(getTag(), fact.getTag())
-                && Objects.equals(getGroup(), fact.getGroup()) && Objects.equals(getElement(), fact.getElement())
-                && getValue().equals(fact.getValue());
+
+        if (getOrganization() != null ? !getOrganization().equals(fact.getOrganization()) : fact.getOrganization() != null) {
+            return false;
+        }
+        if (getApplication() != null ? !getApplication().equals(fact.getApplication()) : fact.getApplication() != null) {
+            return false;
+        }
+        if (getTenant() != null ? !getTenant().equals(fact.getTenant()) : fact.getTenant() != null) {
+            return false;
+        }
+        if (getSession() != null ? !getSession().equals(fact.getSession()) : fact.getSession() != null) {
+            return false;
+        }
+        if (getSubject() != null ? !getSubject().equals(fact.getSubject()) : fact.getSubject() != null) {
+            return false;
+        }
+        if (getGroup() != null ? !getGroup().equals(fact.getGroup()) : fact.getGroup() != null) {
+            return false;
+        }
+        if (getFactType() != null ? !getFactType().equals(fact.getFactType()) : fact.getFactType() != null) {
+            return false;
+        }
+        if (getValue() != null ? !getValue().equals(fact.getValue()) : fact.getValue() != null) {
+            return false;
+        }
+        return getElement() != null ? getElement().equals(fact.getElement()) : fact.getElement() == null;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getOrganization(), getTenant(), getTag(), getGroup(), getValue(), getElement(), getCreatedAt());
+        return Objects.hash(getOrganization(), getTenant(), getSession(), getSubject(), getGroup(), getFactType(),
+                getValue(), getElement());
     }
 
     @Override

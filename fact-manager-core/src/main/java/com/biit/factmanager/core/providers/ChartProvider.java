@@ -26,19 +26,18 @@ public class ChartProvider<T extends Fact<?>> {
         this.factProvider = factProvider;
     }
 
-    @SafeVarargs
-    public final String getChart(String organization, String customer, String application, String tenant, String tag,
-                                 String group, String element, String process,
-                                 LocalDateTime startDate, LocalDateTime endDate, Integer lastDays, ChartType type,
-                                 Pair<String, Object>... valueParameters) {
-        if (!organization.isEmpty() && tenant.isEmpty() && tag.isEmpty() && group.isEmpty() && element.isEmpty()) {
+
+    public final String getChart(String organization, String issuer, String application, String tenant, String session, String subject,
+                                 String group, String element, String factType, LocalDateTime startDate, LocalDateTime endDate,
+                                 Integer lastDays, ChartType type, Pair<String, Object>... valueParameters) {
+        if (!organization.isEmpty() && tenant.isEmpty() && session.isEmpty() && subject.isEmpty() && group.isEmpty() && element.isEmpty()) {
             return htmlFromformrunnerQuestionFactsByQuestion(factProvider.findByOrganization(organization), type);
         }
-        if (organization.isEmpty() && tenant.isEmpty() && tag.isEmpty() && group.isEmpty() && element.isEmpty()) {
+        if (organization.isEmpty() && tenant.isEmpty() && session.isEmpty() && subject.isEmpty() && group.isEmpty() && element.isEmpty()) {
             return htmlFromformrunnerQuestionFactsByQuestion(factProvider.getAll(), type);
         }
         return htmlFromformrunnerQuestionFactsByQuestion(factProvider.
-                findBy(organization, customer, application, tenant, tag, group, element, process, startDate, endDate, lastDays, null,
+                findBy(organization, issuer, application, tenant, session, subject, group, element, factType, startDate, endDate, lastDays, null,
                         null, valueParameters), type);
     }
 

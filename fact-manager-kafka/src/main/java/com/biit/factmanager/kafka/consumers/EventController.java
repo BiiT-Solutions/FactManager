@@ -2,6 +2,7 @@ package com.biit.factmanager.kafka.consumers;
 
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.logger.FactManagerLogger;
+import com.biit.factmanager.persistence.entities.CustomProperty;
 import com.biit.factmanager.persistence.entities.LogFact;
 import com.biit.kafka.config.ObjectMapperFactory;
 import com.biit.kafka.consumers.EventListener;
@@ -12,6 +13,9 @@ import org.springframework.stereotype.Controller;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 
@@ -57,7 +61,9 @@ public class EventController {
         logFact.setCreatedBy(event.getCreatedBy());
         logFact.setApplication(event.getReplyTo());
         logFact.setTenant(event.getTenant());
-        logFact.setTag(event.getSubject());
+        logFact.setSubject(event.getSubject());
+        logFact.setSession(String.valueOf(event.getSessionId()));
+        //logFact.setFactType();
         logFact.setGroup(topic);
         logFact.setElement(event.getMessageId() != null ? event.getMessageId().toString() : null);
         try {
@@ -70,7 +76,12 @@ public class EventController {
         }
         if (event.getCustomProperties() != null) {
             logFact.setOrganization(event.getCustomProperties().get(ORGANIZATION));
-            logFact.setProcess(event.getCustomProperties().get(PROCESS));
+
+            final List<CustomProperty> customProperties = new ArrayList<>();
+            for (final Map.Entry<String, String> entry : event.getCustomProperties().entrySet()) {
+                customProperties.add(new CustomProperty(logFact, entry.getKey(), entry.getValue()));
+            }
+            logFact.setCustomProperties(customProperties);
         }
         return logFact;
     }

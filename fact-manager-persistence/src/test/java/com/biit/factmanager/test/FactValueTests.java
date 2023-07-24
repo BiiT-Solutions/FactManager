@@ -30,7 +30,8 @@ public class FactValueTests extends AbstractTransactionalTestNGSpringContextTest
             formrunnerQuestionValue.setProfessionalId((long) i);
 
             FormrunnerQuestionFact formrunnerQuestionFact = new FormrunnerQuestionFact();
-            formrunnerQuestionFact.setTag("tag" + i);
+            formrunnerQuestionFact.setSubject("tag" + i);
+            formrunnerQuestionFact.setSession("" + i);
             formrunnerQuestionFact.setGroup("group" + i);
             formrunnerQuestionFact.setElement("elementId" + i);
             formrunnerQuestionFact.setTenant("tenantId" + i);

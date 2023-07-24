@@ -30,11 +30,11 @@ public abstract class FactController<ENTITY> extends BasicElementController<Fact
     }
 
     public Collection<FactDTO<ENTITY>> findBy(
-            String organization, String issuer, String application, String tenant, String tag,
-            String group, String element, String process, LocalDateTime startDate, LocalDateTime endDate,
+            String organization, String customer, String application, String tenant, String session, String subject,
+            String group, String element, String factType, LocalDateTime startDate, LocalDateTime endDate,
             Integer lastDays, Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>[] pairs) {
 
-        return convertAll(getProvider().findBy(organization, issuer, application, tenant, tag, group, element, process,
+        return convertAll(getProvider().findBy(organization, customer, application, tenant, session, subject, group, element, factType,
                 startDate, endDate, lastDays, discriminatorValue, customProperties, pairs));
     }
 }

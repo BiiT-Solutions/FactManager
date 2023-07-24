@@ -15,11 +15,13 @@ public class FactDTO<ENTITY> extends ElementDTO {
 
     private String tenant;
 
-    private String process;
+    private String session;
 
-    private String tag;
+    private String subject;
 
     private String group;
+
+    private String factType;
 
     private String element;
 
@@ -45,14 +47,6 @@ public class FactDTO<ENTITY> extends ElementDTO {
 
     public void setTenant(String tenant) {
         this.tenant = tenant;
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
     }
 
     public String getGroup() {
@@ -111,12 +105,28 @@ public class FactDTO<ENTITY> extends ElementDTO {
         this.customProperties = customProperties;
     }
 
-    public String getProcess() {
-        return process;
+    public String getSession() {
+        return session;
     }
 
-    public void setProcess(String process) {
-        this.process = process;
+    public void setSession(String session) {
+        this.session = session;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getFactType() {
+        return factType;
+    }
+
+    public void setFactType(String factType) {
+        this.factType = factType;
     }
 
     @Override

@@ -78,7 +78,7 @@ public class PivotViewExporterTest extends AbstractTestNGSpringContextTests {
                         FormrunnerVariableFact questionFormrunnerVariableFact = new FormrunnerVariableFact();
                         questionFormrunnerVariableFact.setGroup("examination" + examination);
                         questionFormrunnerVariableFact.setElement("examinationId" + examination);
-                        questionFormrunnerVariableFact.setTag("tag");
+                        questionFormrunnerVariableFact.setSubject("subject");
                         questionFormrunnerVariableFact.setTenant("p" + patient);
 
                         FormrunnerVariableValue questionFormrunnerQuestionValue = new FormrunnerVariableValue();

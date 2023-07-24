@@ -1,6 +1,7 @@
 package com.biit.factmanager.persistence.repositories;
 
 import com.biit.factmanager.logger.FactManagerLogger;
+import com.biit.factmanager.persistence.entities.CustomProperty;
 import com.biit.factmanager.persistence.entities.Fact;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -8,6 +9,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
@@ -51,23 +53,30 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
     }
 
     @Override
-    public List<T> findByCustomProperties(Map<String, String> customProperties) {
+    public List<T> findByCustomProperty(Map<String, String> customProperties) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> query = criteriaBuilder.createQuery(entityTypeClass);
         final Root<T> root = query.from(entityTypeClass);
+
+        //SubQuery
+        final Subquery<Fact> propertiesQuery = query.subquery(Fact.class);
+        final Root<CustomProperty> subqueryRoot = propertiesQuery.from(CustomProperty.class);
 
         final List<Predicate> predicates = new ArrayList<>();
         if (customProperties != null) {
             for (final Map.Entry<String, String> entry : customProperties.entrySet()) {
                 if (entry != null) {
-                    predicates.add(criteriaBuilder.like(root.get("customPropertiesValue"),
-                            String.format("%%\"%s\":\"%s\"%%", entry.getKey(), entry.getValue())));
+                    predicates.add(criteriaBuilder.and(
+                            criteriaBuilder.equal(subqueryRoot.get("key"), entry.getKey()),
+                            criteriaBuilder.equal(subqueryRoot.get("value"), entry.getValue())));
                 }
             }
         }
 
+        propertiesQuery.select(subqueryRoot.get("fact")).where(criteriaBuilder.or(predicates.toArray(new Predicate[0])));
+
         query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
-        query.select(root).where(predicates.toArray(new Predicate[predicates.size()]));
+        query.select(root).where(root.in(propertiesQuery));
         return entityManager.createQuery(query).getResultList();
     }
 
@@ -93,9 +102,11 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
     }
 
     @Override
-    public List<T> findBy(Class<T> entityTypeClass, String organization, String issuer, String application, String tenant, String tag,
-                          String group, String element, String process, LocalDateTime startDate, LocalDateTime endDate,
-                          Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>... valueParameters) {
+    public List<T> findBy(Class<T> entityTypeClass, String organization, String customer, String application, String tenant,
+                          String group, String element, String session, String subject, String factType,
+                          LocalDateTime startDate, LocalDateTime endDate,
+                          Boolean discriminatorValue, Map<String, String> customProperties,
+                          Pair<String, Object>... valueParameters) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> query = criteriaBuilder.createQuery(entityTypeClass == null ? this.entityTypeClass : entityTypeClass);
         final Root<T> root = query.from(entityTypeClass == null ? this.entityTypeClass : entityTypeClass);
@@ -104,8 +115,8 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
         if (organization != null) {
             predicates.add(criteriaBuilder.equal(root.get("organization"), organization));
         }
-        if (issuer != null) {
-            predicates.add(criteriaBuilder.equal(root.get("issuer"), issuer));
+        if (customer != null) {
+            predicates.add(criteriaBuilder.equal(root.get("customer"), customer));
         }
         if (application != null) {
             predicates.add(criteriaBuilder.equal(root.get("application"), application));
@@ -113,11 +124,14 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
         if (tenant != null) {
             predicates.add(criteriaBuilder.equal(root.get("tenant"), tenant));
         }
-        if (process != null) {
-            predicates.add(criteriaBuilder.equal(root.get("process"), process));
+        if (session != null) {
+            predicates.add(criteriaBuilder.equal(root.get("session"), session));
         }
-        if (tag != null) {
-            predicates.add(criteriaBuilder.equal(root.get("tag"), tag));
+        if (subject != null) {
+            predicates.add(criteriaBuilder.equal(root.get("subject"), subject));
+        }
+        if (factType != null) {
+            predicates.add(criteriaBuilder.equal(root.get("factType"), factType));
         }
         if (group != null) {
             predicates.add(criteriaBuilder.equal(root.get("group"), group));
@@ -135,14 +149,6 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
         if (discriminatorValue != null) {
             predicates.add(criteriaBuilder.equal(root.type(), entityTypeClass == null ? this.entityTypeClass.getName() : entityTypeClass));
         }
-        if (customProperties != null) {
-            for (final Map.Entry<String, String> entry : customProperties.entrySet()) {
-                if (entry != null) {
-                    predicates.add(criteriaBuilder.like(root.get("customPropertiesValue"),
-                            String.format("%%\"%s\":\"%s\"%%", entry.getKey(), entry.getValue())));
-                }
-            }
-        }
         if (valueParameters != null) {
             for (final Pair<String, Object> condition : valueParameters) {
                 //ON JSON numbers are not using quotes.
@@ -158,8 +164,29 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
             }
         }
 
+        //SubQuery
+        final Subquery<Fact> propertiesQuery = query.subquery(Fact.class);
+        final Root<CustomProperty> subqueryRoot = propertiesQuery.from(CustomProperty.class);
+
+        final List<Predicate> subPredicates = new ArrayList<>();
+        if (customProperties != null) {
+            for (final Map.Entry<String, String> entry : customProperties.entrySet()) {
+                if (entry != null) {
+                    subPredicates.add(criteriaBuilder.and(
+                            criteriaBuilder.equal(subqueryRoot.get("key"), entry.getKey()),
+                            criteriaBuilder.equal(subqueryRoot.get("value"), entry.getValue())));
+                }
+            }
+        }
+
+        propertiesQuery.select(subqueryRoot.get("fact")).where(criteriaBuilder.or(subPredicates.toArray(new Predicate[0])));
+
         // query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
-        query.select(root).where(predicates.toArray(new Predicate[0]));
+        if (customProperties == null) {
+            query.select(root).where(predicates.toArray(new Predicate[0]));
+        } else {
+            query.select(root).where(root.in(propertiesQuery), criteriaBuilder.or(predicates.toArray(new Predicate[0])));
+        }
 
         /* For Hibernate */
         System.out.println(entityManager.createQuery(query).unwrap(org.hibernate.query.Query.class).getQueryString());

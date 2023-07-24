@@ -60,9 +60,11 @@ public class MultipleFactTests extends AbstractTestNGSpringContextTests {
         formRunnerValue.setAnswer(" ");
         formRunnerValue.setXpath("question");
         formrunnerQuestionFact.setTenant("tenantId");
+        formrunnerQuestionFact.setSession("sessionId");
+        formrunnerQuestionFact.setSubject("SUBJECT");
         formrunnerQuestionFact.setGroup("GROUP");
         formrunnerQuestionFact.setElement("ELEMENT_ID");
-        formrunnerQuestionFact.setTag("TAG");
+        formrunnerQuestionFact.setFactType("FACTTYPE");
         formrunnerQuestionFact.setOrganization("ORGANIZATION_ID");
         formrunnerQuestionFact.setEntity(formRunnerValue);
         formrunnerQuestionFactFactProvider.save(formrunnerQuestionFact);
@@ -84,7 +86,7 @@ public class MultipleFactTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void findTypesFromProvider() {
-        List<?> facts = overlordFactProvider.findBy(null, null, null, null, null, "GROUP", null, null, null, null, null);
+        List<?> facts = overlordFactProvider.findBy(null, null, null, null, null, null, "GROUP", null, null, null, null, null);
         Assert.assertEquals(facts.size(), 3);
     }
 }

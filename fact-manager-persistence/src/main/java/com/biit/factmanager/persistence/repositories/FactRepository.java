@@ -16,21 +16,25 @@ public interface FactRepository<T extends Fact<?>> extends JpaRepository<T, Long
     List<T> findByCreatedAtGreaterThanEqualAndCreatedAtLessThanEqual(LocalDateTime startDate, LocalDateTime endDate);
 
     @Query("""
-              SELECT f FROM Fact f WHERE (:organization is null or f.organization = :organization)
+              SELECT DISTINCT f FROM Fact f LEFT JOIN f.customProperties cp WHERE
+              (:organization is null or f.organization = :organization)
               and (:customer is null or f.tenant = :customer)
               and (:application is null or f.tenant = :application)
               and (:tenant is null or f.tenant = :tenant)
-              and (:tag is null or f.tag = :tag)
               and (:group is null or f.group = :group)
               and (:element is null or f.element = :element)
-              and (:process is null or f.process = :process)
+              and (:session is null or f.session = :session)
+              and (:subject is null or f.subject = :subject)
+              and (:factType is null or f.factType = :factType)
               and (:startDate is null or f.createdAt >= :startDate)
               and (:endDate is null or f.createdAt <= :endDate)
+              and (:property_key is null or (cp.key = :property_key and cp.value = :property_value))
             """)
     List<T> findBy(@Param("organization") String organization, @Param("customer") String customer, @Param("application") String application,
-                   @Param("tenant") String tenant, @Param("tag") String tag, @Param("group") String group,
-                   @Param("element") String element, @Param("process") String process,
-                   @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+                   @Param("tenant") String tenant, @Param("group") String group, @Param("element") String element,
+                   @Param("session") String session, @Param("subject") String subject, @Param("factType") String factType,
+                   @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate,
+                   @Param("property_key") String customPropertyKey, @Param("property_value") String customPropertyValue);
 
     List<T> findByCreatedAtLessThan(LocalDateTime createdAt);
 

@@ -27,12 +27,13 @@ public class PivotViewProvider<T extends Fact<?>> {
         this.factProvider = factProvider;
     }
 
-    public String get(String organization, String customer, String application, String tenant, String tag, String group, String element, String process,
-                      LocalDateTime startDate, LocalDateTime endDate, Integer lastDays, Pair<String, Object>... valueParameters) {
-        if (organization.isEmpty() && tenant.isEmpty() && tag.isEmpty() && group.isEmpty() && element.isEmpty()) {
+    public String get(String organization, String customer, String application, String tenant, String session, String subject,
+                      String group, String element, String factType, LocalDateTime startDate, LocalDateTime endDate,
+                      Integer lastDays, Pair<String, Object>... valueParameters) {
+        if (organization.isEmpty() && tenant.isEmpty() && session.isEmpty() && subject.isEmpty() && group.isEmpty() && element.isEmpty()) {
             return xmlFormFacts(factProvider.getAll());
         }
-        return xmlFormFacts(factProvider.findBy(organization, customer, application, tenant, tag, group, element, process, startDate,
+        return xmlFormFacts(factProvider.findBy(organization, customer, application, tenant, session, subject, group, element, factType, startDate,
                 endDate, lastDays, null, null, valueParameters));
     }
 

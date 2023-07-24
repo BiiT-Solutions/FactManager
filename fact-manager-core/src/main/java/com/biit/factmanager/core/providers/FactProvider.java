@@ -73,36 +73,36 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
         return factRepository.findByOrganization(organization);
     }
 
-    public List<T> findBy(String organization, String issuer, String application, String tenant, String tag, String group,
-                          String element, String process, LocalDateTime startDate, LocalDateTime endDate, Integer lastDays,
+    public List<T> findBy(String organization, String customer, String application, String tenant, String session, String subject,
+                          String group, String element, String factType, LocalDateTime startDate, LocalDateTime endDate, Integer lastDays,
                           Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>... valueParameters) {
         if (lastDays == null) {
-            return findBy(organization, issuer, application, tenant, tag, group, element, process, startDate, endDate, discriminatorValue,
+            return findBy(organization, customer, application, tenant, session, subject, group, element, factType, startDate, endDate, discriminatorValue,
                     customProperties, valueParameters);
         } else {
-            return findBy(organization, issuer, application, tenant, tag, group, element, process, lastDays, discriminatorValue,
+            return findBy(organization, customer, application, tenant, session, subject, group, element, factType, lastDays, discriminatorValue,
                     customProperties, valueParameters);
         }
     }
 
 
-    public List<T> findBy(String organization, String issuer, String application, String tenant, String tag, String group,
-                          String element, String process, Integer lastDays, Boolean discriminatorValue,
+    public List<T> findBy(String organization, String customer, String application, String tenant, String session, String subject,
+                          String group, String element, String factType, Integer lastDays, Boolean discriminatorValue,
                           Map<String, String> customProperties, Pair<String, Object>... valueParameters) {
         final LocalDateTime endDate = LocalDateTime.now();
         if (lastDays != null) {
             final LocalDateTime startDate = LocalDateTime.now().minusDays(lastDays);
-            return factRepository.findBy(entityClass, organization, issuer, application, tenant, tag, group, element, process, startDate, endDate,
-                    discriminatorValue, customProperties, valueParameters);
+            return factRepository.findBy(entityClass, organization, customer, application, tenant, group, element, session,
+                    subject, factType, startDate, endDate, discriminatorValue, customProperties, valueParameters);
         }
-        return factRepository.findBy(entityClass, organization, issuer, application, tenant, tag, group, element, process, null, endDate,
+        return factRepository.findBy(entityClass, organization, customer, application, tenant, group, element, session, subject, factType, null, endDate,
                 discriminatorValue, customProperties, valueParameters);
     }
 
-    public List<T> findBy(String organization, String issuer, String application, String tenant, String tag, String group,
-                          String element, String process, LocalDateTime startDate, LocalDateTime endDate,
+    public List<T> findBy(String organization, String issuer, String application, String tenant, String session, String subject,
+                          String group, String element, String factType, LocalDateTime startDate, LocalDateTime endDate,
                           Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>... valueParameters) {
-        return factRepository.findBy(entityClass, organization, issuer, application, tenant, tag, group, element, process, startDate, endDate,
+        return factRepository.findBy(entityClass, organization, issuer, application, tenant, group, element, session, subject, factType, startDate, endDate,
                 discriminatorValue, customProperties, valueParameters);
     }
 

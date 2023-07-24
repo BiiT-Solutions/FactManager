@@ -32,7 +32,9 @@ public class FindByFactsTests extends AbstractTransactionalTestNGSpringContextTe
             logFact.setCreatedBy(String.valueOf(i));
             logFact.setApplication(String.valueOf(i));
             logFact.setTenant(String.valueOf(i));
-            logFact.setTag(String.valueOf(i));
+            logFact.setSubject(String.valueOf(i));
+            logFact.setSession(String.valueOf(i));
+            logFact.setFactType(String.valueOf(i));
             logFact.setGroup(String.valueOf(i));
             logFact.setElement(String.valueOf(i));
             logFact.setCreatedAt(LocalDateTime.now());
@@ -44,14 +46,14 @@ public class FindByFactsTests extends AbstractTransactionalTestNGSpringContextTe
 
     @Test
     public void getFindBy() {
-        Collection<LogFact> fact1 = factRepository.findBy("1", "1", "1", "1", "1", "1", "1", null,
-                LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(1));
+        Collection<LogFact> fact1 = factRepository.findBy("1", "1", "1", "1", "1", "1", "1", "1", null,
+                LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(1), null, null);
 
-        Collection<LogFact> fact2 = factRepository.findBy("2", "2", "2", "2", "2", "2", "2", null,
-                LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(1));
+        Collection<LogFact> fact2 = factRepository.findBy("2", "2", "2", "2", "2", "2", "2", "2", null,
+                LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(1), null, null);
 
-        Collection<LogFact> fact3 = factRepository.findBy("3", "3", "3", "3", "3", "3", "3", null,
-                LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(1));
+        Collection<LogFact> fact3 = factRepository.findBy("3", "3", "3", "3", "3", "3", "3", "3", null,
+                LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(1), null, null);
 
         Assert.assertEquals(fact1.size(), 1);
         Assert.assertEquals(fact2.size(), 1);

@@ -9,11 +9,19 @@ import java.util.Map;
 
 public interface CustomFactRepository<T extends Fact<?>> {
 
-    List<T> findByCustomProperties(Map<String, String> customProperties);
+    /**
+     * Has any of this properties.
+     *
+     * @param customProperties
+     * @return
+     */
+    List<T> findByCustomProperty(Map<String, String> customProperties);
 
     List<T> findByValueParameters(Pair<String, Object>... valueParameters);
 
-    List<T> findBy(Class<T> entityTypeClass, String organizationId, String issuer, String application, String tenantId, String tag,
-                   String group, String elementId, String processId, LocalDateTime startDate, LocalDateTime endDate,
-                   Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>... valueParameters);
+    List<T> findBy(Class<T> entityTypeClass, String organization, String customer, String application, String tenant,
+                   String group, String element, String session, String subject, String factType,
+                   LocalDateTime startDate, LocalDateTime endDate,
+                   Boolean discriminatorValue, Map<String, String> customProperties,
+                   Pair<String, Object>... valueParameters);
 }

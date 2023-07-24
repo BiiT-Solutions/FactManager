@@ -77,7 +77,7 @@ public class FactClient {
                     factUrlConstructor.findByParameters(), parameters, headers)) {
                 FactClientLogger.debug(this.getClass(), "Response obtained from '{}' is '{}'.",
                         factUrlConstructor.getFactServerUrl() + factUrlConstructor.findByParameters(), result.getStatus());
-                return mapper.readValue(result.readEntity(String.class), new TypeReference<List<FactDTO>>() {
+                return mapper.readValue(result.readEntity(String.class), new TypeReference<>() {
                 });
             }
         } catch (JsonProcessingException e) {

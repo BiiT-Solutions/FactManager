@@ -7,9 +7,11 @@ public enum SearchParameters {
     CUSTOMER("customer"),
     APPLICATION("application"),
     TAG("tag"),
+    SUBJECT("subject"),
+    SESSION("session"),
     GROUP("group"),
     ELEMENT("element"),
-    PROCESS("process"),
+    FACT_TYPE("factType"),
     FROM("from"),
     TO("to"),
     LAST_DAYS("lastDays");

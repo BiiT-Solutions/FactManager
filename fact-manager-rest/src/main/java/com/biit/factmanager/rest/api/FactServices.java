@@ -71,9 +71,11 @@ public abstract class FactServices<V, T extends Fact<V>> {
             - issuer: whom generate the fact
             - application: which application is generating the facts
             - tenant: the tenant classifier
-            - tag: kafka tag
+            - session: event session
+            - subject: what is doing
             - group: grouping option for the facts
             - element: if of the element that actions the fact
+            - factType: if has a form answer, is a timing event, etc.
             - startDate: filtering facts from this day
             - endDate: filtering facts to this day
             - lastDays: if set, replaces startDate and endDate
@@ -86,13 +88,14 @@ public abstract class FactServices<V, T extends Fact<V>> {
     public Collection<T> getFacts(
             HttpServletRequest httpRequest,
             @Parameter(name = "organization", required = false) @RequestParam(value = "organization", required = false) String organization,
-            @Parameter(name = "customer", required = false) @RequestParam(value = "issuer", required = false) String issuer,
+            @Parameter(name = "issuer", required = false) @RequestParam(value = "issuer", required = false) String issuer,
             @Parameter(name = "application", required = false) @RequestParam(value = "application", required = false) String application,
             @Parameter(name = "tenant", required = false) @RequestParam(value = "tenant", required = false) String tenant,
-            @Parameter(name = "tag", required = false) @RequestParam(value = "tag", required = false) String tag,
+            @Parameter(name = "session", required = false) @RequestParam(value = "session", required = false) String session,
+            @Parameter(name = "subject", required = false) @RequestParam(value = "subject", required = false) String subject,
             @Parameter(name = "group", required = false) @RequestParam(value = "group", required = false) String group,
             @Parameter(name = "element", required = false) @RequestParam(value = "element", required = false) String element,
-            @Parameter(name = "process", required = false) @RequestParam(value = "process", required = false) String process,
+            @Parameter(name = "factType", required = false) @RequestParam(value = "process", required = false) String factType,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Parameter(description = "Facts since the selected date", example = "2023-01-01T00:00:00.00Z")
             @RequestParam(value = "from", required = false) OffsetDateTime from,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Parameter(description = "Facts until the selected date", example = "2023-01-31T23:59:59.99Z")
@@ -115,7 +118,7 @@ public abstract class FactServices<V, T extends Fact<V>> {
         } else {
             pairs = null;
         }
-        return factProvider.findBy(organization, issuer, application, tenant, tag, group, element, process,
+        return factProvider.findBy(organization, issuer, application, tenant, session, subject, group, element, factType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
                 lastDays, true, customProperties, pairs);
