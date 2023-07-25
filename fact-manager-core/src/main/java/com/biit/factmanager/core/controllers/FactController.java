@@ -10,12 +10,14 @@ import com.biit.factmanager.persistence.repositories.FactRepository;
 import com.biit.server.controller.BasicElementController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
+import org.springframework.stereotype.Controller;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Map;
 
-public abstract class FactController<ENTITY> extends BasicElementController<Fact<ENTITY>, FactDTO<ENTITY>, FactRepository<Fact<ENTITY>>,
+@Controller
+public class FactController<ENTITY> extends BasicElementController<Fact<ENTITY>, FactDTO<ENTITY>, FactRepository<Fact<ENTITY>>,
         FactProvider<Fact<ENTITY>>, FactConverterRequest<ENTITY>, FactConverter<ENTITY>> {
 
 

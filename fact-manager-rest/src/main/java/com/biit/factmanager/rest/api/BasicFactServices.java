@@ -1,14 +1,16 @@
 package com.biit.factmanager.rest.api;
 
-import com.biit.factmanager.core.providers.FactProvider;
-import com.biit.factmanager.persistence.entities.BasicFact;
+import com.biit.factmanager.core.controllers.FactController;
+import com.biit.factmanager.core.controllers.models.FactDTO;
+import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.rest.exceptions.BadRequestException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.util.Pair;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -28,14 +30,13 @@ import java.util.Map;
 
 @RequestMapping(value = "/basic")
 @RestController
-public class BasicFactServices extends FactServices<String, BasicFact> {
+public class BasicFactServices extends FactServices<String, Fact<String>> {
 
     @Autowired
-    @Qualifier("basicFactProvider")
-    private FactProvider<BasicFact> factProvider;
+    private ObjectMapper objectMapper;
 
-    public BasicFactServices(FactProvider<BasicFact> factProvider) {
-        super(factProvider);
+    public BasicFactServices(FactController<String> factController) {
+        super(factController);
     }
 
     @Operation(summary = "Search facts functionality", description = """
@@ -56,9 +57,10 @@ public class BasicFactServices extends FactServices<String, BasicFact> {
             - parameters: set of parameters/value pairs that are specific for each fact (search in the value)",
             """,
             security = @SecurityRequirement(name = "bearerAuth"))
+    //@PreAuthorize("hasAnyAuthority(@securityService.viewerPrivilege, @securityService.editorPrivilege, @securityService.adminPrivilege)")
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Collection<BasicFact> getFacts(
+    public Collection<FactDTO<String>> getFacts(
             HttpServletRequest httpRequest,
             @Parameter(name = "organization", required = false) @RequestParam(value = "organization", required = false) String organization,
             @Parameter(name = "customer", required = false) @RequestParam(value = "customer", required = false) String customer,
@@ -92,9 +94,16 @@ public class BasicFactServices extends FactServices<String, BasicFact> {
             pairs = null;
         }
 
-        return factProvider.findBy(organization, customer, application, tenant, session, subject, group, element, factType,
+        final Collection<FactDTO<String>> basicFacts = getFactController().findBy(organization, customer, application, tenant,
+                session, subject, group, element, factType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
-                lastDays, true, customProperties, pairs);
+                lastDays, null, customProperties, pairs);
+        try {
+            final String value = objectMapper.writeValueAsString(basicFacts);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return basicFacts;
     }
 }

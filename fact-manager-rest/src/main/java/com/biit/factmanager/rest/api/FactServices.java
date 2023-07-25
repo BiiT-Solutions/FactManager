@@ -1,6 +1,7 @@
 package com.biit.factmanager.rest.api;
 
-import com.biit.factmanager.core.providers.FactProvider;
+import com.biit.factmanager.core.controllers.FactController;
+import com.biit.factmanager.core.controllers.models.FactDTO;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.rest.exceptions.BadRequestException;
@@ -12,6 +13,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,40 +31,47 @@ import java.util.Map;
 
 public abstract class FactServices<V, T extends Fact<V>> {
 
-    private final FactProvider<T> factProvider;
+    private final FactController<V> factController;
 
-    public FactServices(FactProvider<T> factProvider) {
-        this.factProvider = factProvider;
+    public FactServices(FactController<V> factController) {
+        this.factController = factController;
+    }
+
+    protected FactController<V> getFactController() {
+        return factController;
     }
 
     @Operation(summary = "Adds a new fact", description = "Parameters:\n"
             + "fact (required): Fact object to be added", security = @SecurityRequirement(name = "bearerAuth"))
+    //@PreAuthorize("hasAnyAuthority(@securityService.editorPrivilege, @securityService.adminPrivilege)")
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public T addFact(@Parameter(name = "Notification Request", required = true) @RequestBody T fact,
-                     Authentication authentication, HttpServletRequest httpRequest) {
+    public FactDTO<V> addFact(@Parameter(name = "Notification Request", required = true) @RequestBody FactDTO<V> fact,
+                              Authentication authentication, HttpServletRequest httpRequest) {
         FactManagerLogger.info(this.getClass().getName(), "Adding fact '" + fact + "'.");
-        return factProvider.save(fact);
+        return factController.create(fact, authentication.getName());
     }
 
     @Operation(summary = "Save a list of facts", description = "Parameters:\n"
             + "facts (required): List of Fact objects to be added", security = @SecurityRequirement(name = "bearerAuth"))
+    @PreAuthorize("hasAnyAuthority(@securityService.editorPrivilege, @securityService.adminPrivilege)")
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping(value = "/collection", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Collection<T> addFactList(@Parameter(name = "Fact list", required = true) @RequestBody List<T> facts,
-                                     Authentication authentication, HttpServletRequest httpRequest) {
+    public Collection<FactDTO<V>> addFactList(@Parameter(name = "Fact list", required = true) @RequestBody List<FactDTO<V>> facts,
+                                              Authentication authentication, HttpServletRequest httpRequest) {
         FactManagerLogger.debug(this.getClass().getName(), "Saving a list of facts '{}'.", facts);
-        return factProvider.save(facts);
+        return factController.create(facts, authentication.getName());
     }
 
     @Operation(summary = "Deletes a fact", description = "Parameters:\n"
             + "fact (required): Fact object to be removed.", security = @SecurityRequirement(name = "bearerAuth"))
+    @PreAuthorize("hasAnyAuthority(@securityService.adminPrivilege)")
     @ResponseStatus(value = HttpStatus.OK)
     @DeleteMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteFact(@Parameter(name = "fact", required = true) @RequestBody T fact,
+    public void deleteFact(@Parameter(name = "fact", required = true) @RequestBody FactDTO<V> fact,
                            HttpServletRequest httpRequest) {
         FactManagerLogger.info(this.getClass().getName(), "Remove fact");
-        factProvider.delete(fact);
+        factController.delete(fact);
     }
 
     @Operation(summary = "Search facts functionality", description = """
@@ -83,9 +92,10 @@ public abstract class FactServices<V, T extends Fact<V>> {
             - parameters: set of parameters/value pairs that are specific for each fact (search in the value)",
             """,
             security = @SecurityRequirement(name = "bearerAuth"))
+    @PreAuthorize("hasAnyAuthority(@securityService.viewerPrivilege, @securityService.editorPrivilege, @securityService.adminPrivilege)")
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Collection<T> getFacts(
+    public Collection<FactDTO<V>> getFacts(
             HttpServletRequest httpRequest,
             @Parameter(name = "organization", required = false) @RequestParam(value = "organization", required = false) String organization,
             @Parameter(name = "issuer", required = false) @RequestParam(value = "issuer", required = false) String issuer,
@@ -118,7 +128,7 @@ public abstract class FactServices<V, T extends Fact<V>> {
         } else {
             pairs = null;
         }
-        return factProvider.findBy(organization, issuer, application, tenant, session, subject, group, element, factType,
+        return factController.findBy(organization, issuer, application, tenant, session, subject, group, element, factType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
                 lastDays, true, customProperties, pairs);

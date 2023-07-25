@@ -1,6 +1,6 @@
 package com.biit.factmanager.rest.api;
 
-import com.biit.factmanager.core.providers.FactProvider;
+import com.biit.factmanager.core.controllers.FactController;
 import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
 import com.biit.factmanager.persistence.entities.values.FormrunnerQuestionValue;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FormrunnerQuestionFactServices extends FactServices<FormrunnerQuestionValue, FormrunnerQuestionFact> {
 
-    public FormrunnerQuestionFactServices(FactProvider<FormrunnerQuestionFact> factProvider) {
+    public FormrunnerQuestionFactServices(FactController<FormrunnerQuestionValue> factProvider) {
         super(factProvider);
     }
 }

@@ -1,5 +1,7 @@
 package com.biit.factmanager.test;
 
+import com.biit.factmanager.core.controllers.FactController;
+import com.biit.factmanager.core.controllers.models.FactDTO;
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
 import com.biit.factmanager.persistence.entities.values.FormrunnerQuestionValue;
@@ -30,6 +32,8 @@ public class FactsServicesTests extends AbstractTransactionalTestNGSpringContext
     @Qualifier("formRunnerQuestionFactProvider")
     private FactProvider<FormrunnerQuestionFact> factProvider;
 
+    private FactController<FormrunnerQuestionValue> factController;
+
 
     @BeforeClass
     public void databaseSetUp() {
@@ -41,11 +45,11 @@ public class FactsServicesTests extends AbstractTransactionalTestNGSpringContext
         Assert.assertEquals(factServices.getFacts(null, null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null,
                 null, null, null, null, null).size(), 0);
         // Save 2 empty facts
-        FormrunnerQuestionFact FormrunnerQuestionFact = new FormrunnerQuestionFact();
+        FactDTO<FormrunnerQuestionValue> FormrunnerQuestionFact = new FactDTO<>();
         FormrunnerQuestionFact.setGroup(FACT_EXAMINATION_GROUP);
-        List<FormrunnerQuestionFact> facts = new ArrayList<>();
+        List<FactDTO<FormrunnerQuestionValue>> facts = new ArrayList<>();
         facts.add(FormrunnerQuestionFact);
-        FormrunnerQuestionFact = new FormrunnerQuestionFact();
+        FormrunnerQuestionFact = new FactDTO<>();
         FormrunnerQuestionFact.setGroup(FACT_EXAMINATION_GROUP);
         facts.add(FormrunnerQuestionFact);
         Assert.assertEquals(facts.size(), 2);
@@ -58,11 +62,11 @@ public class FactsServicesTests extends AbstractTransactionalTestNGSpringContext
 
     @Test(dependsOnMethods = "addFacts")
     public void removeFact() {
-        Collection<FormrunnerQuestionFact> facts = factServices.getFacts(null, null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null,
+        Collection<FactDTO<FormrunnerQuestionValue>> facts = factServices.getFacts(null, null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null,
                 null, null, null, null, null, null);
         Assert.assertEquals(facts.size(), 2);
         Assert.assertNotNull(facts);
-        for (FormrunnerQuestionFact fact : facts) {
+        for (FactDTO<FormrunnerQuestionValue> fact : facts) {
             factServices.deleteFact(fact, null);
         }
         Assert.assertEquals(factServices.getFacts(null, null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null, null, null, null, null, null).size(), 0);
@@ -71,7 +75,7 @@ public class FactsServicesTests extends AbstractTransactionalTestNGSpringContext
 
     @AfterClass
     public void cleanDatabase() {
-        for (FormrunnerQuestionFact fact : factProvider.getAll()) {
+        for (FactDTO<FormrunnerQuestionValue> fact : factController.get()) {
             factServices.deleteFact(fact, null);
         }
     }
