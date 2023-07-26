@@ -33,10 +33,10 @@ public class FactController<ENTITY> extends BasicElementController<Fact<ENTITY>,
 
     public Collection<FactDTO> findBy(
             String organization, String customer, String application, String tenant, String session, String subject,
-            String group, String element, String factType, LocalDateTime startDate, LocalDateTime endDate,
+            String group, String element, String factType, String valueType, LocalDateTime startDate, LocalDateTime endDate,
             Integer lastDays, Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>[] pairs) {
 
         return convertAll(getProvider().findBy(organization, customer, application, tenant, session, subject, group, element, factType,
-                startDate, endDate, lastDays, discriminatorValue, customProperties, pairs));
+                valueType, startDate, endDate, lastDays, discriminatorValue, customProperties, pairs));
     }
 }

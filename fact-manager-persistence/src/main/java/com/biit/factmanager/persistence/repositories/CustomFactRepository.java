@@ -10,7 +10,7 @@ import java.util.Map;
 public interface CustomFactRepository<T extends Fact<?>> {
 
     /**
-     * Has any of this properties.
+     * Has any of these properties.
      *
      * @param customProperties
      * @return
@@ -20,7 +20,7 @@ public interface CustomFactRepository<T extends Fact<?>> {
     List<T> findByValueParameters(Pair<String, Object>... valueParameters);
 
     List<T> findBy(Class<T> entityTypeClass, String organization, String customer, String application, String tenant,
-                   String group, String element, String session, String subject, String factType,
+                   String group, String element, String session, String subject, String factType, String valueType,
                    LocalDateTime startDate, LocalDateTime endDate,
                    Boolean discriminatorValue, Map<String, String> customProperties,
                    Pair<String, Object>... valueParameters);

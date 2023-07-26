@@ -43,6 +43,7 @@ public class PivotViewServices<T extends Fact<?>> {
             - group: grouping option for the facts
             - element: if of the element that actions the fact
             - factType: if has a form answer, is a timing event, etc.
+            - valueType: the class name of the value.
             - startDate: filtering facts from this day
             - endDate: filtering facts to this day
             - lastDays: if set, replaces startDate and endDate
@@ -64,6 +65,7 @@ public class PivotViewServices<T extends Fact<?>> {
             @Parameter(name = "group", required = false) @RequestParam(value = "group", required = false) String group,
             @Parameter(name = "element", required = false) @RequestParam(value = "element", required = false) String element,
             @Parameter(name = "factType", required = false) @RequestParam(value = "factType", required = false) String factType,
+            @Parameter(name = "valueType", required = false) @RequestParam(value = "valueType", required = false) String valueType,
             @Parameter(name = "startDate", required = false) @RequestParam(value = "startDate", required = false) LocalDateTime startDate,
             @Parameter(name = "endDate", required = false) @RequestParam(value = "endDate", required = false) LocalDateTime endDate,
             @Parameter(name = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
@@ -83,7 +85,7 @@ public class PivotViewServices<T extends Fact<?>> {
         }
 
         return pivotViewProvider.get(organization, issuer, application, tenant, session, subject, group, element,
-                factType, startDate, endDate, lastDays, pairs);
+                factType, valueType, startDate, endDate, lastDays, pairs);
     }
 
 

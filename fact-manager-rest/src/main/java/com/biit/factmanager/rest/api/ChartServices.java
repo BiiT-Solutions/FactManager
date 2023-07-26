@@ -48,6 +48,7 @@ public class ChartServices<T extends Fact<?>> {
             - group: grouping option for the facts
             - element: if of the element that actions the fact
             - factType: if has a form answer, is a timing event, etc.
+            - valueType: the class name of the value.
             - startDate: filtering facts from this day
             - endDate: filtering facts to this day
             - lastDays: if set, replaces startDate and endDate
@@ -69,7 +70,8 @@ public class ChartServices<T extends Fact<?>> {
             @Parameter(name = "subject", required = false) @RequestParam(value = "subject", required = false) String subject,
             @Parameter(name = "group", required = false) @RequestParam(value = "group", required = false) String group,
             @Parameter(name = "element", required = false) @RequestParam(value = "element", required = false) String element,
-            @Parameter(name = "factType", required = false) @RequestParam(value = "process", required = false) String factType,
+            @Parameter(name = "factType", required = false) @RequestParam(value = "factType", required = false) String factType,
+            @Parameter(name = "valueType", required = false) @RequestParam(value = "valueType", required = false) String valueType,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Parameter(description = "Facts since the selected date", example = "2023-01-01T00:00:00.00Z")
             @RequestParam(value = "from", required = false) OffsetDateTime from,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Parameter(description = "Facts until the selected date", example = "2023-01-31T23:59:59.99Z")
@@ -89,7 +91,7 @@ public class ChartServices<T extends Fact<?>> {
             pairs[i] = Pair.of(valueParameters.get(i), valueParameters.get(i + 1));
         }
 
-        return chartProvider.getChart(organization, issuer, application, tenant, session, subject, group, element, factType,
+        return chartProvider.getChart(organization, issuer, application, tenant, session, subject, group, element, factType, valueType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
                 lastDays, type, pairs);

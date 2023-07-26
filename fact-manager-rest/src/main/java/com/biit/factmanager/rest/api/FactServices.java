@@ -38,10 +38,6 @@ public class FactServices<V> {
         this.factController = factController;
     }
 
-    protected FactController<V> getFactController() {
-        return factController;
-    }
-
     @Operation(summary = "Deletes a fact", description = "Parameters:\n"
             + "fact (required): Fact object to be removed.", security = @SecurityRequirement(name = "bearerAuth"))
     @PreAuthorize("hasAnyAuthority(@securityService.adminPrivilege)")
@@ -62,8 +58,9 @@ public class FactServices<V> {
             - session: event session
             - subject: what is doing
             - group: grouping option for the facts
-            - element: if of the element that actions the fact
-            - factType: if has a form answer, is a timing event, etc.
+            - element: The element that actions the fact
+            - factType: if it has a form answer, is a timing event, etc.
+            - valueType: the class name of the value.
             - startDate: filtering facts from this day
             - endDate: filtering facts to this day
             - lastDays: if set, replaces startDate and endDate
@@ -83,7 +80,8 @@ public class FactServices<V> {
             @Parameter(name = "subject", required = false) @RequestParam(value = "subject", required = false) String subject,
             @Parameter(name = "group", required = false) @RequestParam(value = "group", required = false) String group,
             @Parameter(name = "element", required = false) @RequestParam(value = "element", required = false) String element,
-            @Parameter(name = "factType", required = false) @RequestParam(value = "process", required = false) String factType,
+            @Parameter(name = "factType", required = false) @RequestParam(value = "factType", required = false) String factType,
+            @Parameter(name = "valueType", required = false) @RequestParam(value = "valueType", required = false) String valueType,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Parameter(description = "Facts since the selected date", example = "2023-01-01T00:00:00.00Z")
             @RequestParam(value = "from", required = false) OffsetDateTime from,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Parameter(description = "Facts until the selected date", example = "2023-01-31T23:59:59.99Z")
@@ -107,7 +105,7 @@ public class FactServices<V> {
         } else {
             pairs = null;
         }
-        return factController.findBy(organization, issuer, application, tenant, session, subject, group, element, factType,
+        return factController.findBy(organization, issuer, application, tenant, session, subject, group, element, factType, valueType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
                 lastDays, null, customProperties, pairs);
