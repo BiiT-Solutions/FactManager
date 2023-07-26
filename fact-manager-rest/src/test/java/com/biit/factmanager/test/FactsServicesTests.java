@@ -63,11 +63,11 @@ public class FactsServicesTests extends AbstractTransactionalTestNGSpringContext
 
     @Test(dependsOnMethods = "addFacts")
     public void removeFact() {
-        Collection<FactDTO<FormrunnerQuestionValue>> facts = factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null,
+        Collection<FactDTO> facts = factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null,
                 null, null, null, null, null, null);
         Assert.assertEquals(facts.size(), 2);
         Assert.assertNotNull(facts);
-        for (FactDTO<FormrunnerQuestionValue> fact : facts) {
+        for (FactDTO fact : facts) {
             factServices.deleteFact(fact, null);
         }
         Assert.assertEquals(factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null, null, null, null, null, null, null).size(), 0);

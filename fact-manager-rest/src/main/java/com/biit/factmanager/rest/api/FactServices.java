@@ -47,7 +47,7 @@ public class FactServices<V> {
     @PreAuthorize("hasAnyAuthority(@securityService.adminPrivilege)")
     @ResponseStatus(value = HttpStatus.OK)
     @DeleteMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteFact(@Parameter(name = "fact", required = true) @RequestBody FactDTO<V> fact,
+    public void deleteFact(@Parameter(name = "fact", required = true) @RequestBody FactDTO fact,
                            HttpServletRequest httpRequest) {
         FactManagerLogger.info(this.getClass().getName(), "Remove fact");
         factController.deleteById(fact.getId());
@@ -74,7 +74,7 @@ public class FactServices<V> {
     @PreAuthorize("hasAnyAuthority(@securityService.viewerPrivilege, @securityService.editorPrivilege, @securityService.adminPrivilege)")
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Collection<FactDTO<V>> getFacts(
+    public Collection<FactDTO> getFacts(
             @Parameter(name = "organization", required = false) @RequestParam(value = "organization", required = false) String organization,
             @Parameter(name = "issuer", required = false) @RequestParam(value = "issuer", required = false) String issuer,
             @Parameter(name = "application", required = false) @RequestParam(value = "application", required = false) String application,

@@ -9,17 +9,17 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FactConverter<ENTITY> extends ElementConverter<Fact<ENTITY>, FactDTO<ENTITY>, FactConverterRequest<ENTITY>> {
+public class FactConverter<ENTITY> extends ElementConverter<Fact<ENTITY>, FactDTO, FactConverterRequest<ENTITY>> {
 
     @Override
-    protected FactDTO<ENTITY> convertElement(FactConverterRequest<ENTITY> from) {
-        final FactDTO<ENTITY> factDTO = new FactDTO<>();
+    protected FactDTO convertElement(FactConverterRequest<ENTITY> from) {
+        final FactDTO factDTO = new FactDTO();
         BeanUtils.copyProperties(from.getEntity(), factDTO);
         return factDTO;
     }
 
     @Override
-    public Fact<ENTITY> reverse(FactDTO<ENTITY> to) {
+    public Fact<ENTITY> reverse(FactDTO to) {
         throw new UnsupportedOperationException();
     }
 }

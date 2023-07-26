@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Map;
 
 @Controller
-public class FactController<ENTITY> extends BasicElementController<Fact<ENTITY>, FactDTO<ENTITY>, FactRepository<Fact<ENTITY>>,
+public class FactController<ENTITY> extends BasicElementController<Fact<ENTITY>, FactDTO, FactRepository<Fact<ENTITY>>,
         FactProvider<Fact<ENTITY>>, FactConverterRequest<ENTITY>, FactConverter<ENTITY>> {
 
 
@@ -31,7 +31,7 @@ public class FactController<ENTITY> extends BasicElementController<Fact<ENTITY>,
         return new FactConverterRequest<>(entity);
     }
 
-    public Collection<FactDTO<ENTITY>> findBy(
+    public Collection<FactDTO> findBy(
             String organization, String customer, String application, String tenant, String session, String subject,
             String group, String element, String factType, LocalDateTime startDate, LocalDateTime endDate,
             Integer lastDays, Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>[] pairs) {

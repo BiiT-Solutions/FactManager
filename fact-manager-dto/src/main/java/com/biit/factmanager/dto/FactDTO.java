@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-public class FactDTO<ENTITY> extends ElementDTO {
+public class FactDTO extends ElementDTO {
 
     private String organization;
 
