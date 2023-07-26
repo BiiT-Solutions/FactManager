@@ -26,7 +26,7 @@ public class FactsServicesTests extends AbstractTransactionalTestNGSpringContext
     private static final String FACT_EXAMINATION_GROUP = "examination_name";
 
     @Autowired
-    private FactServices<FormrunnerQuestionValue, FormrunnerQuestionFact> factServices;
+    private FactServices<FormrunnerQuestionValue> factServices;
 
     @Autowired
     @Qualifier("formRunnerQuestionFactProvider")
