@@ -13,8 +13,6 @@ public class FactDTO extends ElementDTO {
 
     private String organization;
 
-    private String customer;
-
     private String application;
 
     private String tenant;
@@ -27,17 +25,17 @@ public class FactDTO extends ElementDTO {
 
     private String factType;
 
-    private String element;
-
-    private String createdBy;
-
-    private LocalDateTime createdAt;
-
     @JsonSerialize(using = JsonValueSerializer.class)
     @JsonDeserialize(using = JsonValueDeserializer.class)
     private String value;
 
     private String valueType;
+
+    private String element;
+
+    private String createdBy;
+
+    private LocalDateTime createdAt;
 
     private Collection<CustomPropertyDTO> customProperties;
 
@@ -79,14 +77,6 @@ public class FactDTO extends ElementDTO {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public String getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(String customer) {
-        this.customer = customer;
     }
 
     public String getApplication() {

@@ -48,7 +48,7 @@ public class FactClient {
             return new ArrayList<>();
         }
         facts.forEach(factDTO -> {
-            factDTO.setCustomer(customerName);
+            factDTO.setCreatedBy(customerName);
             factDTO.setApplication(applicationName);
         });
         try {

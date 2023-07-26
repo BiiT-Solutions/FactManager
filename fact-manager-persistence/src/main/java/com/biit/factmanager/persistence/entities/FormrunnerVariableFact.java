@@ -3,7 +3,6 @@ package com.biit.factmanager.persistence.entities;
 
 import com.biit.eventstructure.event.IKafkaStorable;
 import com.biit.factmanager.logger.FactManagerLogger;
-import com.biit.factmanager.persistence.entities.values.FormrunnerQuestionValue;
 import com.biit.factmanager.persistence.entities.values.FormrunnerVariableValue;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.core.type.TypeReference;
