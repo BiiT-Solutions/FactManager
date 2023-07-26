@@ -1,4 +1,4 @@
-package com.biit.factmanager.client.fact;
+package com.biit.factmanager.dto;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -14,8 +14,7 @@ public class JsonValueSerializer extends StdSerializer<String> {
 
     @Override
     public void serialize(String value, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException {
-        if (value != null && !value.isEmpty()) {
-            jsonGenerator.writeString(value.substring(1).substring(0, value.length() - 2));
-        }
+        //jsonGenerator.writeString("{" + value + "}");
+        jsonGenerator.writeString(value);
     }
 }

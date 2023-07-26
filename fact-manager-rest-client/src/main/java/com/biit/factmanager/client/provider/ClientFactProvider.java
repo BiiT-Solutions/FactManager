@@ -1,12 +1,12 @@
 package com.biit.factmanager.client.provider;
 
 import com.biit.factmanager.client.FactClient;
-import com.biit.factmanager.client.IFact;
 import com.biit.factmanager.client.SearchParameters;
-import com.biit.factmanager.client.fact.FactDTO;
+import com.biit.factmanager.dto.FactDTO;
 import com.biit.rest.client.Header;
 import com.biit.rest.exceptions.UnprocessableEntityException;
 import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,27 +14,27 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-
-public abstract class CustomFactProvider<T extends IFact> {
+@Service
+public class ClientFactProvider {
 
     private final FactClient factClient;
 
-    private final Factory<T> factory;
+    private final Factory<FactDTO> factory;
 
-    public interface Factory<T> {
-        T create();
+    public interface Factory<FactDTO> {
+        FactDTO create();
     }
 
-    public CustomFactProvider(FactClient factClient, Factory<T> factory) {
+    public ClientFactProvider(FactClient factClient) {
         this.factClient = factClient;
-        this.factory = factory;
+        this.factory = FactDTO::new;
     }
 
-    T createInstance() {
+    FactDTO createInstance() {
         return factory.create();
     }
 
-    public T add(T fact) throws UnprocessableEntityException {
+    public FactDTO add(FactDTO fact) throws UnprocessableEntityException {
         final List<FactDTO> rawFacts = factClient.post(Collections.singletonList(convert(fact)), null);
         if (rawFacts.size() > 0) {
             return convertDTO(rawFacts.get(0));
@@ -42,12 +42,12 @@ public abstract class CustomFactProvider<T extends IFact> {
         return null;
     }
 
-    public List<T> add(List<T> facts) throws UnprocessableEntityException {
+    public List<FactDTO> add(List<FactDTO> facts) throws UnprocessableEntityException {
         final List<FactDTO> rawFacts = factClient.post(convert(facts), null);
         return convertDTO(rawFacts);
     }
 
-    public T add(T fact, List<Header> headers) throws UnprocessableEntityException {
+    public FactDTO add(FactDTO fact, List<Header> headers) throws UnprocessableEntityException {
         final List<FactDTO> rawFacts = factClient.post(Collections.singletonList(convert(fact)), headers);
         if (rawFacts.size() > 0) {
             return convertDTO(rawFacts.get(0));
@@ -55,37 +55,37 @@ public abstract class CustomFactProvider<T extends IFact> {
         return null;
     }
 
-    public List<T> get(Map<SearchParameters, Object> filter) throws UnprocessableEntityException {
+    public List<FactDTO> get(Map<SearchParameters, Object> filter) throws UnprocessableEntityException {
         final List<FactDTO> rawFacts = factClient.get(filter, null);
         return convertDTO(rawFacts);
     }
 
-    public List<T> get(Map<SearchParameters, Object> filter, List<Header> headers) throws UnprocessableEntityException {
+    public List<FactDTO> get(Map<SearchParameters, Object> filter, List<Header> headers) throws UnprocessableEntityException {
         final List<FactDTO> rawFacts = factClient.get(filter, headers);
         return convertDTO(rawFacts);
     }
 
-    protected T convertDTO(FactDTO factDTO) {
-        final T fact = createInstance();
+    protected FactDTO convertDTO(FactDTO factDTO) {
+        final FactDTO fact = createInstance();
         BeanUtils.copyProperties(factDTO, fact);
         fact.setValue(factDTO.getValue());
         return fact;
     }
 
-    protected List<T> convertDTO(Collection<FactDTO> factsDTO) {
-        final List<T> convertedFacts = new ArrayList<>();
+    protected List<FactDTO> convertDTO(Collection<FactDTO> factsDTO) {
+        final List<FactDTO> convertedFacts = new ArrayList<>();
         factsDTO.forEach(factDTO -> convertedFacts.add(convertDTO(factDTO)));
         return convertedFacts;
     }
 
-    protected FactDTO convert(T fact) {
+    protected FactDTO convert(FactDTO fact) {
         final FactDTO factDTO = new FactDTO();
         BeanUtils.copyProperties(fact, factDTO);
         factDTO.setValue(fact.getValue());
         return factDTO;
     }
 
-    protected List<FactDTO> convert(Collection<T> facts) {
+    protected List<FactDTO> convert(Collection<FactDTO> facts) {
         final List<FactDTO> convertedFacts = new ArrayList<>();
         facts.forEach(fact -> convertedFacts.add(convert(fact)));
         return convertedFacts;

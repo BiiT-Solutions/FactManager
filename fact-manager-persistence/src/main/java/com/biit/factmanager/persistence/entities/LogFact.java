@@ -8,7 +8,7 @@ import jakarta.persistence.Transient;
 
 
 @Entity
-@DiscriminatorValue("StringFact")
+@DiscriminatorValue("LogFact")
 public class LogFact extends Fact<StringValue> {
 
     @Transient

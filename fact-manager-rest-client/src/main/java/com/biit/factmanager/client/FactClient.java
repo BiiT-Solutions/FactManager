@@ -1,7 +1,7 @@
 package com.biit.factmanager.client;
 
 
-import com.biit.factmanager.client.fact.FactDTO;
+import com.biit.factmanager.dto.FactDTO;
 import com.biit.factmanager.logger.FactClientLogger;
 import com.biit.rest.client.Header;
 import com.biit.rest.exceptions.EmptyResultException;
@@ -57,7 +57,7 @@ public class FactClient {
                 final String res = result.readEntity(String.class);
                 FactClientLogger.debug(this.getClass(), "Response obtained from '{}' is '{}'.",
                         factUrlConstructor.getFactServerUrl() + factUrlConstructor.addFacts(), result.getStatus());
-                return mapper.readValue(res, new TypeReference<List<FactDTO>>() {
+                return mapper.readValue(res, new TypeReference<>() {
                 });
             }
         } catch (JsonProcessingException e) {

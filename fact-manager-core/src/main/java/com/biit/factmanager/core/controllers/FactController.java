@@ -1,21 +1,23 @@
 package com.biit.factmanager.core.controllers;
 
 
-import com.biit.factmanager.core.controllers.models.FactDTO;
 import com.biit.factmanager.core.converters.FactConverter;
 import com.biit.factmanager.core.converters.models.FactConverterRequest;
 import com.biit.factmanager.core.providers.FactProvider;
+import com.biit.factmanager.dto.FactDTO;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.persistence.repositories.FactRepository;
 import com.biit.server.controller.BasicElementController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
+import org.springframework.stereotype.Controller;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Map;
 
-public abstract class FactController<ENTITY> extends BasicElementController<Fact<ENTITY>, FactDTO<ENTITY>, FactRepository<Fact<ENTITY>>,
+@Controller
+public class FactController<ENTITY> extends BasicElementController<Fact<ENTITY>, FactDTO, FactRepository<Fact<ENTITY>>,
         FactProvider<Fact<ENTITY>>, FactConverterRequest<ENTITY>, FactConverter<ENTITY>> {
 
 
@@ -29,7 +31,7 @@ public abstract class FactController<ENTITY> extends BasicElementController<Fact
         return new FactConverterRequest<>(entity);
     }
 
-    public Collection<FactDTO<ENTITY>> findBy(
+    public Collection<FactDTO> findBy(
             String organization, String customer, String application, String tenant, String session, String subject,
             String group, String element, String factType, LocalDateTime startDate, LocalDateTime endDate,
             Integer lastDays, Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>[] pairs) {

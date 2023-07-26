@@ -25,7 +25,8 @@
         </dependency>
         <dependency>
             <groupId>com.biit</groupId>
-            <artifactId>rest-server-dto</artifactId>
+            <artifactId>fact-manager-dto</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <!-- Testing -->
         <dependency>
