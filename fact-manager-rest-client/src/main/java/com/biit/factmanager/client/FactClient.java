@@ -1,7 +1,7 @@
 package com.biit.factmanager.client;
 
 
-import com.biit.factmanager.client.fact.FactDTO;
+import com.biit.factmanager.dto.FactDTO;
 import com.biit.factmanager.logger.FactClientLogger;
 import com.biit.rest.client.Header;
 import com.biit.rest.exceptions.EmptyResultException;

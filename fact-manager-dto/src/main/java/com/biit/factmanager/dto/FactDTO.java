@@ -1,6 +1,8 @@
 package com.biit.factmanager.dto;
 
 import com.biit.server.controllers.models.ElementDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -151,5 +153,10 @@ public class FactDTO<ENTITY> extends ElementDTO {
     @Override
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    @JsonIgnore
+    public Object getEntityObject() throws ClassNotFoundException, JsonProcessingException {
+        return ObjectMapperFactory.getObjectMapper().readValue(getValue(), Class.forName(getValueType()));
     }
 }

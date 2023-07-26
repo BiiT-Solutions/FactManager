@@ -2,7 +2,7 @@ package com.biit.factmanager.client.provider;
 
 import com.biit.factmanager.client.FactClient;
 import com.biit.factmanager.client.SearchParameters;
-import com.biit.factmanager.client.fact.FactDTO;
+import com.biit.factmanager.dto.FactDTO;
 import com.biit.rest.client.Header;
 import com.biit.rest.exceptions.UnprocessableEntityException;
 import org.springframework.beans.BeanUtils;

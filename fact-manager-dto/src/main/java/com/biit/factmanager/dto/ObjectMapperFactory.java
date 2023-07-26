@@ -1,4 +1,4 @@
-package com.biit.factmanager.client;
+package com.biit.factmanager.dto;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
