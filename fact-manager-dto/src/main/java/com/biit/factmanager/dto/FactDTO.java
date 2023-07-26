@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.Collection;
 
 public class FactDTO extends ElementDTO {
 
@@ -39,7 +39,7 @@ public class FactDTO extends ElementDTO {
 
     private String valueType;
 
-    private Map<String, String> customProperties;
+    private Collection<CustomPropertyDTO> customProperties;
 
     public String getOrganization() {
         return organization;
@@ -113,11 +113,11 @@ public class FactDTO extends ElementDTO {
         this.valueType = valueType;
     }
 
-    public Map<String, String> getCustomProperties() {
+    public Collection<CustomPropertyDTO> getCustomProperties() {
         return customProperties;
     }
 
-    public void setCustomProperties(Map<String, String> customProperties) {
+    public void setCustomProperties(Collection<CustomPropertyDTO> customProperties) {
         this.customProperties = customProperties;
     }
 

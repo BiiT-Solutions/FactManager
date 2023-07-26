@@ -29,6 +29,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.context.annotation.Primary;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -108,6 +109,7 @@ public class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
 
     public Fact() {
         super();
+        customProperties = new ArrayList<>();
     }
 
     public Fact(ENTITY entity) {

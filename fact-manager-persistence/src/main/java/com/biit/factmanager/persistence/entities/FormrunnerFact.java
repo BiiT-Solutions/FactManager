@@ -2,6 +2,7 @@ package com.biit.factmanager.persistence.entities;
 
 import com.biit.eventstructure.event.IKafkaStorable;
 import com.biit.factmanager.persistence.entities.values.FormrunnerValue;
+import com.biit.factmanager.persistence.entities.values.FormrunnerVariableValue;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.persistence.DiscriminatorValue;
@@ -19,6 +20,7 @@ public class FormrunnerFact extends Fact<FormrunnerValue> implements IKafkaStora
     @JsonCreator
     public FormrunnerFact() {
         super();
+        setValueType(FormrunnerValue.class.getName());
     }
 
     private FormrunnerValue getFormrunnerValue() {
