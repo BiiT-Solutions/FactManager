@@ -16,10 +16,10 @@ public class FactUrlConstructor {
     }
 
     public String addFacts() {
-        return "/basic/collection";
+        return "/collection";
     }
 
     public String findByParameters() {
-        return "/basic";
+        return "/";
     }
 }
