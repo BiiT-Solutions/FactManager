@@ -18,6 +18,7 @@
     <modules>
         <module>fact-manager-logger</module>
         <module>fact-manager-persistence</module>
+        <module>fact-manager-dto</module>
         <module>fact-manager-core</module>
         <module>fact-manager-kafka</module>
         <module>fact-manager-rest</module>

@@ -1,10 +1,10 @@
 package com.biit.factmanager.core.controllers;
 
 
-import com.biit.factmanager.core.controllers.models.FactDTO;
 import com.biit.factmanager.core.converters.FactConverter;
 import com.biit.factmanager.core.converters.models.FactConverterRequest;
 import com.biit.factmanager.core.providers.FactProvider;
+import com.biit.factmanager.dto.FactDTO;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.persistence.repositories.FactRepository;
 import com.biit.server.controller.BasicElementController;

@@ -47,7 +47,7 @@ import java.util.Objects;
         @Index(name = "ind_group", columnList = "grouping"),
         @Index(name = "ind_element", columnList = "element"),
 })
-public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
+public class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     private static final int MAX_JSON_LENGTH = 10 * 1024 * 1024;
 
     @Id
@@ -81,6 +81,10 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     @Column(name = "fact_value", length = MAX_JSON_LENGTH)
     @Convert(converter = StringCryptoConverter.class)
     private String value;
+
+    @Column(name = "value_type", length = MAX_JSON_LENGTH)
+    @Convert(converter = StringCryptoConverter.class)
+    private String valueType;
 
     // ID of the entity on the fact
     @Column(name = "element")
@@ -126,6 +130,14 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     public void setValue(String value) {
         this.value = value;
         this.entity = null;
+    }
+
+    public String getValueType() {
+        return valueType;
+    }
+
+    public void setValueType(String valueType) {
+        this.valueType = valueType;
     }
 
     public Long getId() {
@@ -209,6 +221,16 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     }
 
     @Override
+    public String getPivotViewerTag() {
+        return null;
+    }
+
+    @Override
+    public String getPivotViewerValue() {
+        return null;
+    }
+
+    @Override
     @JsonIgnore
     public String getPivotViewerValueItemId() {
         return tenant;
@@ -218,6 +240,11 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     @JsonIgnore
     public String getPivotViewerItemName() {
         return tenant;
+    }
+
+    @Override
+    public Integer getPivotViewerItemImageIndex() {
+        return null;
     }
 
     @JsonIgnore
@@ -230,7 +257,10 @@ public abstract class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
         }
     }
 
-    protected abstract TypeReference<ENTITY> getJsonParser();
+    protected TypeReference<ENTITY> getJsonParser() {
+        return new TypeReference<>() {
+        };
+    }
 
     @JsonIgnore
     public ENTITY getEntity() {

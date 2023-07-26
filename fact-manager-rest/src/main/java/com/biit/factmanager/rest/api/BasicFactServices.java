@@ -1,10 +1,9 @@
 package com.biit.factmanager.rest.api;
 
 import com.biit.factmanager.core.controllers.FactController;
-import com.biit.factmanager.core.controllers.models.FactDTO;
+import com.biit.factmanager.dto.FactDTO;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.rest.exceptions.BadRequestException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -61,7 +60,6 @@ public class BasicFactServices extends FactServices<String, Fact<String>> {
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<FactDTO<String>> getFacts(
-            HttpServletRequest httpRequest,
             @Parameter(name = "organization", required = false) @RequestParam(value = "organization", required = false) String organization,
             @Parameter(name = "customer", required = false) @RequestParam(value = "customer", required = false) String customer,
             @Parameter(name = "application", required = false) @RequestParam(value = "application", required = false) String application,
@@ -78,7 +76,8 @@ public class BasicFactServices extends FactServices<String, Fact<String>> {
             @Parameter(name = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
             @Parameter(name = "custom-properties", required = false) @RequestParam(value = "custom-properties", required = false)
             Map<String, String> customProperties,
-            @Parameter(name = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters) {
+            @Parameter(name = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters,
+            HttpServletRequest httpRequest) {
 
         final Pair<String, Object>[] pairs;
         if (valueParameters != null) {
@@ -99,11 +98,6 @@ public class BasicFactServices extends FactServices<String, Fact<String>> {
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
                 lastDays, null, customProperties, pairs);
-        try {
-            final String value = objectMapper.writeValueAsString(basicFacts);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
         return basicFacts;
     }
 }

@@ -1,8 +1,8 @@
 package com.biit.factmanager.test;
 
 import com.biit.factmanager.core.controllers.FactController;
-import com.biit.factmanager.core.controllers.models.FactDTO;
 import com.biit.factmanager.core.providers.FactProvider;
+import com.biit.factmanager.dto.FactDTO;
 import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
 import com.biit.factmanager.persistence.entities.values.FormrunnerQuestionValue;
 import com.biit.factmanager.rest.api.FactServices;
@@ -32,6 +32,7 @@ public class FactsServicesTests extends AbstractTransactionalTestNGSpringContext
     @Qualifier("formRunnerQuestionFactProvider")
     private FactProvider<FormrunnerQuestionFact> factProvider;
 
+    @Autowired
     private FactController<FormrunnerQuestionValue> factController;
 
 
@@ -42,41 +43,39 @@ public class FactsServicesTests extends AbstractTransactionalTestNGSpringContext
 
     @Test
     public void addFacts() {
-        Assert.assertEquals(factServices.getFacts(null, null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null,
-                null, null, null, null, null).size(), 0);
+        Assert.assertEquals(factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null,
+                null, null, null, null, null, null).size(), 0);
         // Save 2 empty facts
-        FactDTO<FormrunnerQuestionValue> FormrunnerQuestionFact = new FactDTO<>();
+        FormrunnerQuestionFact FormrunnerQuestionFact = new FormrunnerQuestionFact();
         FormrunnerQuestionFact.setGroup(FACT_EXAMINATION_GROUP);
-        List<FactDTO<FormrunnerQuestionValue>> facts = new ArrayList<>();
+        List<FormrunnerQuestionFact> facts = new ArrayList<>();
         facts.add(FormrunnerQuestionFact);
-        FormrunnerQuestionFact = new FactDTO<>();
+        FormrunnerQuestionFact = new FormrunnerQuestionFact();
         FormrunnerQuestionFact.setGroup(FACT_EXAMINATION_GROUP);
         facts.add(FormrunnerQuestionFact);
         Assert.assertEquals(facts.size(), 2);
-        factServices.addFactList(facts, null, null);
+        factProvider.saveAll(facts);
         Assert.assertEquals(factProvider.count(), 2);
         // 2 saved
-        Assert.assertEquals(factServices.getFacts(null, null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null,
-                null, null, null, null, null).size(), 2);
+        Assert.assertEquals(factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null,
+                null, null, null, null, null, null).size(), 2);
     }
 
     @Test(dependsOnMethods = "addFacts")
     public void removeFact() {
-        Collection<FactDTO<FormrunnerQuestionValue>> facts = factServices.getFacts(null, null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null,
+        Collection<FactDTO<FormrunnerQuestionValue>> facts = factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null,
                 null, null, null, null, null, null);
         Assert.assertEquals(facts.size(), 2);
         Assert.assertNotNull(facts);
         for (FactDTO<FormrunnerQuestionValue> fact : facts) {
             factServices.deleteFact(fact, null);
         }
-        Assert.assertEquals(factServices.getFacts(null, null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null, null, null, null, null, null).size(), 0);
+        Assert.assertEquals(factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null, null, null, null, null, null, null).size(), 0);
     }
 
 
     @AfterClass
     public void cleanDatabase() {
-        for (FactDTO<FormrunnerQuestionValue> fact : factController.get()) {
-            factServices.deleteFact(fact, null);
-        }
+        factProvider.deleteAll();
     }
 }

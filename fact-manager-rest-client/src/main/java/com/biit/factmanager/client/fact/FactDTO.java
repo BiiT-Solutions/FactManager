@@ -1,10 +1,11 @@
 package com.biit.factmanager.client.fact;
 
+import com.biit.factmanager.client.ObjectMapperFactory;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.time.LocalDateTime;
@@ -22,18 +23,25 @@ public class FactDTO {
 
     private String tenant;
 
-    private String process;
+    private String session;
 
-    private String tag;
+    private String subject;
 
     private String group;
 
-    @JsonSerialize(using = JsonValueSerializer.class)
-    private String value;
+    private String factType;
 
     private String element;
 
+    private String createdBy;
+
     private LocalDateTime createdAt;
+
+    @JsonSerialize(using = JsonValueSerializer.class)
+    @JsonDeserialize(using = JsonValueDeserializer.class)
+    private String value;
+
+    private String valueType;
 
     public FactDTO() {
         super();
@@ -63,20 +71,44 @@ public class FactDTO {
         this.tenant = tenant;
     }
 
-    public String getProcess() {
-        return process;
+    public String getSession() {
+        return session;
     }
 
-    public void setProcess(String process) {
-        this.process = process;
+    public void setSession(String session) {
+        this.session = session;
     }
 
-    public String getTag() {
-        return tag;
+    public String getSubject() {
+        return subject;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getFactType() {
+        return factType;
+    }
+
+    public void setFactType(String factType) {
+        this.factType = factType;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getValueType() {
+        return valueType;
+    }
+
+    public void setValueType(String valueType) {
+        this.valueType = valueType;
     }
 
     public String getGroup() {
@@ -128,9 +160,14 @@ public class FactDTO {
     }
 
     @JsonIgnore
+    public Object getEntityObject() throws ClassNotFoundException, JsonProcessingException {
+        return ObjectMapperFactory.getObjectMapper().readValue(getValue(), Class.forName(getValueType()));
+    }
+
+    @JsonIgnore
     public void setEntity(Object entityAsJson) {
         try {
-            setValue(new ObjectMapper().writeValueAsString(entityAsJson));
+            setValue(ObjectMapperFactory.getObjectMapper().writeValueAsString(entityAsJson));
         } catch (JsonProcessingException e) {
             FactManagerLogger.errorMessage(this.getClass(), e);
         }

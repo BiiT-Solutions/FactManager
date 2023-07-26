@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <name>FactManager (core)</name>
-    <artifactId>fact-manager-core</artifactId>
+    <name>FactManager (DTO)</name>
+    <artifactId>fact-manager-dto</artifactId>
 
 
     <parent>
@@ -25,8 +25,7 @@
         </dependency>
         <dependency>
             <groupId>com.biit</groupId>
-            <artifactId>fact-manager-dto</artifactId>
-            <version>${project.version}</version>
+            <artifactId>rest-server-dto</artifactId>
         </dependency>
         <!-- Testing -->
         <dependency>
@@ -60,7 +59,7 @@
     </dependencies>
 
     <build>
-        <finalName>fact-manager-core</finalName>
+        <finalName>fact-manager-dto</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

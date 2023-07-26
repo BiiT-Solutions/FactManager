@@ -1,4 +1,4 @@
-package com.biit.factmanager.persistence.entities;
+package com.biit.factmanager.dto;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;

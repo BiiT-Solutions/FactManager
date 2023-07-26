@@ -1,6 +1,8 @@
-package com.biit.factmanager.core.controllers.models;
+package com.biit.factmanager.dto;
 
 import com.biit.server.controllers.models.ElementDTO;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -29,7 +31,11 @@ public class FactDTO<ENTITY> extends ElementDTO {
 
     private LocalDateTime createdAt;
 
-    private ENTITY entity;
+    @JsonSerialize(using = JsonValueSerializer.class)
+    @JsonDeserialize(using = JsonValueDeserializer.class)
+    private String value;
+
+    private String valueType;
 
     private Map<String, String> customProperties;
 
@@ -89,12 +95,20 @@ public class FactDTO<ENTITY> extends ElementDTO {
         this.application = application;
     }
 
-    public ENTITY getEntity() {
-        return entity;
+    public String getValue() {
+        return value;
     }
 
-    public void setEntity(ENTITY entity) {
-        this.entity = entity;
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getValueType() {
+        return valueType;
+    }
+
+    public void setValueType(String valueType) {
+        this.valueType = valueType;
     }
 
     public Map<String, String> getCustomProperties() {
