@@ -83,6 +83,7 @@ public class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     @Convert(converter = StringCryptoConverter.class)
     private String value;
 
+    // Class of value
     @Column(name = "value_type", length = MAX_JSON_LENGTH)
     @Convert(converter = StringCryptoConverter.class)
     private String valueType;
