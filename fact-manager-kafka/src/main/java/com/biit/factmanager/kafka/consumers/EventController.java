@@ -7,6 +7,7 @@ import com.biit.factmanager.persistence.entities.LogFact;
 import com.biit.kafka.config.ObjectMapperFactory;
 import com.biit.kafka.consumers.EventListener;
 import com.biit.kafka.events.Event;
+import com.biit.kafka.events.EventCustomProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
@@ -21,9 +22,6 @@ import java.util.TimeZone;
 
 @Controller
 public class EventController {
-    private static final String ORGANIZATION = "organization";
-    private static final String PROCESS = "process";
-
     private final EventListener eventListener;
     private final EventConsumerListener eventConsumerListener;
 
@@ -75,7 +73,8 @@ public class EventController {
             logFact.setCreatedAt(event.getCreatedAt());
         }
         if (event.getCustomProperties() != null) {
-            logFact.setOrganization(event.getCustomProperties().get(ORGANIZATION));
+            logFact.setOrganization(event.getCustomProperty(EventCustomProperties.ORGANIZATION));
+            logFact.setFactType(event.getCustomProperty(EventCustomProperties.FACT_TYPE));
 
             final List<CustomProperty> customProperties = new ArrayList<>();
             for (final Map.Entry<String, String> entry : event.getCustomProperties().entrySet()) {
