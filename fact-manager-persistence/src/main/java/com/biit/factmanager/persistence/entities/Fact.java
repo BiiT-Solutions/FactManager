@@ -3,11 +3,10 @@ package com.biit.factmanager.persistence.entities;
 import com.biit.database.encryption.StringCryptoConverter;
 import com.biit.eventstructure.event.IKafkaStorable;
 import com.biit.factmanager.persistence.entities.exceptions.FactValueInvalidException;
+import com.biit.kafka.config.ObjectMapperFactory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -105,8 +104,6 @@ public class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
 
     @OneToMany(mappedBy = "fact", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Collection<CustomProperty> customProperties;
-
-    private static ObjectMapper objectMapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
     public Fact() {
         super();
@@ -253,7 +250,7 @@ public class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     @JsonIgnore
     public void setEntity(ENTITY entity) {
         try {
-            setValue(objectMapper.writeValueAsString(entity));
+            setValue(ObjectMapperFactory.getObjectMapper().writeValueAsString(entity));
             this.entity = entity;
         } catch (JsonProcessingException e) {
             throw new FactValueInvalidException(e);
@@ -269,7 +266,7 @@ public class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     public ENTITY getEntity() {
         if (getValue() != null && !getValue().isEmpty()) {
             try {
-                entity = objectMapper.readValue(getValue(), getJsonParser());
+                entity = ObjectMapperFactory.getObjectMapper().readValue(getValue(), getJsonParser());
             } catch (JsonProcessingException e) {
                 throw new FactValueInvalidException(e);
             }
