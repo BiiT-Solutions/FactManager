@@ -20,6 +20,6 @@ public class FactUrlConstructor {
     }
 
     public String findByParameters() {
-        return "/";
+        return "/facts";
     }
 }
