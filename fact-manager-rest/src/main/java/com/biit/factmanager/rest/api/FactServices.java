@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-@RequestMapping(value = "/")
+@RequestMapping(value = "/facts")
 @RestController
 public class FactServices<V> {
 
