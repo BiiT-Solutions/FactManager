@@ -2,7 +2,7 @@ package com.biit.factmanager.rest.api;
 
 import com.biit.factmanager.core.providers.PivotViewProvider;
 import com.biit.factmanager.persistence.entities.Fact;
-import com.biit.factmanager.rest.exceptions.BadRequestException;
+import com.biit.server.exceptions.BadRequestException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -76,7 +76,7 @@ public class PivotViewServices<T extends Fact<?>> {
         }
 
         if (valueParameters.size() % 2 == 1) {
-            throw new BadRequestException("Invalid number of parameters.");
+            throw new BadRequestException(this.getClass(), "Invalid number of parameters.");
         }
 
         final Pair<String, Object>[] pairs = new Pair[valueParameters.size() / 2];

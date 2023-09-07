@@ -1,6 +1,6 @@
 package com.biit.factmanager.dto;
 
-import com.biit.server.controllers.models.ElementDTO;
+import com.biit.server.controllers.models.CreatedElementDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -9,7 +9,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
-public class FactDTO extends ElementDTO {
+public class FactDTO extends CreatedElementDTO {
+
+    private Long id;
 
     private String organization;
 
@@ -38,6 +40,14 @@ public class FactDTO extends ElementDTO {
     private LocalDateTime createdAt;
 
     private Collection<CustomPropertyDTO> customProperties;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getOrganization() {
         return organization;

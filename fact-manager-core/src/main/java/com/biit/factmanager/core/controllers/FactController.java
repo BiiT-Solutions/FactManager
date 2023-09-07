@@ -7,7 +7,7 @@ import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.dto.FactDTO;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.persistence.repositories.FactRepository;
-import com.biit.server.controller.BasicElementController;
+import com.biit.server.controller.CrudController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Controller;
@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Map;
 
 @Controller
-public class FactController<ENTITY> extends BasicElementController<Fact<ENTITY>, FactDTO, FactRepository<Fact<ENTITY>>,
+public class FactController<ENTITY> extends CrudController<Fact<ENTITY>, FactDTO, FactRepository<Fact<ENTITY>>,
         FactProvider<Fact<ENTITY>>, FactConverterRequest<ENTITY>, FactConverter<ENTITY>> {
 
 

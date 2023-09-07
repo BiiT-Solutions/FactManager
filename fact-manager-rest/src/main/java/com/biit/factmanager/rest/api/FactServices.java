@@ -3,7 +3,7 @@ package com.biit.factmanager.rest.api;
 import com.biit.factmanager.core.controllers.FactController;
 import com.biit.factmanager.dto.FactDTO;
 import com.biit.factmanager.logger.FactManagerLogger;
-import com.biit.factmanager.rest.exceptions.BadRequestException;
+import com.biit.server.exceptions.BadRequestException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -95,7 +95,7 @@ public class FactServices<V> {
         final Pair<String, Object>[] pairs;
         if (valueParameters != null) {
             if (valueParameters.size() % 2 == 1) {
-                throw new BadRequestException("Invalid number of parameters.");
+                throw new BadRequestException(this.getClass(), "Invalid number of parameters.");
             }
 
             pairs = new Pair[valueParameters.size() / 2];

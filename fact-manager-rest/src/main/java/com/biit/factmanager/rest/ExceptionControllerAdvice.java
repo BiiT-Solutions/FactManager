@@ -3,7 +3,7 @@ package com.biit.factmanager.rest;
 import com.biit.factmanager.core.providers.exceptions.FactNotFoundException;
 import com.biit.factmanager.core.providers.exceptions.InvalidParameterException;
 import com.biit.factmanager.logger.FactManagerLogger;
-import com.biit.factmanager.rest.exceptions.BadRequestException;
+import com.biit.server.exceptions.BadRequestException;
 import com.biit.server.exceptions.ServerExceptionControllerAdvice;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
