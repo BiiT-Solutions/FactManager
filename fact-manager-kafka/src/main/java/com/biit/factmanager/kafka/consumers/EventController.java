@@ -64,6 +64,7 @@ public class EventController {
         logFact.setSession(String.valueOf(event.getSessionId()));
         logFact.setGroup(topic);
         logFact.setElement(event.getMessageId() != null ? event.getMessageId().toString() : null);
+        logFact.setElementName(event.getTag());
         try {
             logFact.setValue(ObjectMapperFactory.getObjectMapper().writeValueAsString(event.getPayload()));
         } catch (JsonProcessingException e) {

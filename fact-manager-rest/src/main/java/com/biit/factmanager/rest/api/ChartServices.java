@@ -47,6 +47,7 @@ public class ChartServices<T extends Fact<?>> {
             - subject: what is doing
             - group: grouping option for the facts
             - element: if of the element that actions the fact
+            - elementName: The name of the entity. Can be the form name, a customer email, etc.
             - factType: if has a form answer, is a timing event, etc.
             - valueType: the class name of the value.
             - startDate: filtering facts from this day
@@ -70,6 +71,7 @@ public class ChartServices<T extends Fact<?>> {
             @Parameter(name = "subject", required = false) @RequestParam(value = "subject", required = false) String subject,
             @Parameter(name = "group", required = false) @RequestParam(value = "group", required = false) String group,
             @Parameter(name = "element", required = false) @RequestParam(value = "element", required = false) String element,
+            @Parameter(name = "elementName", required = false) @RequestParam(value = "element", required = false) String elementName,
             @Parameter(name = "factType", required = false) @RequestParam(value = "factType", required = false) String factType,
             @Parameter(name = "valueType", required = false) @RequestParam(value = "valueType", required = false) String valueType,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Parameter(description = "Facts since the selected date", example = "2023-01-01T00:00:00.00Z")
@@ -91,7 +93,8 @@ public class ChartServices<T extends Fact<?>> {
             pairs[i] = Pair.of(valueParameters.get(i), valueParameters.get(i + 1));
         }
 
-        return chartProvider.getChart(organization, issuer, application, tenant, session, subject, group, element, factType, valueType,
+        return chartProvider.getChart(organization, issuer, application, tenant, session, subject, group, element, elementName,
+                factType, valueType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
                 lastDays, type, pairs);

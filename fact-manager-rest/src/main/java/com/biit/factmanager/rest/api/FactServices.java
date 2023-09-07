@@ -59,6 +59,7 @@ public class FactServices<V> {
             - subject: what is doing
             - group: grouping option for the facts
             - element: The element that actions the fact
+            - elementName: The name of the entity. Can be the form name, a customer email, etc.
             - factType: if it has a form answer, is a timing event, etc.
             - valueType: the class name of the value.
             - startDate: filtering facts from this day
@@ -80,6 +81,7 @@ public class FactServices<V> {
             @Parameter(name = "subject", required = false) @RequestParam(value = "subject", required = false) String subject,
             @Parameter(name = "group", required = false) @RequestParam(value = "group", required = false) String group,
             @Parameter(name = "element", required = false) @RequestParam(value = "element", required = false) String element,
+            @Parameter(name = "elementName", required = false) @RequestParam(value = "element", required = false) String elementName,
             @Parameter(name = "factType", required = false) @RequestParam(value = "factType", required = false) String factType,
             @Parameter(name = "valueType", required = false) @RequestParam(value = "valueType", required = false) String valueType,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Parameter(description = "Facts since the selected date", example = "2023-01-01T00:00:00.00Z")
@@ -105,7 +107,8 @@ public class FactServices<V> {
         } else {
             pairs = null;
         }
-        return factController.findBy(organization, issuer, application, tenant, session, subject, group, element, factType, valueType,
+        return factController.findBy(organization, issuer, application, tenant, session, subject, group, element, elementName,
+                factType, valueType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
                 lastDays, null, customProperties, pairs);

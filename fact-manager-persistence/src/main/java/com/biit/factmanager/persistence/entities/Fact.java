@@ -70,7 +70,7 @@ public class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     @Column(name = "subject")  // Subject
     private String subject;
 
-    //Examination Name
+    //Topic
     @Column(name = "grouping")
     private String group;
 
@@ -86,6 +86,11 @@ public class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     @Column(name = "value_type", length = MAX_JSON_LENGTH)
     @Convert(converter = StringCryptoConverter.class)
     private String valueType;
+
+    //The name of the form, customer, patient, etc.
+    @Column(name = "element_name")
+    @Convert(converter = StringCryptoConverter.class)
+    private String elementName;
 
     // ID of the entity on the fact
     @Column(name = "element")
@@ -162,6 +167,14 @@ public class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
 
     public void setOrganization(String organization) {
         this.organization = organization;
+    }
+
+    public String getElementName() {
+        return elementName;
+    }
+
+    public void setElementName(String elementName) {
+        this.elementName = elementName;
     }
 
     public String getElement() {

@@ -41,7 +41,8 @@ public class PivotViewServices<T extends Fact<?>> {
             - session: event session
             - subject: what is doing
             - group: grouping option for the facts
-            - element: if of the element that actions the fact
+            - element: if of the element that actions the fact.
+            - elementName: The name of the entity. Can be the form name, a customer email, etc.
             - factType: if has a form answer, is a timing event, etc.
             - valueType: the class name of the value.
             - startDate: filtering facts from this day
@@ -64,6 +65,7 @@ public class PivotViewServices<T extends Fact<?>> {
             @Parameter(name = "subject", required = false) @RequestParam(value = "subject", required = false) String subject,
             @Parameter(name = "group", required = false) @RequestParam(value = "group", required = false) String group,
             @Parameter(name = "element", required = false) @RequestParam(value = "element", required = false) String element,
+            @Parameter(name = "elementName", required = false) @RequestParam(value = "element", required = false) String elementName,
             @Parameter(name = "factType", required = false) @RequestParam(value = "factType", required = false) String factType,
             @Parameter(name = "valueType", required = false) @RequestParam(value = "valueType", required = false) String valueType,
             @Parameter(name = "startDate", required = false) @RequestParam(value = "startDate", required = false) LocalDateTime startDate,
@@ -84,7 +86,7 @@ public class PivotViewServices<T extends Fact<?>> {
             pairs[i] = Pair.of(valueParameters.get(i), valueParameters.get(i + 1));
         }
 
-        return pivotViewProvider.get(organization, issuer, application, tenant, session, subject, group, element,
+        return pivotViewProvider.get(organization, issuer, application, tenant, session, subject, group, element, elementName,
                 factType, valueType, startDate, endDate, lastDays, pairs);
     }
 

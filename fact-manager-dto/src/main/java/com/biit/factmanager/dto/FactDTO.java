@@ -35,6 +35,8 @@ public class FactDTO extends CreatedElementDTO {
 
     private String element;
 
+    private String elementName;
+
     private String createdBy;
 
     private LocalDateTime createdAt;
@@ -71,6 +73,14 @@ public class FactDTO extends CreatedElementDTO {
 
     public void setGroup(String group) {
         this.group = group;
+    }
+
+    public String getElementName() {
+        return elementName;
+    }
+
+    public void setElementName(String elementName) {
+        this.elementName = elementName;
     }
 
     public String getElement() {

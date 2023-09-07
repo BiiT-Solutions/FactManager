@@ -74,36 +74,37 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
     }
 
     public List<T> findBy(String organization, String customer, String application, String tenant, String session, String subject,
-                          String group, String element, String factType, String valueType, LocalDateTime startDate, LocalDateTime endDate, Integer lastDays,
-                          Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>... valueParameters) {
+                          String group, String element, String elementName, String factType, String valueType, LocalDateTime startDate,
+                          LocalDateTime endDate, Integer lastDays, Boolean discriminatorValue, Map<String, String> customProperties,
+                          Pair<String, Object>... valueParameters) {
         if (lastDays == null) {
-            return findBy(organization, customer, application, tenant, session, subject, group, element, factType, valueType, startDate, endDate,
-                    discriminatorValue, customProperties, valueParameters);
+            return findBy(organization, customer, application, tenant, session, subject, group, element, elementName, factType, valueType,
+                    startDate, endDate, discriminatorValue, customProperties, valueParameters);
         } else {
-            return findBy(organization, customer, application, tenant, session, subject, group, element, factType, valueType, lastDays, discriminatorValue,
-                    customProperties, valueParameters);
+            return findBy(organization, customer, application, tenant, session, subject, group, element, elementName, factType, valueType,
+                    lastDays, discriminatorValue, customProperties, valueParameters);
         }
     }
 
 
     public List<T> findBy(String organization, String customer, String application, String tenant, String session, String subject,
-                          String group, String element, String factType, String valueType, Integer lastDays, Boolean discriminatorValue,
-                          Map<String, String> customProperties, Pair<String, Object>... valueParameters) {
+                          String group, String element, String elementName, String factType, String valueType, Integer lastDays,
+                          Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>... valueParameters) {
         final LocalDateTime endDate = LocalDateTime.now();
         if (lastDays != null) {
             final LocalDateTime startDate = LocalDateTime.now().minusDays(lastDays);
-            return factRepository.findBy(entityClass, organization, customer, application, tenant, group, element, session,
+            return factRepository.findBy(entityClass, organization, customer, application, tenant, group, element, elementName, session,
                     subject, factType, valueType, startDate, endDate, discriminatorValue, customProperties, valueParameters);
         }
-        return factRepository.findBy(entityClass, organization, customer, application, tenant, group, element, session, subject,
+        return factRepository.findBy(entityClass, organization, customer, application, tenant, group, element, elementName, session, subject,
                 factType, valueType, null, endDate, discriminatorValue, customProperties, valueParameters);
     }
 
     public List<T> findBy(String organization, String issuer, String application, String tenant, String session, String subject,
-                          String group, String element, String factType, String valueType, LocalDateTime startDate, LocalDateTime endDate,
+                          String group, String element, String elementName, String factType, String valueType, LocalDateTime startDate, LocalDateTime endDate,
                           Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>... valueParameters) {
-        return factRepository.findBy(entityClass, organization, issuer, application, tenant, group, element, session, subject, factType, valueType,
-                startDate, endDate, discriminatorValue, customProperties, valueParameters);
+        return factRepository.findBy(entityClass, organization, issuer, application, tenant, group, element, elementName, session, subject, factType,
+                valueType, startDate, endDate, discriminatorValue, customProperties, valueParameters);
     }
 
     /**
