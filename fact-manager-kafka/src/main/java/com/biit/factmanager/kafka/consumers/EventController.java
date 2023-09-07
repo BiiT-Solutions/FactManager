@@ -85,6 +85,10 @@ public class EventController {
             }
             logFact.setCustomProperties(customProperties);
         }
+        FactManagerLogger.debug(this.getClass(), "Event properties are:\nCreatedBy: {}\nReplyTo: {}\nTenant: {}\n"
+                        + "Subject: {}\nEntityType: {}\nSessionId: {}\nMessageId: {}\nCreatedAt: {}\nCustomProperties: {}\n",
+                event.getCreatedBy(), event.getReplyTo(), event.getTenant(), event.getSubject(), event.getEntityType(), event.getSessionId(),
+                event.getMessageId(), event.getCreatedAt(), event.getCustomProperties());
         return logFact;
     }
 }
