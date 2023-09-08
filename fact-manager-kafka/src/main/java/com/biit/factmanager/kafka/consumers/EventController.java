@@ -86,10 +86,21 @@ public class EventController {
             }
             logFact.setCustomProperties(customProperties);
         }
-        EventsLogger.debug(this.getClass(), "Event properties are:\nCreatedBy: {}\nReplyTo: {}\nTenant: {}\n"
-                        + "Subject: {}\nEntityType: {}\nSessionId: {}\nMessageId: {}\nCreatedAt: {}\nCustomProperties: {}\n",
+        EventsLogger.debug(this.getClass(), """
+                        Event properties are:
+                        \tCreatedBy: {}
+                        \tReplyTo: {}
+                        \tTenant: {}
+                        \tSubject: {}
+                        \tEntityType: {}
+                        \tSessionId: {}
+                        \tMessageId: {}
+                        \tTag:
+                        \tCreatedAt: {}
+                        \tCustomProperties: {}
+                        """,
                 event.getCreatedBy(), event.getReplyTo(), event.getTenant(), event.getSubject(), event.getEntityType(), event.getSessionId(),
-                event.getMessageId(), event.getCreatedAt(), event.getCustomProperties());
+                event.getMessageId(), event.getTag(), event.getCreatedAt(), event.getCustomProperties());
         return logFact;
     }
 }
