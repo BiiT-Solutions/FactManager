@@ -46,6 +46,7 @@ import java.util.Objects;
         @Index(name = "ind_fact_type", columnList = "fact_type"),
         @Index(name = "ind_group", columnList = "grouping"),
         @Index(name = "ind_element", columnList = "element"),
+        @Index(name = "ind_element_name", columnList = "element_name"),
 })
 public class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     private static final int MAX_JSON_LENGTH = 10 * 1024 * 1024;
