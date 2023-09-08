@@ -65,7 +65,7 @@ public class PivotViewServices<T extends Fact<?>> {
             @Parameter(name = "subject", required = false) @RequestParam(value = "subject", required = false) String subject,
             @Parameter(name = "group", required = false) @RequestParam(value = "group", required = false) String group,
             @Parameter(name = "element", required = false) @RequestParam(value = "element", required = false) String element,
-            @Parameter(name = "elementName", required = false) @RequestParam(value = "element", required = false) String elementName,
+            @Parameter(name = "elementName", required = false) @RequestParam(value = "elementName", required = false) String elementName,
             @Parameter(name = "factType", required = false) @RequestParam(value = "factType", required = false) String factType,
             @Parameter(name = "valueType", required = false) @RequestParam(value = "valueType", required = false) String valueType,
             @Parameter(name = "startDate", required = false) @RequestParam(value = "startDate", required = false) LocalDateTime startDate,
