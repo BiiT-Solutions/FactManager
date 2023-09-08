@@ -1,7 +1,7 @@
 package com.biit.factmanager.kafka.consumers;
 
 import com.biit.factmanager.core.providers.FactProvider;
-import com.biit.factmanager.logger.FactManagerLogger;
+import com.biit.factmanager.logger.EventsLogger;
 import com.biit.factmanager.persistence.entities.CustomProperty;
 import com.biit.factmanager.persistence.entities.LogFact;
 import com.biit.kafka.config.ObjectMapperFactory;
@@ -38,18 +38,18 @@ public class EventController {
 
         //Listen to topic
         eventListener.addListener((event, offset, key, partition, topic, timeStamp) -> {
-            FactManagerLogger.debug(this.getClass(), "Received event '{}' on topic '{}', key '{}', partition '{}' at '{}'",
+            EventsLogger.debug(this.getClass(), "Received event '{}' on topic '{}', key '{}', partition '{}' at '{}'",
                     event, topic, key, partition, LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp),
                             TimeZone.getDefault().toZoneId()));
         });
 
         //Listens to all events on Kafka Streams.
         eventConsumerListener.addListener((event, offset, key, partition, topic, timeStamp) -> {
-            FactManagerLogger.debug(this.getClass(), "Received event '{}' on topic '{}', key '{}', partition '{}' at '{}'",
+            EventsLogger.debug(this.getClass(), "Received event '{}' on topic '{}', key '{}', partition '{}' at '{}'",
                     event, topic, key, partition, LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp),
                             TimeZone.getDefault().toZoneId()));
             final LogFact savedFact = factProvider.save(convert(event, topic));
-            FactManagerLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
+            EventsLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
         });
     }
 
@@ -86,7 +86,7 @@ public class EventController {
             }
             logFact.setCustomProperties(customProperties);
         }
-        FactManagerLogger.debug(this.getClass(), "Event properties are:\nCreatedBy: {}\nReplyTo: {}\nTenant: {}\n"
+        EventsLogger.debug(this.getClass(), "Event properties are:\nCreatedBy: {}\nReplyTo: {}\nTenant: {}\n"
                         + "Subject: {}\nEntityType: {}\nSessionId: {}\nMessageId: {}\nCreatedAt: {}\nCustomProperties: {}\n",
                 event.getCreatedBy(), event.getReplyTo(), event.getTenant(), event.getSubject(), event.getEntityType(), event.getSessionId(),
                 event.getMessageId(), event.getCreatedAt(), event.getCustomProperties());
