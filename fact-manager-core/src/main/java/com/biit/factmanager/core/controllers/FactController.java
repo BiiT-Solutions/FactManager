@@ -36,7 +36,7 @@ public class FactController<ENTITY> extends CrudController<Fact<ENTITY>, FactDTO
             String group, String element, String elementName, String factType, String valueType, LocalDateTime startDate, LocalDateTime endDate,
             Integer lastDays, Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>[] pairs) {
 
-        return convertAll(getProvider().findBy(organization, customer, application, tenant, session, subject, group, element, factType,
-                elementName, valueType, startDate, endDate, lastDays, discriminatorValue, customProperties, pairs));
+        return convertAll(getProvider().findBy(organization, customer, application, tenant, session, subject, group, element, elementName,
+                factType, valueType, startDate, endDate, lastDays, discriminatorValue, customProperties, pairs));
     }
 }
