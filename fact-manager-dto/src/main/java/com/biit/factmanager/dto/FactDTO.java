@@ -169,4 +169,11 @@ public class FactDTO extends CreatedElementDTO {
     public Object getEntityObject() throws ClassNotFoundException, JsonProcessingException {
         return ObjectMapperFactory.getObjectMapper().readValue(getValue(), Class.forName(getValueType()));
     }
+
+    @Override
+    public String toString() {
+        return "FactDTO{"
+                + "id=" + id
+                + '}';
+    }
 }
