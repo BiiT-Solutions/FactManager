@@ -56,8 +56,12 @@
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="DAILY"/>
     </logger>
-    <!-- Default ones -->
+    <logger name="com.biit.factmanager.persistence.logger.CacheEventLogger" additivity="false" level="ERROR">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
 
+
+    <!-- Default ones -->
     <logger name="org.springframework.context.support.PostProcessorRegistrationDelegate" additivity="false" level="ERROR">
         <appender-ref ref="CONSOLE"/>
     </logger>
