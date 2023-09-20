@@ -29,7 +29,6 @@ public class FormrunnerVariableFact extends Fact<FormrunnerVariableValue> implem
     public FormrunnerVariableFact() {
         super();
         formrunnerVariableValue = new FormrunnerVariableValue();
-        setValueType(FormrunnerVariableValue.class.getName());
     }
 
     private FormrunnerVariableValue getFormrunnerVariableValue() {

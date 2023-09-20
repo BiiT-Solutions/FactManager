@@ -19,7 +19,6 @@ public class FormrunnerFact extends Fact<FormrunnerValue> implements IKafkaStora
     @JsonCreator
     public FormrunnerFact() {
         super();
-        setValueType(FormrunnerValue.class.getName());
     }
 
     private FormrunnerValue getFormrunnerValue() {
