@@ -83,7 +83,6 @@ public class FactServices<V> {
             @Parameter(name = "element", required = false) @RequestParam(value = "element", required = false) String element,
             @Parameter(name = "elementName", required = false) @RequestParam(value = "elementName", required = false) String elementName,
             @Parameter(name = "factType", required = false) @RequestParam(value = "factType", required = false) String factType,
-            @Parameter(name = "valueType", required = false) @RequestParam(value = "valueType", required = false) String valueType,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Parameter(description = "Facts since the selected date", example = "2023-01-01T00:00:00.00Z")
             @RequestParam(value = "from", required = false) OffsetDateTime from,
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Parameter(description = "Facts until the selected date", example = "2023-01-31T23:59:59.99Z")
@@ -108,7 +107,7 @@ public class FactServices<V> {
             pairs = null;
         }
         return factController.findBy(organization, issuer, application, tenant, session, subject, group, element, elementName,
-                factType, valueType,
+                factType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
                 lastDays, null, customProperties, pairs);

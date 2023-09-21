@@ -67,7 +67,6 @@ public class PivotViewServices<T extends Fact<?>> {
             @Parameter(name = "element", required = false) @RequestParam(value = "element", required = false) String element,
             @Parameter(name = "elementName", required = false) @RequestParam(value = "elementName", required = false) String elementName,
             @Parameter(name = "factType", required = false) @RequestParam(value = "factType", required = false) String factType,
-            @Parameter(name = "valueType", required = false) @RequestParam(value = "valueType", required = false) String valueType,
             @Parameter(name = "startDate", required = false) @RequestParam(value = "startDate", required = false) LocalDateTime startDate,
             @Parameter(name = "endDate", required = false) @RequestParam(value = "endDate", required = false) LocalDateTime endDate,
             @Parameter(name = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
@@ -87,7 +86,7 @@ public class PivotViewServices<T extends Fact<?>> {
         }
 
         return pivotViewProvider.get(organization, issuer, application, tenant, session, subject, group, element, elementName,
-                factType, valueType, startDate, endDate, lastDays, pairs);
+                factType, startDate, endDate, lastDays, pairs);
     }
 
 

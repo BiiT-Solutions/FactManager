@@ -74,37 +74,37 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
     }
 
     public List<T> findBy(String organization, String customer, String application, String tenant, String session, String subject,
-                          String group, String element, String elementName, String factType, String valueType, LocalDateTime startDate,
+                          String group, String element, String elementName, String factType, LocalDateTime startDate,
                           LocalDateTime endDate, Integer lastDays, Boolean discriminatorValue, Map<String, String> customProperties,
                           Pair<String, Object>... valueParameters) {
         if (lastDays == null) {
-            return findBy(organization, customer, application, tenant, session, subject, group, element, elementName, factType, valueType,
+            return findBy(organization, customer, application, tenant, session, subject, group, element, elementName, factType,
                     startDate, endDate, discriminatorValue, customProperties, valueParameters);
         } else {
-            return findBy(organization, customer, application, tenant, session, subject, group, element, elementName, factType, valueType,
+            return findBy(organization, customer, application, tenant, session, subject, group, element, elementName, factType,
                     lastDays, discriminatorValue, customProperties, valueParameters);
         }
     }
 
 
     public List<T> findBy(String organization, String customer, String application, String tenant, String session, String subject,
-                          String group, String element, String elementName, String factType, String valueType, Integer lastDays,
+                          String group, String element, String elementName, String factType, Integer lastDays,
                           Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>... valueParameters) {
         final LocalDateTime endDate = LocalDateTime.now();
         if (lastDays != null) {
             final LocalDateTime startDate = LocalDateTime.now().minusDays(lastDays);
             return factRepository.findBy(entityClass, organization, customer, application, tenant, group, element, elementName, session,
-                    subject, factType, valueType, startDate, endDate, discriminatorValue, customProperties, valueParameters);
+                    subject, factType, startDate, endDate, discriminatorValue, customProperties, valueParameters);
         }
         return factRepository.findBy(entityClass, organization, customer, application, tenant, group, element, elementName, session, subject,
-                factType, valueType, null, endDate, discriminatorValue, customProperties, valueParameters);
+                factType, null, endDate, discriminatorValue, customProperties, valueParameters);
     }
 
     public List<T> findBy(String organization, String issuer, String application, String tenant, String session, String subject,
-                          String group, String element, String elementName, String factType, String valueType, LocalDateTime startDate, LocalDateTime endDate,
+                          String group, String element, String elementName, String factType, LocalDateTime startDate, LocalDateTime endDate,
                           Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>... valueParameters) {
         return factRepository.findBy(entityClass, organization, issuer, application, tenant, group, element, elementName, session, subject, factType,
-                valueType, startDate, endDate, discriminatorValue, customProperties, valueParameters);
+                startDate, endDate, discriminatorValue, customProperties, valueParameters);
     }
 
     /**

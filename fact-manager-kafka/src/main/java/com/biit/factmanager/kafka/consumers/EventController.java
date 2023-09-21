@@ -60,7 +60,6 @@ public class EventController {
         logFact.setApplication(event.getReplyTo());
         logFact.setTenant(event.getTenant());
         logFact.setSubject(event.getSubject());
-        logFact.setValueType(event.getEntityType());
         logFact.setSession(String.valueOf(event.getSessionId()));
         logFact.setGroup(topic);
         logFact.setElement(event.getMessageId() != null ? event.getMessageId().toString() : null);

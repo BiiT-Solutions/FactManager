@@ -22,7 +22,6 @@ public class FormrunnerTestFact extends Fact<FormrunnerTestValue> implements IFa
     public FormrunnerTestFact() {
         super();
         formrunnerVariableValue = new FormrunnerTestValue();
-        setValueType(FormrunnerTestValue.class.getName());
     }
 
     private FormrunnerTestValue getFormrunnerVariableValue() {

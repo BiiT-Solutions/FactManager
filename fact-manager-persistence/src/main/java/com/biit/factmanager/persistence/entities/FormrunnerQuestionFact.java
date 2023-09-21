@@ -46,7 +46,7 @@ public class FormrunnerQuestionFact extends Fact<FormrunnerQuestionValue> implem
 
     @Override
     protected TypeReference<FormrunnerQuestionValue> getJsonParser() {
-        return new TypeReference<FormrunnerQuestionValue>() {
+        return new TypeReference<>() {
         };
     }
 

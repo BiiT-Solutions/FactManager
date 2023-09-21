@@ -39,8 +39,7 @@ public class ChartProvider<T extends Fact<?>> {
         }
         return htmlFromformrunnerQuestionFactsByQuestion(factProvider.
                 findBy(organization, issuer, application, tenant, session, subject, group, element, elementName,
-                        factType, valueType, startDate, endDate, lastDays, null,
-                        null, valueParameters), type);
+                        factType, startDate, endDate, lastDays, null, null, valueParameters), type);
     }
 
     public String htmlFromformrunnerQuestionFactsByQuestion(Collection<T> facts, ChartType type) {
