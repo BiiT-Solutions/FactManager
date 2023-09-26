@@ -94,7 +94,7 @@ public class EventController {
                         \tEntityType: {}
                         \tSessionId: {}
                         \tMessageId: {}
-                        \tTag:
+                        \tTag: {}
                         \tCreatedAt: {}
                         \tCustomProperties: {}
                         """,
