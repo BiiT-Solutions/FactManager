@@ -75,9 +75,9 @@ public class EventController {
         if (event.getCustomProperties() != null) {
             logFact.setOrganization(event.getCustomProperty(EventCustomProperties.ORGANIZATION));
             logFact.setFactType(event.getCustomProperty(EventCustomProperties.FACT_TYPE));
-            if (event.getCustomProperty(EventCustomProperties.ISSUER) != null) {
-                logFact.setCreatedBy(event.getCustomProperty(EventCustomProperties.ISSUER));
-            }
+//            if (event.getCustomProperty(EventCustomProperties.ISSUER) != null) {
+//                logFact.setCreatedBy(event.getCustomProperty(EventCustomProperties.ISSUER));
+//            }
 
             final List<CustomProperty> customProperties = new ArrayList<>();
             for (final Map.Entry<String, String> entry : event.getCustomProperties().entrySet()) {
