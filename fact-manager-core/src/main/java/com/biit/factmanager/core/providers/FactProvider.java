@@ -100,10 +100,10 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
                 factType, null, endDate, discriminatorValue, customProperties, valueParameters);
     }
 
-    public List<T> findBy(String organization, String issuer, String application, String tenant, String session, String subject,
+    public List<T> findBy(String organization, String createdBy, String application, String tenant, String session, String subject,
                           String group, String element, String elementName, String factType, LocalDateTime startDate, LocalDateTime endDate,
                           Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>... valueParameters) {
-        return factRepository.findBy(entityClass, organization, issuer, application, tenant, group, element, elementName, session, subject, factType,
+        return factRepository.findBy(entityClass, organization, createdBy, application, tenant, group, element, elementName, session, subject, factType,
                 startDate, endDate, discriminatorValue, customProperties, valueParameters);
     }
 

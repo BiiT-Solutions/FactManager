@@ -52,7 +52,7 @@ public class FactServices<V> {
     @Operation(summary = "Search facts functionality", description = """
             Parameters:
             - organization: which organization belongs to
-            - issuer: whom generate the fact
+            - createdBy: whom generate the fact
             - application: which application is generating the facts
             - tenant: the tenant classifier
             - session: event session
@@ -74,7 +74,7 @@ public class FactServices<V> {
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<FactDTO> getFacts(
             @Parameter(name = "organization", required = false) @RequestParam(value = "organization", required = false) String organization,
-            @Parameter(name = "issuer", required = false) @RequestParam(value = "issuer", required = false) String issuer,
+            @Parameter(name = "createdBy", required = false) @RequestParam(value = "createdBy", required = false) String createdBy,
             @Parameter(name = "application", required = false) @RequestParam(value = "application", required = false) String application,
             @Parameter(name = "tenant", required = false) @RequestParam(value = "tenant", required = false) String tenant,
             @Parameter(name = "session", required = false) @RequestParam(value = "session", required = false) String session,
@@ -106,7 +106,7 @@ public class FactServices<V> {
         } else {
             pairs = null;
         }
-        return factController.findBy(organization, issuer, application, tenant, session, subject, group, element, elementName,
+        return factController.findBy(organization, createdBy, application, tenant, session, subject, group, element, elementName,
                 factType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,

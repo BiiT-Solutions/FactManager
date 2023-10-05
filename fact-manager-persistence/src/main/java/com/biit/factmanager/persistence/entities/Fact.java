@@ -93,7 +93,7 @@ public class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
     @Convert(converter = StringCryptoConverter.class)
     private String element;
 
-    @Column(name = "created_by")  //Issuer
+    @Column(name = "created_by")
     private String createdBy;
 
     @CreationTimestamp

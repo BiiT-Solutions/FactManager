@@ -40,11 +40,11 @@ public class FactController<ENTITY> extends CrudController<Fact<ENTITY>, FactDTO
     }
 
     public Collection<FactDTO> findBy(
-            String organization, String customer, String application, String tenant, String session, String subject,
+            String organization, String createdBy, String application, String tenant, String session, String subject,
             String group, String element, String elementName, String factType, LocalDateTime startDate, LocalDateTime endDate,
             Integer lastDays, Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>[] pairs) {
 
-        final List<Fact<ENTITY>> facts = getProvider().findBy(organization, customer, application, tenant, session, subject, group, element, elementName,
+        final List<Fact<ENTITY>> facts = getProvider().findBy(organization, createdBy, application, tenant, session, subject, group, element, elementName,
                 factType, startDate, endDate, lastDays, discriminatorValue, customProperties, pairs);
 
         final List<CustomProperty> factsCustomProperties = customPropertyProvider.findByFacts(facts);
