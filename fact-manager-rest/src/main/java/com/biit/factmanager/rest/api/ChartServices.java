@@ -58,7 +58,7 @@ public class ChartServices<T extends Fact<?>> {
             - parameters: set of parameters/value pairs that are specific for each fact (search in the value)",
             """,
             security = @SecurityRequirement(name = "bearerAuth"))
-    @PreAuthorize("hasAnyAuthority(@securityService.viewerPrivilege, @securityService.editorPrivilege, @securityService.adminPrivilege)")
+    @PreAuthorize("hasAnyAuthority(@securityService.editorPrivilege, @securityService.adminPrivilege)")
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public String getFacts(
