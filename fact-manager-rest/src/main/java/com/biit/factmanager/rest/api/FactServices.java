@@ -16,6 +16,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -43,11 +45,20 @@ public class FactServices<V> {
             + "fact (required): Fact object to be removed.", security = @SecurityRequirement(name = "bearerAuth"))
     @PreAuthorize("hasAnyAuthority(@securityService.adminPrivilege)")
     @ResponseStatus(value = HttpStatus.OK)
-    @DeleteMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void deleteFact(@Parameter(name = "fact", required = true) @RequestBody FactDTO fact,
                            HttpServletRequest httpRequest) {
-        FactManagerLogger.info(this.getClass().getName(), "Remove fact");
+        FactManagerLogger.info(this.getClass().getName(), "Removed fact '" + fact + "'.");
         factController.deleteById(fact.getId());
+    }
+
+    @PreAuthorize("hasAnyAuthority(@securityService.adminPrivilege)")
+    @Operation(summary = "Deletes a fact.", security = @SecurityRequirement(name = "bearerAuth"))
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping(value = "/{id}")
+    public void delete(@Parameter(description = "Id of an existing fact", required = true) @PathVariable("id") Long id,
+                       HttpServletRequest request) {
+        factController.deleteById(id);
     }
 
     @Operation(summary = "Search facts functionality", description = """
