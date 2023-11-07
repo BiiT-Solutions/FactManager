@@ -3,10 +3,10 @@ package com.biit.factmanager.core.converters;
 
 import com.biit.factmanager.core.converters.models.CustomPropertyConverterRequest;
 import com.biit.factmanager.core.converters.models.FactConverterRequest;
+import com.biit.factmanager.core.providers.CustomPropertyProvider;
 import com.biit.factmanager.dto.CustomPropertyDTO;
 import com.biit.factmanager.dto.FactDTO;
 import com.biit.factmanager.persistence.entities.Fact;
-import com.biit.factmanager.persistence.repositories.CustomPropertyRepository;
 import com.biit.server.controller.converters.ElementConverter;
 import org.hibernate.LazyInitializationException;
 import org.springframework.beans.BeanUtils;
@@ -19,11 +19,12 @@ import java.util.stream.Collectors;
 public class FactConverter<ENTITY> extends ElementConverter<Fact<ENTITY>, FactDTO, FactConverterRequest<ENTITY>> {
 
     private final CustomPropertyConverter customPropertyConverter;
-    private final CustomPropertyRepository<Fact<ENTITY>> customPropertyRepository;
+    private final CustomPropertyProvider<Fact<ENTITY>> customPropertyProvider;
 
-    public FactConverter(CustomPropertyConverter customPropertyConverter, CustomPropertyRepository<Fact<ENTITY>> customPropertyRepository) {
+    public FactConverter(CustomPropertyConverter customPropertyConverter,
+                         CustomPropertyProvider<Fact<ENTITY>> customPropertyProvider) {
         this.customPropertyConverter = customPropertyConverter;
-        this.customPropertyRepository = customPropertyRepository;
+        this.customPropertyProvider = customPropertyProvider;
     }
 
     @Override
@@ -40,7 +41,7 @@ public class FactConverter<ENTITY> extends ElementConverter<Fact<ENTITY>, FactDT
                         .map(CustomPropertyConverterRequest::new).collect(Collectors.toList()));
             }
         } catch (LazyInitializationException e) {
-            customProperties = customPropertyConverter.convertAll(customPropertyRepository.findByFact(from.getEntity()).stream()
+            customProperties = customPropertyConverter.convertAll(customPropertyProvider.findByFact(from.getEntity()).stream()
                     .map(CustomPropertyConverterRequest::new).collect(Collectors.toList()));
         }
 
