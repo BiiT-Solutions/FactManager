@@ -11,8 +11,8 @@ import java.util.Map;
 @Primary
 public class TestKafkaConfig extends KafkaConfig {
 
-    public Map<String, Object> getProperties() {
-        final Map<String, Object> props = super.getProperties();
+    public Map<String, Object> getConsumerProperties() {
+        final Map<String, Object> props = super.getConsumerProperties();
         //To ensure to avoid to read events from other applications.
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.biit.factmanager.*");
         return props;

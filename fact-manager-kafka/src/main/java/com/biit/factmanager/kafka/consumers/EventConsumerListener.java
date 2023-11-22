@@ -15,7 +15,7 @@ public class EventConsumerListener extends EventListener {
 
     @Override
     @KafkaListener(topicPattern = ".*", groupId = "${spring.kafka.group.id}", clientIdPrefix = "firstListener",
-            containerFactory = "templateEventListenerContainerFactory")
+            containerFactory = "templateEventListenerContainerFactory", autoStartup = "${spring.kafka.enabled:true}")
     public void eventsListener(@Payload(required = false) Event event,
                                final @Header(KafkaHeaders.OFFSET) Integer offset,
                                final @Header(value = KafkaHeaders.KEY, required = false) String key,

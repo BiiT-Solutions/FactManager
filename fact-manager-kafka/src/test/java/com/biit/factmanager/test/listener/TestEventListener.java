@@ -14,7 +14,7 @@ public class TestEventListener extends EventListener {
 
     @Override
     @KafkaListener(topics = "${spring.kafka.topic}", clientIdPrefix = "#{T(java.util.UUID).randomUUID().toString()}",
-            containerFactory = "templateEventListenerContainerFactory")
+            containerFactory = "templateEventListenerContainerFactory", autoStartup = "${spring.kafka.enabled:true}")
     public void eventsListener(Event event,
                                final @Header(KafkaHeaders.OFFSET) Integer offset,
                                final @Header(value = KafkaHeaders.KEY, required = false) String key,
