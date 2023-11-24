@@ -2,6 +2,7 @@ package com.biit.factmanager.test.listener;
 
 import com.biit.kafka.consumers.EventListener;
 import com.biit.kafka.events.Event;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -10,6 +11,7 @@ import org.springframework.messaging.handler.annotation.Header;
 
 @EnableKafka
 @Configuration
+@ConditionalOnExpression("${spring.kafka.enabled:false}")
 public class TestEventListener extends EventListener {
 
     @Override

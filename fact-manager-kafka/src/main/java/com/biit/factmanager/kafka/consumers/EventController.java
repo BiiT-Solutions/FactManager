@@ -10,6 +10,7 @@ import com.biit.kafka.events.Event;
 import com.biit.kafka.events.EventCustomProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.time.Instant;
@@ -29,7 +30,8 @@ public class EventController {
     private final ObjectMapper objectMapper;
 
 
-    public EventController(EventListener eventListener, EventConsumerListener eventConsumerListener,
+    public EventController(@Autowired(required = false) EventListener eventListener,
+                           @Autowired(required = false) EventConsumerListener eventConsumerListener,
                            FactProvider<LogFact> factProvider, ObjectMapper objectMapper) {
         this.eventListener = eventListener;
         this.eventConsumerListener = eventConsumerListener;
@@ -37,20 +39,24 @@ public class EventController {
         this.objectMapper = objectMapper;
 
         //Listen to topic
-        eventListener.addListener((event, offset, key, partition, topic, timeStamp) -> {
-            EventsLogger.debug(this.getClass(), "Received event '{}' on topic '{}', key '{}', partition '{}' at '{}'",
-                    event, topic, key, partition, LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp),
-                            TimeZone.getDefault().toZoneId()));
-        });
+        if (eventListener != null) {
+            eventListener.addListener((event, offset, key, partition, topic, timeStamp) -> {
+                EventsLogger.debug(this.getClass(), "Received event '{}' on topic '{}', key '{}', partition '{}' at '{}'",
+                        event, topic, key, partition, LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp),
+                                TimeZone.getDefault().toZoneId()));
+            });
+        }
 
         //Listens to all events on Kafka Streams.
-        eventConsumerListener.addListener((event, offset, key, partition, topic, timeStamp) -> {
-            EventsLogger.debug(this.getClass(), "Received event '{}' on topic '{}', key '{}', partition '{}' at '{}'",
-                    event, topic, key, partition, LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp),
-                            TimeZone.getDefault().toZoneId()));
-            final LogFact savedFact = factProvider.save(convert(event, topic));
-            EventsLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
-        });
+        if (eventConsumerListener != null) {
+            eventConsumerListener.addListener((event, offset, key, partition, topic, timeStamp) -> {
+                EventsLogger.debug(this.getClass(), "Received event '{}' on topic '{}', key '{}', partition '{}' at '{}'",
+                        event, topic, key, partition, LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp),
+                                TimeZone.getDefault().toZoneId()));
+                final LogFact savedFact = factProvider.save(convert(event, topic));
+                EventsLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
+            });
+        }
     }
 
 
