@@ -1,13 +1,13 @@
 package com.biit.factmanager.kafka.consumers;
 
 import com.biit.factmanager.core.providers.FactProvider;
-import com.biit.factmanager.logger.EventsLogger;
 import com.biit.factmanager.persistence.entities.CustomProperty;
 import com.biit.factmanager.persistence.entities.LogFact;
 import com.biit.kafka.config.ObjectMapperFactory;
 import com.biit.kafka.consumers.EventListener;
 import com.biit.kafka.events.Event;
 import com.biit.kafka.events.EventCustomProperties;
+import com.biit.kafka.logger.EventsLogger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
