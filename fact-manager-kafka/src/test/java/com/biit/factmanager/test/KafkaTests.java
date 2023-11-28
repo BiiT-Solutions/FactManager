@@ -110,7 +110,7 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         Set<Event> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
         Set<Event> producerEvents = new HashSet<>(EVENTS_QUANTITY);
         //Store received events into set.
-        eventListener.addListener((event, offset, key, partition, topic, timeStamp) -> consumerEvents.add(event));
+        eventListener.addListener((event, offset, groupId, key, partition, topic, timeStamp) -> consumerEvents.add(event));
 
         for (int i = 0; i < EVENTS_QUANTITY; i++) {
             FormrunnerQuestionFact generatedFact = generateFact(i);
@@ -132,7 +132,7 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         Set<Event> producerEvents = new HashSet<>(EVENTS_QUANTITY);
         Set<Event> producerEvents2 = new HashSet<>(EVENTS_QUANTITY);
 
-        eventListener.addListener((event, offset, key, partition, topic, timeStamp) -> consumerEvents.add(event));
+        eventListener.addListener((event, offset, groupId, key, partition, topic, timeStamp) -> consumerEvents.add(event));
 
         for (int i = 0; i < EVENTS_QUANTITY; i++) {
             FormrunnerQuestionFact generatedFact = generateFact(i);
@@ -158,8 +158,8 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         Set<Event> consumerEvents2 = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
         Set<Event> producerEvents = new HashSet<>(EVENTS_QUANTITY);
 
-        eventListener.addListener((event, offset, key, partition, topic, timeStamp) -> consumerEvents.add(event));
-        testEventListener.addListener((event, offset, key, partition, topic, timeStamp) -> consumerEvents2.add(event));
+        eventListener.addListener((event, offset, groupId, key, partition, topic, timeStamp) -> consumerEvents.add(event));
+        testEventListener.addListener((event, offset, groupId, key, partition, topic, timeStamp) -> consumerEvents2.add(event));
 
         for (int i = 0; i < EVENTS_QUANTITY; i++) {
             FormrunnerQuestionValue generatedFact = generatePayload(i);
@@ -184,7 +184,7 @@ public class KafkaTests extends AbstractTransactionalTestNGSpringContextTests {
         Set<Event> consumerEvents = Collections.synchronizedSet(new HashSet<>(EVENTS_QUANTITY));
         Set<Event> producerEvents = new HashSet<>(EVENTS_QUANTITY);
 
-        eventListener.addListener((event, offset, key, partition, topic, timeStamp) -> {
+        eventListener.addListener((event, offset, groupId, key, partition, topic, timeStamp) -> {
             if (event.getCreatedAt().isAfter(initialDate) && event.getCreatedAt().isBefore(finalDate)) {
                 consumerEvents.add(event);
             }

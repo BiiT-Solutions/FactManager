@@ -40,18 +40,18 @@ public class EventController {
 
         //Listen to topic
         if (eventListener != null) {
-            eventListener.addListener((event, offset, key, partition, topic, timeStamp) -> {
+            eventListener.addListener((event, offset, groupId, key, partition, topic, timeStamp) -> {
                 EventsLogger.debug(this.getClass(), "Received event '{}' on topic '{}', key '{}', partition '{}' at '{}'",
-                        event, topic, key, partition, LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp),
+                        event, topic, groupId, key, partition, LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp),
                                 TimeZone.getDefault().toZoneId()));
             });
         }
 
         //Listens to all events on Kafka Streams.
         if (eventConsumerListener != null) {
-            eventConsumerListener.addListener((event, offset, key, partition, topic, timeStamp) -> {
+            eventConsumerListener.addListener((event, offset, groupId, key, partition, topic, timeStamp) -> {
                 EventsLogger.debug(this.getClass(), "Received event '{}' on topic '{}', key '{}', partition '{}' at '{}'",
-                        event, topic, key, partition, LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp),
+                        event, topic, groupId, key, partition, LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp),
                                 TimeZone.getDefault().toZoneId()));
                 final LogFact savedFact = factProvider.save(convert(event, topic));
                 EventsLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
