@@ -23,8 +23,6 @@ public class FactsTests extends AbstractTestNGSpringContextTests {
     @Autowired
     private FactProvider<FormrunnerVariableFact> formrunnerVariableFactProvider;
 
-    private FormrunnerVariableFact fact = null;
-
 
     @BeforeClass
     public void databaseSetUp() {
@@ -34,7 +32,7 @@ public class FactsTests extends AbstractTestNGSpringContextTests {
     @Test
     public void addFact() {
         Assert.assertEquals(formrunnerVariableFactProvider.count(), 0);
-        fact = formrunnerVariableFactProvider.save(new FormrunnerVariableFact());
+        FormrunnerVariableFact fact = formrunnerVariableFactProvider.save(new FormrunnerVariableFact());
         Assert.assertNotNull(fact);
         Assert.assertEquals(formrunnerVariableFactProvider.count(), 1);
         formrunnerVariableFactProvider.delete(fact);

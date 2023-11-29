@@ -90,9 +90,9 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
         for (final Pair<String, Object> condition : valueParameters) {
             //ON JSON numbers are not using quotes.
             if (condition.getSecond() instanceof Number) {
-                predicates.add(criteriaBuilder.like(root.get("value"), String.format("%%\"%s\":%s%%", condition.getFirst(), condition.getSecond())));
+                predicates.add(criteriaBuilder.like(root.get("value"), String.format("%%\"%s\" : %s%%", condition.getFirst(), condition.getSecond())));
             } else {
-                predicates.add(criteriaBuilder.like(root.get("value"), String.format("%%\"%s\":\"%s\"%%", condition.getFirst(), condition.getSecond())));
+                predicates.add(criteriaBuilder.like(root.get("value"), String.format("%%\"%s\" : \"%s\"%%", condition.getFirst(), condition.getSecond())));
             }
         }
 

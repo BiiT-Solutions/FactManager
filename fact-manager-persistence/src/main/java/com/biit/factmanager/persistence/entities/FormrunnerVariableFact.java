@@ -46,7 +46,7 @@ public class FormrunnerVariableFact extends Fact<FormrunnerVariableValue> implem
 
     @Override
     protected TypeReference<FormrunnerVariableValue> getJsonParser() {
-        return new TypeReference<FormrunnerVariableValue>() {
+        return new TypeReference<>() {
         };
     }
 
@@ -61,7 +61,7 @@ public class FormrunnerVariableFact extends Fact<FormrunnerVariableValue> implem
     @Override
     public String getPivotViewerValue() {
         if (getFormrunnerVariableValue() != null && getFormrunnerVariableValue().getValue() != null) {
-            return getFormrunnerVariableValue().getValue().toString();
+            return getFormrunnerVariableValue().getValue();
         }
         return null;
     }
@@ -80,7 +80,7 @@ public class FormrunnerVariableFact extends Fact<FormrunnerVariableValue> implem
         if (getFormrunnerVariableValue() != null && getFormrunnerVariableValue().getXpath() != null
                 && getFormrunnerVariableValue().getValue() != null) {
             try {
-                return (int) Double.parseDouble(getFormrunnerVariableValue().getValue().toString());
+                return (int) Double.parseDouble(getFormrunnerVariableValue().getValue());
             } catch (NumberFormatException e) {
                 FactManagerLogger.warning(this.getClass().getName(), "Not a numerical value '"
                         + getFormrunnerVariableValue().getValue()

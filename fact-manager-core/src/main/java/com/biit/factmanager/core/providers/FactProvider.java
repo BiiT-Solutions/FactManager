@@ -46,10 +46,12 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
         this.factRepository = factRepository;
     }
 
+    @Override
     public Optional<T> get(Long factId) {
         return factRepository.findById(factId);
     }
 
+    @Override
     public List<T> getAll() {
         return factRepository.findAll();
     }
@@ -115,6 +117,7 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
      * @return the saved entity; will never be {@literal null}.
      * @throws IllegalArgumentException in case the given {@literal entity} is {@literal null}.
      */
+    @Override
     public T save(T fact) {
         return factRepository.save(fact);
     }
@@ -137,10 +140,12 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
         return savedFacts;
     }
 
+    @Override
     public T update(T fact) {
         return factRepository.save(fact);
     }
 
+    @Override
     public void delete(T fact) {
         factRepository.delete(fact);
     }
@@ -150,6 +155,7 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
      *
      * @return the number of entities.
      */
+    @Override
     public long count() {
         return factRepository.count();
     }

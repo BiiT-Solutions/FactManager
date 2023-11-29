@@ -2,6 +2,7 @@ package com.biit.factmanager.persistence.entities;
 
 import com.biit.database.encryption.StringCryptoConverter;
 import com.biit.eventstructure.event.IKafkaStorable;
+import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.exceptions.FactValueInvalidException;
 import com.biit.kafka.config.ObjectMapperFactory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -269,6 +270,7 @@ public class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
             try {
                 entity = ObjectMapperFactory.getObjectMapper().readValue(getValue(), getJsonParser());
             } catch (JsonProcessingException e) {
+                FactManagerLogger.errorMessage(this.getClass(), e);
                 throw new FactValueInvalidException(e);
             }
         }
