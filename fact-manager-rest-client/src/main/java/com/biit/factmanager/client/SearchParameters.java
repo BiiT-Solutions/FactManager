@@ -1,5 +1,7 @@
 package com.biit.factmanager.client;
 
+import java.util.Objects;
+
 public enum SearchParameters {
 
     TENANT("tenant"),
@@ -24,5 +26,14 @@ public enum SearchParameters {
 
     public String getParamName() {
         return paramName;
+    }
+
+    public static SearchParameters fromTag(String tag) {
+        for (SearchParameters searchParameters : SearchParameters.values()) {
+            if (Objects.equals(searchParameters.getParamName(), tag)) {
+                return searchParameters;
+            }
+        }
+        return null;
     }
 }
