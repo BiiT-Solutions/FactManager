@@ -91,7 +91,6 @@ public class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
 
     // ID of the entity on the fact
     @Column(name = "element")
-    @Convert(converter = StringCryptoConverter.class)
     private String element;
 
     @Column(name = "created_by")

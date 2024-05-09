@@ -36,7 +36,7 @@ public class ClientFactProvider {
 
     public FactDTO add(FactDTO fact) throws UnprocessableEntityException {
         final List<FactDTO> rawFacts = factClient.post(Collections.singletonList(convert(fact)), null);
-        if (rawFacts.size() > 0) {
+        if (!rawFacts.isEmpty()) {
             return convertDTO(rawFacts.get(0));
         }
         return null;
@@ -49,7 +49,7 @@ public class ClientFactProvider {
 
     public FactDTO add(FactDTO fact, List<Header> headers) throws UnprocessableEntityException {
         final List<FactDTO> rawFacts = factClient.post(Collections.singletonList(convert(fact)), headers);
-        if (rawFacts.size() > 0) {
+        if (!rawFacts.isEmpty()) {
             return convertDTO(rawFacts.get(0));
         }
         return null;
