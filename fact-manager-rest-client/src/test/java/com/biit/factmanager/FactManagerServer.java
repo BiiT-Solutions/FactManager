@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan({"com.biit.factmanager", "com.biit.server", "com.biit.messagebird.client", "com.biit.kafka"})
+@ComponentScan({"com.biit.factmanager", "com.biit.server", "com.biit.messagebird.client", "com.biit.kafka", "com.biit.usermanager.client"})
 @ConfigurationPropertiesScan({"com.biit.factmanager",  "com.biit.server.security.userguard", "com.biit.kafka"})
 @EntityScan({"com.biit.factmanager.persistence.entities"})
 public class FactManagerServer {
