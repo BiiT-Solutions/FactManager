@@ -5,6 +5,7 @@ import com.biit.eventstructure.event.IKafkaStorable;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.exceptions.FactValueInvalidException;
 import com.biit.kafka.config.ObjectMapperFactory;
+import com.biit.server.persistence.entities.CreatedElement;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -49,7 +50,7 @@ import java.util.Objects;
         @Index(name = "ind_element", columnList = "element"),
         @Index(name = "ind_element_name", columnList = "element_name"),
 })
-public class Fact<ENTITY> implements IPivotViewerData, IKafkaStorable {
+public class Fact<ENTITY> extends CreatedElement implements IPivotViewerData, IKafkaStorable {
     private static final int MAX_JSON_LENGTH = 10 * 1024 * 1024;
 
     @Id

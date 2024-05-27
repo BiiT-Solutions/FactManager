@@ -69,6 +69,7 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
+                    <argLine>-Xmx2024m</argLine>
                 </configuration>
                 <dependencies>
                     <dependency>

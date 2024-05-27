@@ -11,12 +11,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "custom_properties", indexes = {
         @Index(name = "ind_key", columnList = "property_key"),
         @Index(name = "ind_value", columnList = "property_value"),
 })
-public class CustomProperty {
+public class CustomProperty implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
