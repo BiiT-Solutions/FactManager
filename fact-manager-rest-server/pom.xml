@@ -22,6 +22,10 @@
             <artifactId>postgresql</artifactId>
             <version>42.6.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.biit.nca</groupId>
+            <artifactId>nca-organization-statistics</artifactId>
+        </dependency>
     </dependencies>
 
     <properties>
