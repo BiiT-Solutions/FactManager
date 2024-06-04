@@ -199,7 +199,7 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
         final List<T> results = entityManager.createQuery(query).getResultList();
 
         //I have not found any way of filtering this through criteriaBuilder.
-        if (latestByUser) {
+        if (latestByUser != null && latestByUser) {
             return filterByLatest(results);
         }
 

@@ -77,7 +77,7 @@ public class FactServices<V> {
             - startDate: filtering facts from this day
             - endDate: filtering facts to this day
             - lastDays: if set, replaces startDate and endDate
-            - latestByUser: only gets the latest fact by each different user. 
+            - latestByUser: only gets the latest fact by each different user.
             - customProperties: map of properties that are specific for each fact (search in custom properties)
             - parameters: set of parameters/value pairs that are specific for each fact (search in the value),
             """,
@@ -101,7 +101,7 @@ public class FactServices<V> {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Parameter(description = "Facts until the selected date", example = "2023-01-31T23:59:59.99Z")
             @RequestParam(value = "to", required = false) OffsetDateTime to,
             @Parameter(name = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
-            @Parameter(name = "latestByUser", required = false) @RequestParam(value = "latestByUser", required = false) boolean latestByUser,
+            @Parameter(name = "latestByUser", required = false) @RequestParam(value = "latestByUser", required = false) Boolean latestByUser,
             @Parameter(name = "custom-properties", required = false) @RequestParam(value = "custom-properties", required = false)
             Map<String, String> customProperties,
             @Parameter(name = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters,
@@ -165,7 +165,7 @@ public class FactServices<V> {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @Parameter(description = "Facts until the selected date", example = "2023-01-31T23:59:59.99Z")
             @RequestParam(value = "to", required = false) OffsetDateTime to,
             @Parameter(name = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
-            @Parameter(name = "latestByUser", required = false) @RequestParam(value = "latestByUser", required = false) boolean latestByUser,
+            @Parameter(name = "latestByUser", required = false) @RequestParam(value = "latestByUser", required = false) Boolean latestByUser,
             @Parameter(name = "custom-properties", required = false) @RequestParam(value = "custom-properties", required = false)
             Map<String, String> customProperties,
             @Parameter(name = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters,

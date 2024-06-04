@@ -16,7 +16,8 @@ public enum SearchParameters {
     FACT_TYPE("factType"),
     FROM("from"),
     TO("to"),
-    LAST_DAYS("lastDays");
+    LAST_DAYS("lastDays"),
+    LATEST_BY_USER("latestByUser");
 
     private final String paramName;
 
