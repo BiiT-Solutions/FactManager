@@ -7,7 +7,13 @@
             </run>
         </groups>
         <classes>
+            <class name="com.biit.factmanager.test.BasicFactRepositoryTests" />
             <class name="com.biit.factmanager.test.FormrunnerQuestionFactRepositoryTests" />
+            <class name="com.biit.factmanager.test.FindByFactsTests" />
+            <class name="com.biit.factmanager.test.FactValueTests" />
+            <class name="com.biit.factmanager.test.LogFactRepositoryTests" />
+            <class name="com.biit.factmanager.test.FactCustomPropertyTests" />
+            <class name="com.biit.factmanager.test.FindLatestFactsTests" />
         </classes>
     </test>
 </suite>

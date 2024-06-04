@@ -17,8 +17,10 @@ import org.springframework.stereotype.Repository;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRepository<T> {
@@ -104,7 +106,7 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
     @Override
     public List<T> findBy(Class<T> entityTypeClass, String organization, String createdBy, String application, String tenant,
                           String group, String element, String elementName, String session, String subject, String factType,
-                          LocalDateTime startDate, LocalDateTime endDate, Boolean discriminatorValue,
+                          LocalDateTime startDate, LocalDateTime endDate, Boolean latestByUser, Boolean discriminatorValue,
                           Map<String, String> customProperties,
                           Pair<String, Object>... valueParameters) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -192,9 +194,25 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
         }
 
         /* For Hibernate */
-        System.out.println(entityManager.createQuery(query).unwrap(org.hibernate.query.Query.class).getQueryString());
+        //System.out.println(entityManager.createQuery(query).unwrap(org.hibernate.query.Query.class).getQueryString());
 
-        return entityManager.createQuery(query).getResultList();
+        final List<T> results = entityManager.createQuery(query).getResultList();
+
+        //I have not found any way of filtering this through criteriaBuilder.
+        if (latestByUser) {
+            return filterByLatest(results);
+        }
+
+        return results;
+    }
+
+    private List<T> filterByLatest(List<T> elements) {
+        final Map<String, List<T>> elementsByCreatedBy = elements.stream().collect(Collectors.groupingBy(e -> e.getCreatedBy()));
+        final List<T> latestByCreatedBy = new ArrayList<>();
+        for (Map.Entry<String, List<T>> entry : elementsByCreatedBy.entrySet()) {
+            latestByCreatedBy.add(entry.getValue().stream().max(Comparator.comparing(t -> t.getCreatedAt())).orElse(null));
+        }
+        return latestByCreatedBy;
     }
 
 

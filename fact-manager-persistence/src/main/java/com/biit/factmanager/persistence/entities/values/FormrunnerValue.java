@@ -16,6 +16,13 @@ public class FormrunnerValue implements EventPayload {
     public FormrunnerValue() {
     }
 
+    public FormrunnerValue(String formName, String version, String parentId, String patientName) {
+        this.formName = formName;
+        this.version = version;
+        this.parentId = parentId;
+        this.patientName = patientName;
+    }
+
     public String getFormName() {
         return formName;
     }
