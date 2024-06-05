@@ -36,7 +36,7 @@
         <appender-ref ref="DAILY"/>
         <appender-ref ref="CONSOLE"/>
     </logger>
-    <logger name="com.biit.factmanager.logger.FactDatabaseLogger" additivity="false" level="INFO">
+    <logger name="com.biit.factmanager.logger.FactDatabaseLogger" additivity="false" level="DEBUG">
         <appender-ref ref="DAILY"/>
         <appender-ref ref="CONSOLE"/>
     </logger>
