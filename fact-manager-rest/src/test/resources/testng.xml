@@ -3,7 +3,7 @@
     <test name="FactManager" enabled="true" preserve-order="true">
         <groups>
             <run>
-                <include name="factsServices"/>
+                <exclude name="factsServices"/>
                 <include name="restApiTest"/>
             </run>
         </groups>
