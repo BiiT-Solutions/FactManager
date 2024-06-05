@@ -107,7 +107,7 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
                           String group, String element, String elementName, String factType, LocalDateTime startDate, LocalDateTime endDate,
                           Boolean latestByUser, Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>... valueParameters) {
         return factRepository.findBy(entityClass, organization, createdBy, application, tenant, group, element, elementName, session, subject, factType,
-                startDate, endDate, discriminatorValue, latestByUser, customProperties, valueParameters);
+                startDate, endDate, latestByUser, discriminatorValue, customProperties, valueParameters);
     }
 
     /**
