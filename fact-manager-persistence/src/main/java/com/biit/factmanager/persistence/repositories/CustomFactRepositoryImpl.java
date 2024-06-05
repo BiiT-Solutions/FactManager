@@ -209,11 +209,13 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
     }
 
     private List<T> filterByLatest(List<T> elements) {
+        FactDatabaseLogger.info(this.getClass(), "Filtering elements '{}'.", elements);
         final Map<String, List<T>> elementsByCreatedBy = elements.stream().collect(Collectors.groupingBy(e -> e.getCreatedBy()));
         final List<T> latestByCreatedBy = new ArrayList<>();
         for (Map.Entry<String, List<T>> entry : elementsByCreatedBy.entrySet()) {
             latestByCreatedBy.add(entry.getValue().stream().max(Comparator.comparing(t -> t.getCreatedAt())).orElse(null));
         }
+        FactDatabaseLogger.info(this.getClass(), "Elements filtered '{}'.", elements);
         return latestByCreatedBy;
     }
 
