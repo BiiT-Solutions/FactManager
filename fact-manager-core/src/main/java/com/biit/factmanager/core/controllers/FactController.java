@@ -49,8 +49,8 @@ public class FactController<ENTITY> extends CrudController<Fact<ENTITY>, FactDTO
                         + " tenant '{}', session '{}', subject '{}', group '{}', element '{}', elementName '{}', factType '{}', startDate '{}',"
                         + " endDate '{}', lastDays '{}', latestByUser '{}', discriminatorValue '{}', customProperties '{}',"
                         + " options '{}'.",
-                organization, createdBy, application, tenant, session, subject, group, element, elementName, factType, startDate, endDate, lastDays, latestByUser,
-                discriminatorValue, customProperties, pairs);
+                organization, createdBy, application, tenant, session, subject, group, element, elementName, factType, startDate, endDate,
+                lastDays, latestByUser, discriminatorValue, customProperties, pairs);
 
         final List<Fact<ENTITY>> facts = getProvider().findBy(organization, createdBy, application, tenant, session, subject, group, element, elementName,
                 factType, startDate, endDate, lastDays, latestByUser, discriminatorValue, customProperties, pairs);
