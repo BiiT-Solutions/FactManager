@@ -13,11 +13,13 @@ public enum SearchParameters {
     SESSION("session"),
     GROUP("group"),
     ELEMENT("element"),
+    ELEMENT_NAME("elementName"),
     FACT_TYPE("factType"),
     FROM("from"),
     TO("to"),
     LAST_DAYS("lastDays"),
-    LATEST_BY_USER("latestByUser");
+    LATEST_BY_USER("latestByUser"),
+    CREATED_BY("createdBy");
 
     private final String paramName;
 
