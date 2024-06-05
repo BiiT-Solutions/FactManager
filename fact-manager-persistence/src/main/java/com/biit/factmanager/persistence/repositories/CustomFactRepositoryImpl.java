@@ -1,5 +1,6 @@
 package com.biit.factmanager.persistence.repositories;
 
+import com.biit.factmanager.logger.FactDatabaseLogger;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.CustomProperty;
 import com.biit.factmanager.persistence.entities.Fact;
@@ -194,7 +195,7 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
         }
 
         /* For Hibernate */
-        FactManagerLogger.debug(this.getClass(), "Search query '{}'.",
+        FactDatabaseLogger.info(this.getClass(), "Search query '{}'.",
                 entityManager.createQuery(query).unwrap(org.hibernate.query.Query.class).getQueryString());
 
         final List<T> results = entityManager.createQuery(query).getResultList();
