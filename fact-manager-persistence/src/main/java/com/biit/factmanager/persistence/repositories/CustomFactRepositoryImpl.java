@@ -194,7 +194,8 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
         }
 
         /* For Hibernate */
-        //System.out.println(entityManager.createQuery(query).unwrap(org.hibernate.query.Query.class).getQueryString());
+        FactManagerLogger.debug(this.getClass(), "Search query '{}'.",
+                entityManager.createQuery(query).unwrap(org.hibernate.query.Query.class).getQueryString());
 
         final List<T> results = entityManager.createQuery(query).getResultList();
 
