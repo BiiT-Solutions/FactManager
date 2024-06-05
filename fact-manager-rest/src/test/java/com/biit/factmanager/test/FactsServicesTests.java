@@ -32,9 +32,6 @@ public class FactsServicesTests extends AbstractTransactionalTestNGSpringContext
     @Qualifier("formRunnerQuestionFactProvider")
     private FactProvider<FormrunnerQuestionFact> factProvider;
 
-    @Autowired
-    private FactController<FormrunnerQuestionValue> factController;
-
 
     @BeforeClass
     public void databaseSetUp() {
@@ -43,6 +40,7 @@ public class FactsServicesTests extends AbstractTransactionalTestNGSpringContext
 
     @Test
     public void addFacts() {
+        long previousFacts = factProvider.count();
         Assert.assertEquals(factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null,
                 null, null, null, null, null, null, null, null).size(), 0);
         // Save 2 empty facts
@@ -55,7 +53,7 @@ public class FactsServicesTests extends AbstractTransactionalTestNGSpringContext
         facts.add(FormrunnerQuestionFact);
         Assert.assertEquals(facts.size(), 2);
         factProvider.saveAll(facts);
-        Assert.assertEquals(factProvider.count(), 2);
+        Assert.assertEquals(factProvider.count(), previousFacts + 2);
         // 2 saved
         Assert.assertEquals(factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null, null,
                 null, null, null, null, null, null, null).size(), 2);
