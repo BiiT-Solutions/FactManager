@@ -11,11 +11,14 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
+import org.hibernate.query.sqm.internal.QuerySqmImpl;
+import org.hibernate.query.sqm.tree.SqmVisitableNode;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -193,10 +196,6 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
         } else {
             query.select(root).where(root.in(propertiesQuery), criteriaBuilder.or(predicates.toArray(new Predicate[0])));
         }
-
-        /* For Hibernate */
-        FactDatabaseLogger.info(this.getClass(), "Search query '{}'.",
-                entityManager.createQuery(query).unwrap(org.hibernate.query.Query.class).getQueryString());
 
         final List<T> results = entityManager.createQuery(query).getResultList();
 
