@@ -120,6 +120,7 @@ public class FactServices<V> {
         } else {
             pairs = null;
         }
+
         return factController.findBy(organization, createdBy, application, tenant, session, subject, group, element, elementName,
                 factType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,

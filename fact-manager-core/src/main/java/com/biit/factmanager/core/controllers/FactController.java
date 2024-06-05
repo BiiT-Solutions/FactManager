@@ -6,6 +6,7 @@ import com.biit.factmanager.core.converters.models.FactConverterRequest;
 import com.biit.factmanager.core.providers.CustomPropertyProvider;
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.dto.FactDTO;
+import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.CustomProperty;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.persistence.repositories.FactRepository;
@@ -44,6 +45,12 @@ public class FactController<ENTITY> extends CrudController<Fact<ENTITY>, FactDTO
             String group, String element, String elementName, String factType, LocalDateTime startDate, LocalDateTime endDate,
             Integer lastDays, Boolean latestByUser, Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>[] pairs) {
 
+        FactManagerLogger.debug(this.getClass(), "Searching facts with parameters: organization '{}', createdBy '{}', application '{}',"
+                        + " tenant '{}', session '{}', subject '{}', group '{}', element '{}', elementName '{}', factType '{}', startDate '{}',"
+                        + " endDate '{}', lastDays '{}', latestByUser '{}', discriminatorValue '{}', customProperties '{}',"
+                        + " options '{}'.",
+                organization, createdBy, application, tenant, session, subject, group, element, elementName, factType, startDate, endDate, lastDays, latestByUser,
+                discriminatorValue, customProperties, pairs);
         final List<Fact<ENTITY>> facts = getProvider().findBy(organization, createdBy, application, tenant, session, subject, group, element, elementName,
                 factType, startDate, endDate, lastDays, latestByUser, discriminatorValue, customProperties, pairs);
 
