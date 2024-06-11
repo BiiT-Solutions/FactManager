@@ -1,6 +1,7 @@
 package com.biit.factmanager.kafka.consumers;
 
 import com.biit.factmanager.core.providers.FactProvider;
+import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.CustomProperty;
 import com.biit.factmanager.persistence.entities.LogFact;
 import com.biit.kafka.consumers.EventListener;
@@ -51,14 +52,22 @@ public class EventController {
                 EventsLogger.debug(this.getClass(), "Received event '{}' on topic '{}', key '{}', partition '{}' at '{}'",
                         event, topic, groupId, key, partition, LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp),
                                 TimeZone.getDefault().toZoneId()));
-                final LogFact savedFact = factProvider.save(convert(event, topic));
-                EventsLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
+                if (event != null) {
+                    final LogFact savedFact = factProvider.save(convert(event, topic));
+                    EventsLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
+                } else {
+                    FactManagerLogger.warning(this.getClass(), "Receiving null event! Fact cannot be saved.");
+                }
             });
         }
     }
 
 
     private LogFact convert(Event event, String topic) {
+        if (event == null) {
+            FactManagerLogger.warning(this.getClass(), "Receiving null event!");
+            return null;
+        }
         final LogFact logFact = new LogFact();
         logFact.setCreatedBy(event.getCreatedBy());
         logFact.setApplication(event.getReplyTo());
