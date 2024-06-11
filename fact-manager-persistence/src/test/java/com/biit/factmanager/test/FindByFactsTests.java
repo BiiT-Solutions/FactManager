@@ -61,7 +61,7 @@ public class FindByFactsTests extends AbstractTransactionalTestNGSpringContextTe
     }
 
     @Test
-    public void getFindByOrganizationId() {
+    public void getFindByOrganization() {
         Assert.assertEquals(factRepository.findByOrganization("1").size(), 1);
         Assert.assertEquals(factRepository.findByOrganization("2").size(), 1);
         Assert.assertEquals(factRepository.findByOrganization("3").size(), 1);

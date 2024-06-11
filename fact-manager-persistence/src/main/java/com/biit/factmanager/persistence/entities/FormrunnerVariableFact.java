@@ -16,7 +16,7 @@ import jakarta.persistence.Transient;
  * Group is ExaminationName
  * TenantId is Patient Id.
  * ElementId is Examination Id.
- * OrganizationId is Organization Id.
+ * Organization is Organization.
  */
 @Entity
 @DiscriminatorValue("FormrunnerVariableFact")
