@@ -78,11 +78,15 @@ public class EventController {
         logFact.setElement(event.getMessageId() != null ? event.getMessageId().toString() : null);
         logFact.setElementName(event.getTag());
         logFact.setValue(event.getPayload());
+        logFact.setOrganization(event.getOrganization());
         if (event.getCreatedAt() != null) {
             logFact.setCreatedAt(event.getCreatedAt());
         }
         if (event.getCustomProperties() != null) {
-            logFact.setOrganization(event.getCustomProperty(EventCustomProperties.ORGANIZATION));
+            if (logFact.getOrganization() == null) {
+                //Compatibility with old versions.
+                logFact.setOrganization(event.getCustomProperty(EventCustomProperties.ORGANIZATION));
+            }
             logFact.setFactType(event.getCustomProperty(EventCustomProperties.FACT_TYPE));
 //            if (event.getCustomProperty(EventCustomProperties.ISSUER) != null) {
 //                logFact.setCreatedBy(event.getCustomProperty(EventCustomProperties.ISSUER));
