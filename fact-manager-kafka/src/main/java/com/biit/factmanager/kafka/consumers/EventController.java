@@ -78,9 +78,13 @@ public class EventController {
         logFact.setApplication(event.getReplyTo());
         logFact.setTenant(event.getTenant());
         logFact.setSubject(event.getSubject());
-        logFact.setSession(String.valueOf(event.getSessionId()));
+        if (event.getSessionId() != null) {
+            logFact.setSession(String.valueOf(event.getSessionId()));
+        }
         logFact.setGroup(topic);
-        logFact.setElement(event.getMessageId() != null ? event.getMessageId().toString() : null);
+        if (event.getMessageId() != null) {
+            logFact.setElement(String.valueOf(event.getMessageId()));
+        }
         logFact.setElementName(event.getTag());
         logFact.setValue(event.getPayload());
         logFact.setOrganization(event.getOrganization());
