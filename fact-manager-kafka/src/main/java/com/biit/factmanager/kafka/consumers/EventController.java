@@ -54,12 +54,8 @@ public class EventController {
                                 TimeZone.getDefault().toZoneId()));
                 //Only Labstation events.
                 if (event != null) {
-                    if (event.getCreatedAt() != null) {
-                        final LogFact savedFact = factProvider.save(convert(event, topic));
-                        EventsLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
-                    } else {
-                        FactManagerLogger.debug(this.getClass(), "Ignoring event on topic '{}'.", topic);
-                    }
+                    final LogFact savedFact = factProvider.save(convert(event, topic));
+                    EventsLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
                 } else {
                     FactManagerLogger.warning(this.getClass(), "Receiving null event! Fact cannot be saved.");
                 }
