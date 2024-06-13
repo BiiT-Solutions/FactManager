@@ -52,9 +52,14 @@ public class EventController {
                 EventsLogger.debug(this.getClass(), "Received event '{}' on topic '{}', key '{}', partition '{}' at '{}'",
                         event, topic, groupId, key, partition, LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp),
                                 TimeZone.getDefault().toZoneId()));
+                //Only Labstation events.
                 if (event != null) {
-                    final LogFact savedFact = factProvider.save(convert(event, topic));
-                    EventsLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
+                    if (event.getCreatedAt() != null) {
+                        final LogFact savedFact = factProvider.save(convert(event, topic));
+                        EventsLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
+                    } else {
+                        FactManagerLogger.debug(this.getClass(), "Ignoring event on topic '{}'.", topic);
+                    }
                 } else {
                     FactManagerLogger.warning(this.getClass(), "Receiving null event! Fact cannot be saved.");
                 }
