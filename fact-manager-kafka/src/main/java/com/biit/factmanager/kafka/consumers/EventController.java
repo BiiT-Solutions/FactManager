@@ -92,7 +92,12 @@ public class EventController {
                 //Compatibility with old versions.
                 logFact.setOrganization(event.getCustomProperty(EventCustomProperties.ORGANIZATION));
             }
-            logFact.setFactType(event.getCustomProperty(EventCustomProperties.FACT_TYPE));
+            if (event.getCustomProperty(EventCustomProperties.FACT_TYPE) != null) {
+                logFact.setFactType(event.getCustomProperty(EventCustomProperties.FACT_TYPE));
+            } else if (event.getEntityType() != null && event.getEntityType().contains(".")) {
+                final String[] parts = event.getEntityType().split("\\.");
+                logFact.setFactType(parts[parts.length - 1]);
+            }
 //            if (event.getCustomProperty(EventCustomProperties.ISSUER) != null) {
 //                logFact.setCreatedBy(event.getCustomProperty(EventCustomProperties.ISSUER));
 //            }
