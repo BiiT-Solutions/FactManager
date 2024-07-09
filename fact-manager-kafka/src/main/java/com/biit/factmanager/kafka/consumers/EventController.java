@@ -8,7 +8,6 @@ import com.biit.kafka.consumers.EventListener;
 import com.biit.kafka.events.Event;
 import com.biit.kafka.events.EventCustomProperties;
 import com.biit.kafka.logger.EventsLogger;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -22,20 +21,11 @@ import java.util.TimeZone;
 
 @Controller
 public class EventController {
-    private final EventListener eventListener;
-    private final EventConsumerListener eventConsumerListener;
-
-    private final FactProvider<LogFact> factProvider;
-    private final ObjectMapper objectMapper;
 
 
     public EventController(@Autowired(required = false) EventListener eventListener,
                            @Autowired(required = false) EventConsumerListener eventConsumerListener,
-                           FactProvider<LogFact> factProvider, ObjectMapper objectMapper) {
-        this.eventListener = eventListener;
-        this.eventConsumerListener = eventConsumerListener;
-        this.factProvider = factProvider;
-        this.objectMapper = objectMapper;
+                           FactProvider<LogFact> factProvider) {
 
         //Listen to topic
         if (eventListener != null) {
