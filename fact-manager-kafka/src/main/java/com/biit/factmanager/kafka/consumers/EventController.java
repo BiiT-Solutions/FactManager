@@ -16,11 +16,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 
 
 @Controller
 public class EventController {
+    private static final String CONTROL_TOPIC = "_connect_configs";
 
 
     public EventController(@Autowired(required = false) EventListener eventListener,
@@ -30,24 +32,28 @@ public class EventController {
         //Listen to topic
         if (eventListener != null) {
             eventListener.addListener((event, offset, groupId, key, partition, topic, timeStamp) -> {
-                EventsLogger.debug(this.getClass(), "Received event '{}' on topic '{}', key '{}', partition '{}' at '{}'",
-                        event, topic, groupId, key, partition, LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp),
-                                TimeZone.getDefault().toZoneId()));
+                if (!Objects.equals(CONTROL_TOPIC, topic)) {
+                    EventsLogger.debug(this.getClass(), "Received event '{}' on topic '{}', key '{}', partition '{}' at '{}'",
+                            event, topic, groupId, key, partition, LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp),
+                                    TimeZone.getDefault().toZoneId()));
+                }
             });
         }
 
         //Listens to all events on Kafka Streams.
         if (eventConsumerListener != null) {
             eventConsumerListener.addListener((event, offset, groupId, key, partition, topic, timeStamp) -> {
-                EventsLogger.debug(this.getClass(), "Received event '{}' on topic '{}', key '{}', partition '{}' at '{}'",
-                        event, topic, groupId, key, partition, LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp),
-                                TimeZone.getDefault().toZoneId()));
-                //Only Labstation events.
-                if (event != null) {
-                    final LogFact savedFact = factProvider.save(convert(event, topic));
-                    EventsLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
-                } else {
-                    FactManagerLogger.warning(this.getClass(), "Receiving null event! Fact cannot be saved.");
+                if (!Objects.equals(CONTROL_TOPIC, topic)) {
+                    EventsLogger.debug(this.getClass(), "Received event '{}' on topic '{}', key '{}', partition '{}' at '{}'",
+                            event, topic, groupId, key, partition, LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp),
+                                    TimeZone.getDefault().toZoneId()));
+                    //Only Labstation events.
+                    if (event != null) {
+                        final LogFact savedFact = factProvider.save(convert(event, topic));
+                        EventsLogger.debug(this.getClass().getName(), "Saved fact " + savedFact.toString());
+                    } else {
+                        FactManagerLogger.warning(this.getClass(), "Receiving null event! Fact cannot be saved.");
+                    }
                 }
             });
         }
