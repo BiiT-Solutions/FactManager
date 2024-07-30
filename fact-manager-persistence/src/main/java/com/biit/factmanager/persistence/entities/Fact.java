@@ -174,24 +174,12 @@ public class Fact<ENTITY> extends CreatedElement implements IPivotViewerData, IK
         this.element = element;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
     public String getApplication() {
         return application;
     }
 
     public void setApplication(String application) {
         this.application = application;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
     }
 
     public String getSession() {
@@ -216,10 +204,6 @@ public class Fact<ENTITY> extends CreatedElement implements IPivotViewerData, IK
 
     public void setFactType(String factType) {
         this.factType = factType;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 
     @Override

@@ -70,6 +70,7 @@ public class EventController {
         logFact.setApplication(event.getReplyTo());
         logFact.setTenant(event.getTenant());
         logFact.setSubject(event.getSubject());
+
         if (event.getSessionId() != null) {
             logFact.setSession(String.valueOf(event.getSessionId()));
         }
