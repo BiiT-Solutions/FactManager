@@ -26,7 +26,6 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
-import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.context.annotation.Primary;
 
 import java.time.LocalDateTime;
@@ -93,13 +92,6 @@ public class Fact<ENTITY> extends CreatedElement implements IPivotViewerData, IK
     // ID of the entity on the fact
     @Column(name = "element")
     private String element;
-
-    @Column(name = "created_by")
-    private String createdBy;
-
-    @CreationTimestamp
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
 
     @Transient
     private transient ENTITY entity;
