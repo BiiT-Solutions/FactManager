@@ -120,7 +120,7 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
             predicates.add(criteriaBuilder.equal(root.get("organization"), organization));
         }
         if (createdBy != null && !createdBy.isEmpty()) {
-            predicates.add(criteriaBuilder.in(root.get("createdBy")).value(createdBy));
+            predicates.add(root.get("createdBy").in(createdBy));
         }
         if (application != null) {
             predicates.add(criteriaBuilder.equal(root.get("application"), application));
@@ -186,13 +186,13 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
             }
         }
 
-        propertiesQuery.select(subqueryRoot.get("fact")).where(criteriaBuilder.or(subPredicates.toArray(new Predicate[0])));
+        propertiesQuery.select(subqueryRoot.get("fact")).where(criteriaBuilder.and(subPredicates.toArray(new Predicate[0])));
 
         // query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
         if (customProperties == null) {
             query.select(root).where(predicates.toArray(new Predicate[0]));
         } else {
-            query.select(root).where(root.in(propertiesQuery), criteriaBuilder.or(predicates.toArray(new Predicate[0])));
+            query.select(root).where(root.in(propertiesQuery), criteriaBuilder.and(predicates.toArray(new Predicate[0])));
         }
 
         final List<T> results = entityManager.createQuery(query).getResultList();
