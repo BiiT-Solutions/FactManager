@@ -13,6 +13,7 @@ import org.testng.annotations.Test;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Collections;
 
 @SpringBootTest
 @Test(groups = "factRepository")
@@ -46,13 +47,13 @@ public class FindByFactsTests extends AbstractTransactionalTestNGSpringContextTe
 
     @Test
     public void getFindBy() {
-        Collection<LogFact> fact1 = factRepository.findBy("1", "1", "1", "1", "1", "1", "1", "1", null,
+        Collection<LogFact> fact1 = factRepository.findBy("1", Collections.singletonList("1"), "1", "1", "1", "1", "1", "1", null,
                 LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(1), null, null);
 
-        Collection<LogFact> fact2 = factRepository.findBy("2", "2", "2", "2", "2", "2", "2", "2", null,
+        Collection<LogFact> fact2 = factRepository.findBy("2", Collections.singletonList("2"), "2", "2", "2", "2", "2", "2", null,
                 LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(1), null, null);
 
-        Collection<LogFact> fact3 = factRepository.findBy("3", "3", "3", "3", "3", "3", "3", "3", null,
+        Collection<LogFact> fact3 = factRepository.findBy("3", Collections.singletonList("3"), "3", "3", "3", "3", "3", "3", null,
                 LocalDateTime.now().minusDays(30), LocalDateTime.now().plusDays(1), null, null);
 
         Assert.assertEquals(fact1.size(), 1);

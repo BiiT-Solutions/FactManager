@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -105,7 +106,7 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
     }
 
     @Override
-    public List<T> findBy(Class<T> entityTypeClass, String organization, String createdBy, String application, String tenant,
+    public List<T> findBy(Class<T> entityTypeClass, String organization, Collection<String> createdBy, String application, String tenant,
                           String group, String element, String elementName, String session, String subject, String factType,
                           LocalDateTime startDate, LocalDateTime endDate, Boolean latestByUser, Boolean discriminatorValue,
                           Map<String, String> customProperties,
@@ -118,8 +119,8 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
         if (organization != null) {
             predicates.add(criteriaBuilder.equal(root.get("organization"), organization));
         }
-        if (createdBy != null) {
-            predicates.add(criteriaBuilder.equal(root.get("createdBy"), createdBy));
+        if (createdBy != null && !createdBy.isEmpty()) {
+            predicates.add(criteriaBuilder.in(root.get("createdBy")).value(createdBy));
         }
         if (application != null) {
             predicates.add(criteriaBuilder.equal(root.get("application"), application));

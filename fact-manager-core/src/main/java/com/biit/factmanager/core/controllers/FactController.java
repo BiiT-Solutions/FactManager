@@ -41,7 +41,7 @@ public class FactController<ENTITY> extends CrudController<Fact<ENTITY>, FactDTO
     }
 
     public Collection<FactDTO> findBy(
-            String organization, String createdBy, String application, String tenant, String session, String subject,
+            String organization, Collection<String> createdBy, String application, String tenant, String session, String subject,
             String group, String element, String elementName, String factType, LocalDateTime startDate, LocalDateTime endDate,
             Integer lastDays, Boolean latestByUser, Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>[] pairs) {
 

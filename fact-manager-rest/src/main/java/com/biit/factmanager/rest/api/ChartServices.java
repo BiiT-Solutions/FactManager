@@ -64,7 +64,7 @@ public class ChartServices<T extends Fact<?>> {
     public String getFacts(
             HttpServletRequest httpRequest,
             @Parameter(name = "organization", required = false) @RequestParam(value = "organization", required = false) String organization,
-            @Parameter(name = "createdBy", required = false) @RequestParam(value = "createdBy", required = false) String createdBy,
+            @Parameter(name = "createdBy", required = false) @RequestParam(value = "createdBy", required = false) List<String> createdBy,
             @Parameter(name = "application", required = false) @RequestParam(value = "application", required = false) String application,
             @Parameter(name = "tenant", required = false) @RequestParam(value = "tenant", required = false) String tenant,
             @Parameter(name = "session", required = false) @RequestParam(value = "session", required = false) String session,

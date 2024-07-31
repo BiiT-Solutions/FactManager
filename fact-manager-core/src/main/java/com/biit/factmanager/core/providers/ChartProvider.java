@@ -27,7 +27,7 @@ public class ChartProvider<T extends Fact<?>> {
     }
 
 
-    public final String getChart(String organization, String createdBy, String application, String tenant, String session, String subject,
+    public final String getChart(String organization, List<String> createdBy, String application, String tenant, String session, String subject,
                                  String group, String element, String elementName, String factType, String valueType, LocalDateTime startDate,
                                  LocalDateTime endDate,
                                  Integer lastDays, ChartType type, Pair<String, Object>... valueParameters) {

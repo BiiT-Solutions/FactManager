@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 public interface FactRepository<T extends Fact<?>> extends JpaRepository<T, Long>, CustomFactRepository<T> {
@@ -18,7 +19,7 @@ public interface FactRepository<T extends Fact<?>> extends JpaRepository<T, Long
     @Query("""
               SELECT DISTINCT f FROM Fact f LEFT JOIN f.customProperties cp WHERE
               (:organization is null or f.organization = :organization)
-              and (:customer is null or f.tenant = :customer)
+              and (:customer is null or f.createdBy IN :customers)
               and (:application is null or f.tenant = :application)
               and (:tenant is null or f.tenant = :tenant)
               and (:group is null or f.group = :group)
@@ -30,7 +31,7 @@ public interface FactRepository<T extends Fact<?>> extends JpaRepository<T, Long
               and (:endDate is null or f.createdAt <= :endDate)
               and (:property_key is null or (cp.key = :property_key and cp.value = :property_value))
             """)
-    List<T> findBy(@Param("organization") String organization, @Param("customer") String customer, @Param("application") String application,
+    List<T> findBy(@Param("organization") String organization, @Param("customer") Collection<String> customers, @Param("application") String application,
                    @Param("tenant") String tenant, @Param("group") String group, @Param("element") String element,
                    @Param("session") String session, @Param("subject") String subject, @Param("factType") String factType,
                    @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate,
