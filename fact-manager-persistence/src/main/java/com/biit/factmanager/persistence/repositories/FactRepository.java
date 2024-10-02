@@ -50,6 +50,10 @@ public interface FactRepository<T extends Fact<?>> extends JpaRepository<T, Long
 
     List<T> findByGroup(String group);
 
+    List<T> findBySession(String session);
+
+    List<T> findByCreatedBy(String createdBy);
+
     @Query("SELECT f FROM Fact f WHERE (:element is null or f.element = : element) OR "
             + "(:group is null or f.group = : group)")
     List<T> findByElementAndGroup(@Param("element") String element, @Param("group") String group);

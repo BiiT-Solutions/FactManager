@@ -162,4 +162,12 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
         return factRepository.count();
     }
 
+    public List<T> findBySession(String session) {
+        return factRepository.findBySession(session);
+    }
+
+    List<T> findByCreatedBy(String createdBy) {
+        return factRepository.findByCreatedBy(createdBy);
+    }
+
 }
