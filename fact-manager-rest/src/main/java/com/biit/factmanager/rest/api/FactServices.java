@@ -349,9 +349,11 @@ public class FactServices<V> {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
             @Parameter(description = "New createdAt value", example = "2024-10-02T23:59:59.99Z")
             @RequestParam(value = "createdAt", required = false) OffsetDateTime createdAt,
+            Authentication authentication,
             HttpServletRequest httpRequest) {
         FactManagerLogger.info(this.getClass().getName(), "Updating session '{}' facts.", session);
-        factController.updateBySession(session, createdAt != null ? LocalDateTime.ofInstant(createdAt.toInstant(), ZoneId.systemDefault()) : null);
+        factController.updateBySession(session, createdAt != null ? LocalDateTime.ofInstant(createdAt.toInstant(), ZoneId.systemDefault()) : null,
+                authentication.getName());
     }
 
 }

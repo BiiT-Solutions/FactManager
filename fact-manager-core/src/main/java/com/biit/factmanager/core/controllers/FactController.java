@@ -76,11 +76,25 @@ public class FactController<ENTITY> extends CrudController<Fact<ENTITY>, FactDTO
         return customPropertiesByFact;
     }
 
-    public void updateBySession(String session, LocalDateTime creationTime) {
+    public void updateBySession(String session, LocalDateTime creationTime, String updatedBy) {
         final List<Fact<ENTITY>> facts = getProvider().findBySession(session);
+        if (facts.isEmpty()) {
+            FactManagerLogger.warning(this.getClass(), "No facts at session '{}'", session);
+            return;
+        }
+        boolean updated = false;
         if (creationTime != null) {
+            updated = true;
             facts.forEach(fact -> fact.setCreatedAt(creationTime));
         }
-        getProvider().saveAll(facts);
+        if (updated) {
+            facts.forEach(fact -> {
+                fact.setUpdatedBy(updatedBy);
+                fact.setUpdatedAt(LocalDateTime.now());
+            });
+            getProvider().saveAll(facts);
+        } else {
+            FactManagerLogger.warning(this.getClass(), "Nothing to update at session '{}'", session);
+        }
     }
 }
