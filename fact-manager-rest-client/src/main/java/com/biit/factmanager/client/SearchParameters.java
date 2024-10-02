@@ -19,7 +19,8 @@ public enum SearchParameters {
     TO("to"),
     LAST_DAYS("lastDays"),
     LATEST_BY_USER("latestByUser"),
-    CREATED_BY("createdBy");
+    CREATED_BY("createdBy"),
+    CREATED_AT("createdAt");
 
     private final String paramName;
 

@@ -15,6 +15,7 @@ import jakarta.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -82,6 +83,24 @@ public class FactClient {
             }
         } catch (JsonProcessingException e) {
             throw new InvalidResponseException(e);
+        } catch (EmptyResultException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public void updateFactsFromSession(String session, LocalDateTime createdAt, List<Header> headers) throws UnprocessableEntityException {
+        final Map<String, Object> parameters = new HashMap<>();
+        if (createdAt != null) {
+            parameters.put(SearchParameters.CREATED_AT.getParamName(), createdAt);
+        }
+        try {
+            try (Response result = securityClient.put(factUrlConstructor.getFactServerUrl(),
+                    factUrlConstructor.updateBySession(session), null, parameters, headers)) {
+                FactClientLogger.debug(this.getClass(), "Response obtained from '{}' is '{}'.",
+                        factUrlConstructor.getFactServerUrl() + factUrlConstructor.updateBySession(session), result.getStatus());
+                return;
+            }
         } catch (EmptyResultException e) {
             throw new RuntimeException(e);
         }

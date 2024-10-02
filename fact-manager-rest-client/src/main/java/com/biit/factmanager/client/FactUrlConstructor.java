@@ -22,4 +22,8 @@ public class FactUrlConstructor {
     public String findByParameters() {
         return "/facts";
     }
+
+    public String updateBySession(String session) {
+        return "/facts/update/session/" + session;
+    }
 }
