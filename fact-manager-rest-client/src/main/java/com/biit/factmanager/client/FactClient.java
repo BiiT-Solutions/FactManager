@@ -95,7 +95,7 @@ public class FactClient {
             parameters.put(SearchParameters.CREATED_AT.getParamName(), createdAt);
         }
         try {
-            try (Response result = securityClient.patch(factUrlConstructor.getFactServerUrl(),
+            try (Response result = securityClient.post(factUrlConstructor.getFactServerUrl(),
                     factUrlConstructor.updateBySession(session), null, parameters, headers)) {
                 FactClientLogger.debug(this.getClass(), "Response obtained from '{}' is '{}'.",
                         factUrlConstructor.getFactServerUrl() + factUrlConstructor.updateBySession(session), result.getStatus());
