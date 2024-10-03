@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -92,14 +94,13 @@ public class FactClient {
     public void updateFactsFromSession(String session, LocalDateTime createdAt, List<Header> headers) throws UnprocessableEntityException {
         final Map<String, Object> parameters = new HashMap<>();
         if (createdAt != null) {
-            parameters.put(SearchParameters.CREATED_AT.getParamName(), createdAt);
+            parameters.put(SearchParameters.CREATED_AT.getParamName(), createdAt.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
         }
         try {
-            try (Response result = securityClient.patch(factUrlConstructor.getFactServerUrl(),
-                    factUrlConstructor.updateBySession(session), null, parameters, headers)) {
+            try (Response result = securityClient.post(factUrlConstructor.getFactServerUrl(),
+                    factUrlConstructor.updateBySession(session), "", parameters, headers)) {
                 FactClientLogger.debug(this.getClass(), "Response obtained from '{}' is '{}'.",
                         factUrlConstructor.getFactServerUrl() + factUrlConstructor.updateBySession(session), result.getStatus());
-                return;
             }
         } catch (EmptyResultException e) {
             throw new RuntimeException(e);
