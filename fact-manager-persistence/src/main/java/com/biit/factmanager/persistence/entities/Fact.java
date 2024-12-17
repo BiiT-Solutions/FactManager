@@ -59,6 +59,10 @@ public class Fact<ENTITY> extends CreatedElement implements IPivotViewerData, IK
     @Column(name = "organization")
     private String organization;
 
+    //Team, Department, ...
+    @Column(name = "unit")
+    private String unit;
+
     @Column(name = "application") //ReplyTo
     private String application;
 
@@ -148,6 +152,14 @@ public class Fact<ENTITY> extends CreatedElement implements IPivotViewerData, IK
 
     public void setOrganization(String organization) {
         this.organization = organization;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
     public String getElementName() {

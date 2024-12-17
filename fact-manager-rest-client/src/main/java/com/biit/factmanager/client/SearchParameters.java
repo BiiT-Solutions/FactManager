@@ -6,7 +6,7 @@ public enum SearchParameters {
 
     TENANT("tenant"),
     ORGANIZATION("organization"),
-    CUSTOMER("customer"),
+    UNIT("unit"),
     APPLICATION("application"),
     TAG("tag"),
     SUBJECT("subject"),

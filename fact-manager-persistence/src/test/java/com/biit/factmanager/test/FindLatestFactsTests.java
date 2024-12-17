@@ -69,7 +69,7 @@ public class FindLatestFactsTests extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void getLatestBy() {
-        Collection<FormrunnerFact> facts = factRepository.findBy(FormrunnerFact.class, ORGANIZATION, null, APPLICATION, null, null, null, null, null, null, null, null, null,
+        Collection<FormrunnerFact> facts = factRepository.findBy(FormrunnerFact.class, ORGANIZATION, null, null, APPLICATION, null, null, null, null, null, null, null, null, null,
                 true, null, null);
 
         //3 users

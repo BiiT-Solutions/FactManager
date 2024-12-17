@@ -35,6 +35,7 @@ public class PivotViewServices<T extends Fact<?>> {
     @Operation(summary = "Returns a pivotView view", description = """
             Parameters:
             - organization: which organization belongs to
+            - unit: if the fact is related to a team, department, ...
             - createdBy: whom generate the fact
             - application: which application is generating the facts
             - tenant: the tenant classifier
@@ -58,6 +59,7 @@ public class PivotViewServices<T extends Fact<?>> {
     public String getView(
             HttpServletRequest httpRequest,
             @Parameter(name = "organization", required = false) @RequestParam(value = "organization", required = false) String organization,
+            @Parameter(name = "unit", required = false) @RequestParam(value = "unit", required = false) String unit,
             @Parameter(name = "createdBy", required = false) @RequestParam(value = "createdBy", required = false) List<String> createdBy,
             @Parameter(name = "application", required = false) @RequestParam(value = "application", required = false) String application,
             @Parameter(name = "tenant", required = false) @RequestParam(value = "tenant", required = false) String tenant,
@@ -85,7 +87,7 @@ public class PivotViewServices<T extends Fact<?>> {
             pairs[i] = Pair.of(valueParameters.get(i), valueParameters.get(i + 1));
         }
 
-        return pivotViewProvider.get(organization, createdBy, application, tenant, session, subject, group, element, elementName,
+        return pivotViewProvider.get(organization, unit, createdBy, application, tenant, session, subject, group, element, elementName,
                 factType, startDate, endDate, lastDays, pairs);
     }
 

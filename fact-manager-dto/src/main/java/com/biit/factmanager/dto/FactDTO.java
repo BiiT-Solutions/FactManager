@@ -13,6 +13,8 @@ public class FactDTO extends CreatedElementDTO {
 
     private String organization;
 
+    private String unit;
+
     private String application;
 
     private String tenant;
@@ -53,6 +55,14 @@ public class FactDTO extends CreatedElementDTO {
 
     public void setOrganization(String organization) {
         this.organization = organization;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
     public String getTenant() {

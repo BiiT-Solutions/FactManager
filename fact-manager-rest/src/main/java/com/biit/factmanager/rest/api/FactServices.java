@@ -70,6 +70,7 @@ public class FactServices<V> {
     @Operation(summary = "Search facts functionality", description = """
             Parameters:
             - organization: which organization belongs to.
+            - unit: if the fact is related to a team, department, ...
             - createdBy: whom generate the fact.
             - application: which application is generating the facts.
             - tenant: the tenant classifier.
@@ -92,6 +93,7 @@ public class FactServices<V> {
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<FactDTO> getFacts(
             @Parameter(name = "organization", required = false) @RequestParam(value = "organization", required = false) String organization,
+            @Parameter(name = "unit", required = false) @RequestParam(value = "unit", required = false) String unit,
             @Parameter(name = "createdBy", required = false) @RequestParam(value = "createdBy", required = false) List<String> createdBy,
             @Parameter(name = "application", required = false) @RequestParam(value = "application", required = false) String application,
             @Parameter(name = "tenant", required = false) @RequestParam(value = "tenant", required = false) String tenant,
@@ -124,7 +126,7 @@ public class FactServices<V> {
             pairs = null;
         }
 
-        return factController.findBy(organization, createdBy, application, tenant, session, subject, group, element, elementName,
+        return factController.findBy(organization, unit, createdBy, application, tenant, session, subject, group, element, elementName,
                 factType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
@@ -134,6 +136,7 @@ public class FactServices<V> {
     @Operation(summary = "Search in your facts", description = """
             Parameters:
             - organization: which organization belongs to.
+            - unit: if the fact is related to a team, department, ...
             - application: which application is generating the facts.
             - tenant: the tenant classifier.
             - session: event session.
@@ -155,6 +158,7 @@ public class FactServices<V> {
     @GetMapping(value = "/own", produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<FactDTO> getOwnFacts(
             @Parameter(name = "organization", required = false) @RequestParam(value = "organization", required = false) String organization,
+            @Parameter(name = "unit", required = false) @RequestParam(value = "unit", required = false) String unit,
             @Parameter(name = "application", required = false) @RequestParam(value = "application", required = false) String application,
             @Parameter(name = "tenant", required = false) @RequestParam(value = "tenant", required = false) String tenant,
             @Parameter(name = "session", required = false) @RequestParam(value = "session", required = false) String session,
@@ -186,7 +190,7 @@ public class FactServices<V> {
         } else {
             pairs = null;
         }
-        return factController.findBy(organization, Collections.singletonList(authentication.getName()), application,
+        return factController.findBy(organization, unit, Collections.singletonList(authentication.getName()), application,
                 tenant, session, subject, group, element, elementName,
                 factType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
@@ -198,6 +202,7 @@ public class FactServices<V> {
     @Operation(summary = "Search facts functionality", description = """
             Parameters:
             - organization: which organization belongs to.
+            - unit: if the fact is related to a team, department, ...
             - createdBy: whom generate the fact.
             - application: which application is generating the facts.
             - tenant: the tenant classifier.
@@ -220,6 +225,7 @@ public class FactServices<V> {
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<FactDTO> getFacts(
             @Parameter(name = "organization", required = false) @RequestParam(value = "organization", required = false) String organization,
+            @Parameter(name = "unit", required = false) @RequestParam(value = "unit", required = false) String unit,
             @Parameter(name = "createdBy", required = false) @RequestParam(value = "createdBy", required = false) List<String> createdBy,
             @Parameter(name = "application", required = false) @RequestParam(value = "application", required = false) String application,
             @Parameter(name = "tenant", required = false) @RequestParam(value = "tenant", required = false) String tenant,
@@ -258,7 +264,7 @@ public class FactServices<V> {
             customProperties.forEach(customPropertyDTO -> customPropertiesMap.put(customPropertyDTO.getKey(), customPropertyDTO.getValue()));
         }
 
-        return factController.findBy(organization, createdBy, application, tenant, session, subject, group, element, elementName,
+        return factController.findBy(organization, unit, createdBy, application, tenant, session, subject, group, element, elementName,
                 factType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
@@ -269,6 +275,7 @@ public class FactServices<V> {
     @Operation(summary = "Search in your facts", description = """
             Parameters:
             - organization: which organization belongs to.
+            - unit: if the fact is related to a team, department, ...
             - application: which application is generating the facts.
             - tenant: the tenant classifier.
             - session: event session.
@@ -291,6 +298,7 @@ public class FactServices<V> {
     @PostMapping(value = "/own", produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<FactDTO> getOwnFacts(
             @Parameter(name = "organization", required = false) @RequestParam(value = "organization", required = false) String organization,
+            @Parameter(name = "unit", required = false) @RequestParam(value = "unit", required = false) String unit,
             @Parameter(name = "application", required = false) @RequestParam(value = "application", required = false) String application,
             @Parameter(name = "tenant", required = false) @RequestParam(value = "tenant", required = false) String tenant,
             @Parameter(name = "session", required = false) @RequestParam(value = "session", required = false) String session,
@@ -329,7 +337,7 @@ public class FactServices<V> {
             customProperties.forEach(customPropertyDTO -> customPropertiesMap.put(customPropertyDTO.getKey(), customPropertyDTO.getValue()));
         }
 
-        return factController.findBy(organization, Collections.singletonList(authentication.getName()), application,
+        return factController.findBy(organization, unit, Collections.singletonList(authentication.getName()), application,
                 tenant, session, subject, group, element, elementName,
                 factType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,

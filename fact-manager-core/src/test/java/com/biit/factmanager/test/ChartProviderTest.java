@@ -149,7 +149,7 @@ public class ChartProviderTest extends AbstractTestNGSpringContextTests {
 
     @Test(dependsOnMethods = "addNewFacts")
     public void oneTenantAllExaminations() throws IOException, URISyntaxException {
-        Assert.assertEquals(readFile("charts/OneTenantMultipleExaminationsChart"), chartProvider.getChart(ORGANIZATION, null, null, TENANT_ID, SUBJECT, null, GROUP, ELEMENT_ID,
+        Assert.assertEquals(readFile("charts/OneTenantMultipleExaminationsChart"), chartProvider.getChart(ORGANIZATION, null, null, null, TENANT_ID, SUBJECT, null, GROUP, ELEMENT_ID,
                 null, null, null, LocalDateTime.now().minusYears(1), LocalDateTime.now().plusDays(1), null, ChartType.BAR));
     }
 

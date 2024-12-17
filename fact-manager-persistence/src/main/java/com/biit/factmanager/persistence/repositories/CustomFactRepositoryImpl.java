@@ -106,8 +106,8 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
     }
 
     @Override
-    public List<T> findBy(Class<T> entityTypeClass, String organization, Collection<String> createdBy, String application, String tenant,
-                          String group, String element, String elementName, String session, String subject, String factType,
+    public List<T> findBy(Class<T> entityTypeClass, String organization, String unit, Collection<String> createdBy, String application,
+                          String tenant, String group, String element, String elementName, String session, String subject, String factType,
                           LocalDateTime startDate, LocalDateTime endDate, Boolean latestByUser, Boolean discriminatorValue,
                           Map<String, String> customProperties,
                           Pair<String, Object>... valueParameters) {
@@ -118,6 +118,9 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
         final List<Predicate> predicates = new ArrayList<>();
         if (organization != null) {
             predicates.add(criteriaBuilder.equal(root.get("organization"), organization));
+        }
+        if (unit != null) {
+            predicates.add(criteriaBuilder.equal(root.get("unit"), unit));
         }
         if (createdBy != null && !createdBy.isEmpty()) {
             predicates.add(root.get("createdBy").in(createdBy));

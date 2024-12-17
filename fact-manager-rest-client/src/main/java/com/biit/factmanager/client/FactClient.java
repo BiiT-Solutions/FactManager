@@ -73,7 +73,6 @@ public class FactClient {
     public List<FactDTO> get(Map<SearchParameters, Object> filter, List<Header> headers) throws UnprocessableEntityException {
         final Map<String, Object> parameters = new HashMap<>();
         filter.forEach((searchParameters, value) -> parameters.put(searchParameters.getParamName(), value));
-        filter.putIfAbsent(SearchParameters.CUSTOMER, customerName);
         filter.putIfAbsent(SearchParameters.APPLICATION, applicationName);
         try {
             try (Response result = securityClient.get(factUrlConstructor.getFactServerUrl(),

@@ -39,7 +39,8 @@ public class ChartServices<T extends Fact<?>> {
 
     @Operation(summary = "Create html chart based on parameters", description = """
             Parameters:
-            - organization: which organization belongs to
+            - organization: which organization belongs to.
+            - unit: if the fact is related to a team, department, ...
             - createdBy: whom generate the fact
             - application: which application is generating the facts
             - tenant: the tenant classifier
@@ -64,6 +65,7 @@ public class ChartServices<T extends Fact<?>> {
     public String getFacts(
             HttpServletRequest httpRequest,
             @Parameter(name = "organization", required = false) @RequestParam(value = "organization", required = false) String organization,
+            @Parameter(name = "unit", required = false) @RequestParam(value = "unit", required = false) String unit,
             @Parameter(name = "createdBy", required = false) @RequestParam(value = "createdBy", required = false) List<String> createdBy,
             @Parameter(name = "application", required = false) @RequestParam(value = "application", required = false) String application,
             @Parameter(name = "tenant", required = false) @RequestParam(value = "tenant", required = false) String tenant,
@@ -93,7 +95,7 @@ public class ChartServices<T extends Fact<?>> {
             pairs[i] = Pair.of(valueParameters.get(i), valueParameters.get(i + 1));
         }
 
-        return chartProvider.getChart(organization, createdBy, application, tenant, session, subject, group, element, elementName,
+        return chartProvider.getChart(organization, unit, createdBy, application, tenant, session, subject, group, element, elementName,
                 factType, valueType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
