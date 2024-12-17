@@ -81,6 +81,7 @@ public class EventController {
         logFact.setElementName(event.getTag());
         logFact.setValue(event.getPayload());
         logFact.setOrganization(event.getOrganization());
+        logFact.setUnit(event.getUnit());
         if (event.getCreatedAt() != null) {
             logFact.setCreatedAt(event.getCreatedAt());
         }
