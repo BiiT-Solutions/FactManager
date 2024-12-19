@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -212,7 +213,6 @@ public class FactServices<V> {
             - element: The element that actions the fact.
             - elementName: The name of the entity. Can be the form name, a customer email, etc.
             - factType: if it has a form answer, is a timing event, etc.
-            - valueType: the class name of the value.
             - startDate: filtering facts from this day.
             - endDate: filtering facts to this day.
             - lastDays: if set, replaces startDate and endDate.
@@ -270,6 +270,24 @@ public class FactServices<V> {
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
                 lastDays, latestByUser, null, customPropertiesMap, pairs);
     }
+
+
+
+    @Operation(summary = "Search facts functionality sending the query as the body", description = "Useful for large queries.",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @PreAuthorize("hasAnyAuthority(@securityService.editorPrivilege, @securityService.adminPrivilege)")
+    @ResponseStatus(value = HttpStatus.OK)
+    @PostMapping(value = "/query", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Collection<FactDTO> getFactsBigLoads(@RequestBody SearchFactRequest searchFactRequest, HttpServletRequest httpRequest) {
+        if (searchFactRequest == null) {
+            return new ArrayList<>();
+        }
+        return getFacts(searchFactRequest.getOrganization(), searchFactRequest.getUnit(), searchFactRequest.getCreatedBy(), searchFactRequest.getApplication(),
+                searchFactRequest.getTenant(), searchFactRequest.getSession(), searchFactRequest.getSubject(), searchFactRequest.getGroup(), searchFactRequest.getElement(),
+                searchFactRequest.getElementName(), searchFactRequest.getFactType(), searchFactRequest.getFrom(), searchFactRequest.getTo(), searchFactRequest.getLastDays(),
+                searchFactRequest.getLatestByUser(), searchFactRequest.getCustomProperties(), searchFactRequest.getValueParameters(), httpRequest);
+    }
+
 
 
     @Operation(summary = "Search in your facts", description = """
