@@ -272,7 +272,6 @@ public class FactServices<V> {
     }
 
 
-
     @Operation(summary = "Search facts functionality sending the query as the body", description = "Useful for large queries.",
             security = @SecurityRequirement(name = "bearerAuth"))
     @PreAuthorize("hasAnyAuthority(@securityService.editorPrivilege, @securityService.adminPrivilege)")
@@ -282,12 +281,13 @@ public class FactServices<V> {
         if (searchFactRequest == null) {
             return new ArrayList<>();
         }
-        return getFacts(searchFactRequest.getOrganization(), searchFactRequest.getUnit(), searchFactRequest.getCreatedBy(), searchFactRequest.getApplication(),
-                searchFactRequest.getTenant(), searchFactRequest.getSession(), searchFactRequest.getSubject(), searchFactRequest.getGroup(), searchFactRequest.getElement(),
-                searchFactRequest.getElementName(), searchFactRequest.getFactType(), searchFactRequest.getFrom(), searchFactRequest.getTo(), searchFactRequest.getLastDays(),
-                searchFactRequest.getLatestByUser(), searchFactRequest.getCustomProperties(), searchFactRequest.getValueParameters(), httpRequest);
+        return getFacts(searchFactRequest.getOrganization(), searchFactRequest.getUnit(), searchFactRequest.getCreatedBy(),
+                searchFactRequest.getApplication(), searchFactRequest.getTenant(), searchFactRequest.getSession(),
+                searchFactRequest.getSubject(), searchFactRequest.getGroup(), searchFactRequest.getElement(),
+                searchFactRequest.getElementName(), searchFactRequest.getFactType(), searchFactRequest.getFrom(),
+                searchFactRequest.getTo(), searchFactRequest.getLastDays(), searchFactRequest.getLatestByUser(),
+                searchFactRequest.getCustomProperties(), searchFactRequest.getValueParameters(), httpRequest);
     }
-
 
 
     @Operation(summary = "Search in your facts", description = """
