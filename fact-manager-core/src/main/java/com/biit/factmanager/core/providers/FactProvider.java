@@ -168,12 +168,19 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
         return factRepository.findBySession(session);
     }
 
-    List<T> findByCreatedBy(String createdBy) {
+    public List<T> findByCreatedBy(String createdBy) {
+        final List<T> results;
         if (getEncryptionKey() != null && !getEncryptionKey().isBlank()) {
-            return factRepository.findByCreatedByHash(createdBy);
+            results = factRepository.findByCreatedByHash(createdBy);
         } else {
-            return factRepository.findByCreatedBy(createdBy);
+            results = factRepository.findByCreatedBy(createdBy);
         }
+        results.forEach(this::populateHash);
+        return results;
+    }
+
+    private void populateHash(T fact) {
+        fact.setCreatedByHash(fact.getCreatedBy());
     }
 
 }
