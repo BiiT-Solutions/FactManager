@@ -175,12 +175,7 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
         } else {
             results = factRepository.findByCreatedBy(createdBy);
         }
-        results.forEach(this::populateHash);
         return results;
-    }
-
-    private void populateHash(T fact) {
-        fact.setCreatedByHash(fact.getCreatedBy());
     }
 
 }
