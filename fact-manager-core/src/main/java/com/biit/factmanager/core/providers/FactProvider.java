@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.biit.database.encryption.KeyProperty.getEncryptionKey;
+
 @Service
 @Primary
 public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactRepository<T>> {
@@ -167,7 +169,11 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
     }
 
     List<T> findByCreatedBy(String createdBy) {
-        return factRepository.findByCreatedBy(createdBy);
+        if (getEncryptionKey() != null && !getEncryptionKey().isBlank()) {
+            return factRepository.findByCreatedByHash(createdBy);
+        } else {
+            return factRepository.findByCreatedBy(createdBy);
+        }
     }
 
 }
