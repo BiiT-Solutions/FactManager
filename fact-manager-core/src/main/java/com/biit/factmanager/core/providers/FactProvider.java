@@ -67,6 +67,9 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
         if (pairParameterValues.length % 2 == 1) {
             throw new InvalidParameterException(this.getClass(), "Parameters '" + Arrays.toString(pairParameterValues) + "' must be even.");
         }
+        if (pairParameterValues.length > 0 && getEncryptionKey() != null && !getEncryptionKey().isBlank()) {
+            throw new InvalidParameterException(this.getClass(), "Search by parameters not allowed if database encryption is set!");
+        }
         final Pair<String, Object>[] pairs = new Pair[pairParameterValues.length / 2];
         for (int i = 0; i < pairParameterValues.length; i += 2) {
             pairs[i] = Pair.of(pairParameterValues[i].toString(), pairParameterValues[i + 1]);
@@ -83,6 +86,9 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
                           LocalDateTime endDate, Integer lastDays, Boolean latestByUser,
                           Boolean discriminatorValue, Map<String, String> customProperties,
                           Pair<String, Object>... valueParameters) {
+        if (valueParameters.length > 0 && getEncryptionKey() != null && !getEncryptionKey().isBlank()) {
+            throw new InvalidParameterException(this.getClass(), "Search by parameters not allowed if database encryption is set!");
+        }
         if (lastDays == null) {
             return findBy(organization, unit, customers, application, tenant, session, subject, group, element, elementName, factType,
                     startDate, endDate, latestByUser, discriminatorValue, customProperties, valueParameters);
@@ -96,6 +102,9 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
     public List<T> findBy(String organization, String unit, Collection<String> customers, String application, String tenant, String session, String subject,
                           String group, String element, String elementName, String factType, Integer lastDays, Boolean latestByUser,
                           Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>... valueParameters) {
+        if (valueParameters.length > 0 && getEncryptionKey() != null && !getEncryptionKey().isBlank()) {
+            throw new InvalidParameterException(this.getClass(), "Search by parameters not allowed if database encryption is set!");
+        }
         final LocalDateTime endDate = LocalDateTime.now();
         if (lastDays != null) {
             final LocalDateTime startDate = LocalDateTime.now().minusDays(lastDays);
@@ -109,6 +118,9 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
     public List<T> findBy(String organization, String unit, Collection<String> customers, String application, String tenant, String session, String subject,
                           String group, String element, String elementName, String factType, LocalDateTime startDate, LocalDateTime endDate,
                           Boolean latestByUser, Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>... valueParameters) {
+        if (valueParameters.length > 0 && getEncryptionKey() != null && !getEncryptionKey().isBlank()) {
+            throw new InvalidParameterException(this.getClass(), "Search by parameters not allowed if database encryption is set!");
+        }
         return factRepository.findBy(entityClass, organization, unit, customers, application, tenant, group, element, elementName, session, subject, factType,
                 startDate, endDate, latestByUser, discriminatorValue, customProperties, valueParameters);
     }

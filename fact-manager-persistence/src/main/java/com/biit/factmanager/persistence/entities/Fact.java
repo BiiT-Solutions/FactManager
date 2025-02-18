@@ -85,6 +85,7 @@ public class Fact<ENTITY> extends CreatedElement implements IPivotViewerData, IK
     private String factType;
 
     @Column(name = "fact_value", length = MAX_JSON_LENGTH)
+    @Convert(converter = StringCryptoConverter.class)
     private String value;
 
     //The name of the form, customer, patient, etc.
