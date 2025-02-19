@@ -64,6 +64,9 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
     }
 
     public List<T> getByValueParameter(Object... pairParameterValues) {
+        if (pairParameterValues == null) {
+            return new ArrayList<>();
+        }
         if (pairParameterValues.length % 2 == 1) {
             throw new InvalidParameterException(this.getClass(), "Parameters '" + Arrays.toString(pairParameterValues) + "' must be even.");
         }
@@ -86,7 +89,7 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
                           LocalDateTime endDate, Integer lastDays, Boolean latestByUser,
                           Boolean discriminatorValue, Map<String, String> customProperties,
                           Pair<String, Object>... valueParameters) {
-        if (valueParameters.length > 0 && getEncryptionKey() != null && !getEncryptionKey().isBlank()) {
+        if (valueParameters != null && valueParameters.length > 0 && getEncryptionKey() != null && !getEncryptionKey().isBlank()) {
             throw new InvalidParameterException(this.getClass(), "Search by parameters not allowed if database encryption is set!");
         }
         if (lastDays == null) {
@@ -102,7 +105,7 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
     public List<T> findBy(String organization, String unit, Collection<String> customers, String application, String tenant, String session, String subject,
                           String group, String element, String elementName, String factType, Integer lastDays, Boolean latestByUser,
                           Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>... valueParameters) {
-        if (valueParameters.length > 0 && getEncryptionKey() != null && !getEncryptionKey().isBlank()) {
+        if (valueParameters != null && valueParameters.length > 0 && getEncryptionKey() != null && !getEncryptionKey().isBlank()) {
             throw new InvalidParameterException(this.getClass(), "Search by parameters not allowed if database encryption is set!");
         }
         final LocalDateTime endDate = LocalDateTime.now();
@@ -118,7 +121,7 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
     public List<T> findBy(String organization, String unit, Collection<String> customers, String application, String tenant, String session, String subject,
                           String group, String element, String elementName, String factType, LocalDateTime startDate, LocalDateTime endDate,
                           Boolean latestByUser, Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>... valueParameters) {
-        if (valueParameters.length > 0 && getEncryptionKey() != null && !getEncryptionKey().isBlank()) {
+        if (valueParameters != null && valueParameters.length > 0 && getEncryptionKey() != null && !getEncryptionKey().isBlank()) {
             throw new InvalidParameterException(this.getClass(), "Search by parameters not allowed if database encryption is set!");
         }
         return factRepository.findBy(entityClass, organization, unit, customers, application, tenant, group, element, elementName, session, subject, factType,
