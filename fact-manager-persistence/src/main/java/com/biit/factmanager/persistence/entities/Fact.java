@@ -90,7 +90,6 @@ public class Fact<ENTITY> extends CreatedElement implements IPivotViewerData, IK
 
     //The name of the form, customer, patient, etc.
     @Column(name = "element_name")
-    @Convert(converter = StringCryptoConverter.class)
     private String elementName;
 
     // ID of the entity on the fact
