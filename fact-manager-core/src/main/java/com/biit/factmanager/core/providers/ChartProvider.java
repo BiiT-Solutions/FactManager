@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -76,7 +77,7 @@ public class ChartProvider<T extends Fact<?>> {
                     final FormrunnerQuestionValue formrunnerQuestionValue = (FormrunnerQuestionValue) formrunnerQuestionFact.getEntity();
                     if (formrunnerQuestionValue.getAnswer() != null && formrunnerQuestionValue.getAnswer().matches("[+-]?\\d*(\\.\\d+)?")) {
                         html.append(formrunnerQuestionValue.getAnswer());
-                        if (!(formrunnerQuestionFacts.stream().reduce((first, second) -> second).orElse(null) == formrunnerQuestionFact)) {
+                        if (!Objects.equals(formrunnerQuestionFacts.stream().reduce((first, second) -> second).orElse(null), formrunnerQuestionFact)) {
                             html.append(", ");
                         } else {
                             FactManagerLogger.info(this.getClass().getName(), "Null or not number answer");
@@ -85,7 +86,7 @@ public class ChartProvider<T extends Fact<?>> {
                 }
             });
             html.append("]");
-            if (!(uniqueTenants.stream().reduce((first, second) -> second).orElse(null) == tenant)) {
+            if (!Objects.equals(uniqueTenants.stream().reduce((first, second) -> second).orElse(null), tenant)) {
                 html.append(",\n");
             }
         });
