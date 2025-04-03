@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class ChartProvider<T extends Fact<?>> {
@@ -104,7 +103,7 @@ public class ChartProvider<T extends Fact<?>> {
     private List<String> getUniqueTenants(Collection<T> facts) {
         final ArrayList<String> tenants = new ArrayList<>();
         facts.forEach(fact -> tenants.add(fact.getTenant()));
-        return tenants.stream().distinct().collect(Collectors.toList());
+        return tenants.stream().distinct().toList();
     }
 
     private List<String> getUniqueQuestions(Collection<T> formrunnerQuestionFacts) {
@@ -113,7 +112,7 @@ public class ChartProvider<T extends Fact<?>> {
             final FormrunnerQuestionValue formrunnerQuestionValue = (FormrunnerQuestionValue) formrunnerQuestionFact.getEntity();
             questions.add(formrunnerQuestionValue.getQuestion());
         });
-        return questions.stream().distinct().collect(Collectors.toList());
+        return questions.stream().distinct().toList();
     }
 
     private Collection<T> filterNonFormrunnerQuestionFacts(Collection<T> facts) {
