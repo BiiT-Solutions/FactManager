@@ -91,6 +91,15 @@
         <appender-ref ref="DAILY"/>
         <appender-ref ref="CONSOLE"/>
     </logger>
+    <logger name="com.biit.server.logger.DtoControllerLogger" additivity="false" level="INFO">
+        <appender-ref ref="DAILY"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.biit.server.logger.DtoProviderLogger" additivity="false" level="INFO">
+        <appender-ref ref="DAILY"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
 
     <!-- Default ones -->
     <logger name="org.springframework" additivity="false" level="INFO">

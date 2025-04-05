@@ -4,10 +4,14 @@ import com.biit.server.controllers.models.CreatedElementDTO;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import java.io.Serial;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
 public class FactDTO extends CreatedElementDTO {
+
+    @Serial
+    private static final long serialVersionUID = -4995202896088204982L;
 
     private Long id;
 
