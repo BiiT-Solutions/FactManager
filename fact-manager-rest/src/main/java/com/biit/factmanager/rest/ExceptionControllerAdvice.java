@@ -1,6 +1,7 @@
 package com.biit.factmanager.rest;
 
 import com.biit.factmanager.core.providers.exceptions.FactNotFoundException;
+import com.biit.factmanager.core.providers.exceptions.InvalidParameterException;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.server.exceptions.ErrorResponse;
 import com.biit.server.exceptions.ServerExceptionControllerAdvice;
@@ -15,6 +16,13 @@ public class ExceptionControllerAdvice extends ServerExceptionControllerAdvice {
     public ResponseEntity<Object> factNotFoundException(IllegalArgumentException ex) {
         FactManagerLogger.errorMessage(this.getClass(), ex);
         return new ResponseEntity<>(new ErrorResponse(ex.getMessage(), "fact_not_found", ex), HttpStatus.NOT_FOUND);
+    }
+
+
+    @ExceptionHandler(InvalidParameterException.class)
+    public ResponseEntity<Object> customInvalidParameterException(IllegalArgumentException ex) {
+        FactManagerLogger.errorMessage(this.getClass(), ex);
+        return new ResponseEntity<>(new ErrorResponse(ex.getMessage(), "invalid_parameter", ex), HttpStatus.BAD_REQUEST);
     }
 
 
