@@ -1,6 +1,7 @@
 package com.biit.factmanager.kafka.consumers;
 
 import com.biit.factmanager.core.providers.FactProvider;
+import com.biit.factmanager.core.providers.exceptions.FactNotFoundException;
 import com.biit.factmanager.kafka.senders.EventSender;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.CustomProperty;
@@ -141,7 +142,7 @@ public class EventController {
             final Event event = convert(fact.get());
             eventSender.sendEvent(event, fact.get().getGroup());
         } else {
-            FactManagerLogger.severe(this.getClass(), "No fact found with id '{}'.", id);
+            throw new FactNotFoundException(this.getClass(), "No fact found with id '" + id + "' found.");
         }
     }
 
