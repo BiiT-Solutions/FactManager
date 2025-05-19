@@ -33,7 +33,7 @@ public class EventServices {
             @Parameter(description = "Id from the fact", required = true) @PathVariable("id") Long id,
             Authentication authentication,
             HttpServletRequest httpRequest) {
-        FactManagerLogger.info(this.getClass().getName(), "Resending event from fact id '{}' by '{}'.", id, authentication.getName());
+        FactManagerLogger.info(this.getClass().getName(), "Sending fact with id '{}' as event by '{}'.", id, authentication.getName());
         eventController.resendFact(id);
     }
 

@@ -27,7 +27,7 @@ public class EventSender {
         if (kafkaTemplate != null && topic != null && !topic.isEmpty()) {
             //Send the complete form as an event.
             kafkaTemplate.send(topic, event);
-            EventsLogger.debug(this.getClass().getName(), "Event send!");
+            EventsLogger.debug(this.getClass().getName(), "Event send to topic '{}'!", topic);
         } else {
             EventsLogger.warning(this.getClass().getName(), "Topic invalid!");
         }
