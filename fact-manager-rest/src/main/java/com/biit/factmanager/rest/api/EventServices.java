@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +31,7 @@ public class EventServices {
     @PostMapping(value = "/send/{id}")
     public void sendFactAsEvent(
             @Parameter(description = "Id from the fact", required = true) @PathVariable("id") Long id,
-            Authentication authentication,
-            HttpServletRequest httpRequest) {
+            Authentication authentication, HttpServletRequest httpRequest) {
         FactManagerLogger.info(this.getClass().getName(), "Sending fact with id '{}' as event by '{}'.", id, authentication.getName());
         eventController.resendFact(id);
     }
