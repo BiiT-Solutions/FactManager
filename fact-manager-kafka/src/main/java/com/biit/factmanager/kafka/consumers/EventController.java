@@ -1,6 +1,7 @@
 package com.biit.factmanager.kafka.consumers;
 
 import com.biit.factmanager.core.providers.FactProvider;
+import com.biit.factmanager.kafka.senders.EventSender;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.CustomProperty;
 import com.biit.factmanager.persistence.entities.LogFact;
@@ -14,20 +15,29 @@ import org.springframework.stereotype.Controller;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.TimeZone;
+import java.util.UUID;
 
 
 @Controller
 public class EventController {
     private static final String CONTROL_TOPIC = "_connect_configs";
 
+    private final FactProvider<LogFact> factProvider;
+    private final EventSender eventSender;
+
 
     public EventController(@Autowired(required = false) EventListener eventListener,
                            @Autowired(required = false) EventConsumerListener eventConsumerListener,
-                           FactProvider<LogFact> factProvider) {
+                           FactProvider<LogFact> factProvider, EventSender eventSender) {
+
+        this.factProvider = factProvider;
+        this.eventSender = eventSender;
 
         //Listen to topic
         if (eventListener != null) {
@@ -122,5 +132,57 @@ public class EventController {
                 event.getCreatedBy(), event.getReplyTo(), event.getTenant(), event.getSubject(), event.getEntityType(), event.getSessionId(),
                 event.getMessageId(), event.getTag(), event.getCreatedAt(), event.getCustomProperties());
         return logFact;
+    }
+
+
+    public void resendFact(Long id) {
+        final Optional<LogFact> fact = factProvider.get(id);
+        if (fact.isPresent()) {
+            final Event event = convert(fact.get());
+            eventSender.sendEvent(event, fact.get().getGroup());
+        } else {
+            FactManagerLogger.severe(this.getClass(), "No fact found with id '{}'.", id);
+        }
+    }
+
+
+    private Event convert(LogFact logFact) {
+        if (logFact == null) {
+            FactManagerLogger.warning(this.getClass(), "Receiving null fact!");
+            return null;
+        }
+        final Event event = new Event();
+        event.setCreatedBy(logFact.getCreatedBy());
+        event.setReplyTo(logFact.getApplication());
+        event.setTenant(logFact.getTenant());
+        event.setSubject(logFact.getSubject());
+
+        if (logFact.getSession() != null) {
+            event.setSessionId(UUID.fromString(logFact.getSession()));
+        }
+
+        if (logFact.getElement() != null) {
+            event.setMessageId(UUID.fromString(logFact.getElement()));
+        }
+
+        event.setTag(logFact.getElementName());
+        event.setPayload(logFact.getValue());
+        event.setOrganization(logFact.getOrganization());
+        event.setUnit(logFact.getUnit());
+        if (logFact.getCreatedAt() != null) {
+            event.setCreatedAt(logFact.getCreatedAt());
+        }
+        event.setCustomProperties(new HashMap<>());
+        if (logFact.getFactType() != null) {
+            event.setCustomProperty(EventCustomProperties.FACT_TYPE, logFact.getFactType());
+        }
+
+        for (final CustomProperty customProperty : logFact.getCustomProperties()) {
+            event.setCustomProperty(customProperty.getKey(), customProperty.getValue());
+        }
+
+        event.setEntityType(logFact.getFactType());
+
+        return event;
     }
 }
