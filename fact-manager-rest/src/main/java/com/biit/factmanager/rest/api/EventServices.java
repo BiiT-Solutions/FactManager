@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,8 +28,8 @@ public class EventServices {
 
     @Operation(summary = "Relaunch a fact as an event.", security = @SecurityRequirement(name = "bearerAuth"))
     @PreAuthorize("hasAnyAuthority(@securityService.adminPrivilege)")
-    @ResponseStatus(value = HttpStatus.OK)
-    @GetMapping(value = "/send/{id}")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @PostMapping(value = "/send/{id}")
     public void sendFactAsEvent(
             @Parameter(description = "Id from the fact", required = true) @PathVariable("id") Long id,
             Authentication authentication,
