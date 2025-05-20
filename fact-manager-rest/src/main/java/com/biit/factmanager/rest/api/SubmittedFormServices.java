@@ -3,6 +3,7 @@ package com.biit.factmanager.rest.api;
 import com.biit.factmanager.core.controllers.FactController;
 import com.biit.factmanager.core.controllers.FormXmlController;
 import com.biit.factmanager.dto.FactDTO;
+import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.LogFact;
 import com.biit.form.result.xls.exceptions.InvalidXlsElementException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -87,6 +88,7 @@ public class SubmittedFormServices {
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
                 lastDays, latestByUser, null, null, null);
 
+        FactManagerLogger.debug(this.getClass(), "Found '{}' facts.", facts.size());
         final byte[] bytes = formXmlController.convert(facts);
         final ContentDisposition contentDisposition = ContentDisposition.builder("attachment")
                 .filename((elementName != null ? elementName : "values") + ".xls").build();
