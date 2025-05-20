@@ -1,5 +1,6 @@
 package com.biit.factmanager.kafka.consumers;
 
+import com.biit.factmanager.core.providers.CustomPropertyProvider;
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.core.providers.exceptions.FactNotFoundException;
 import com.biit.factmanager.kafka.senders.EventSender;
@@ -32,15 +33,17 @@ public class EventController {
     private static final String CONTROL_TOPIC = "_connect_configs";
 
     private final FactProvider<LogFact> factProvider;
+    private final CustomPropertyProvider<LogFact> customPropertyProvider;
     private final EventSender eventSender;
 
 
     @Autowired(required = false)
     public EventController(EventListener eventListener,
                            EventConsumerListener eventConsumerListener,
-                           FactProvider<LogFact> factProvider, EventSender eventSender) {
+                           FactProvider<LogFact> factProvider, CustomPropertyProvider<LogFact> customPropertyProvider, EventSender eventSender) {
 
         this.factProvider = factProvider;
+        this.customPropertyProvider = customPropertyProvider;
         this.eventSender = eventSender;
 
         //Listen to topic
@@ -181,7 +184,9 @@ public class EventController {
             event.setCustomProperty(EventCustomProperties.FACT_TYPE, logFact.getFactType());
         }
 
-        for (final CustomProperty customProperty : logFact.getCustomProperties()) {
+        final List<CustomProperty> properties = customPropertyProvider.findByFact(logFact);
+
+        for (final CustomProperty customProperty : properties) {
             event.setCustomProperty(customProperty.getKey(), customProperty.getValue());
         }
 
