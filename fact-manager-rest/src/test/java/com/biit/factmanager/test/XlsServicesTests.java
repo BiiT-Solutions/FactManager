@@ -169,7 +169,7 @@ public class XlsServicesTests extends AbstractTransactionalTestNGSpringContextTe
         requestParams.add("elementName", FORM_NAME);
         requestParams.add("lastDays", "1");
 
-        final MvcResult createResult = mockMvc.perform(get("/facts/forms/xls/latest")
+        final MvcResult createResult = mockMvc.perform(get("/facts/forms/xls")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM)
                         .params(requestParams)
