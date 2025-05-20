@@ -38,6 +38,7 @@ public class BasicFact extends Fact<String> {
         };
     }
 
+    @Override
     @JsonSetter
     //@JsonDeserialize(using = JsonValueDeserializer.class)
     @JsonSerialize(using = JsonValueSerializer.class)
@@ -45,6 +46,7 @@ public class BasicFact extends Fact<String> {
         super.setValue(value);
     }
 
+    @Override
     @JsonGetter
     //@JsonSerialize(using = JsonValueSerializer.class)
     @JsonDeserialize(using = JsonValueDeserializer.class)

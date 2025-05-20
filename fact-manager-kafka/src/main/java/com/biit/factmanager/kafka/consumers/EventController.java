@@ -113,9 +113,6 @@ public class EventController {
                 final String[] parts = event.getEntityType().split("\\.");
                 logFact.setFactType(parts[parts.length - 1]);
             }
-//            if (event.getCustomProperty(EventCustomProperties.ISSUER) != null) {
-//                logFact.setCreatedBy(event.getCustomProperty(EventCustomProperties.ISSUER));
-//            }
 
             final List<CustomProperty> customProperties = new ArrayList<>();
             for (final Map.Entry<String, String> entry : event.getCustomProperties().entrySet()) {

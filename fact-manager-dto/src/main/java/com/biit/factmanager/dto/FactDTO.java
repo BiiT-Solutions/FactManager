@@ -101,10 +101,12 @@ public class FactDTO extends CreatedElementDTO {
         this.element = element;
     }
 
+    @Override
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
+    @Override
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
