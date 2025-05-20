@@ -62,7 +62,7 @@ public class SubmittedFormServices {
     @PreAuthorize("hasAnyAuthority(@securityService.editorPrivilege, @securityService.adminPrivilege)")
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(value = "/xls/latest", produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public byte[] getFacts(
+    public byte[] getXmlDocument(
             @Parameter(name = "organization", required = false) @RequestParam(value = "organization", required = false) String organization,
             @Parameter(name = "unit", required = false) @RequestParam(value = "unit", required = false) String unit,
             @Parameter(name = "createdBy", required = false) @RequestParam(value = "createdBy", required = false) List<String> createdBy,
