@@ -11,6 +11,7 @@ import com.biit.kafka.events.Event;
 import com.biit.kafka.events.EventCustomProperties;
 import com.biit.kafka.logger.EventsLogger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Controller;
 
 import java.time.Instant;
@@ -26,6 +27,7 @@ import java.util.UUID;
 
 
 @Controller
+@ConditionalOnExpression("${spring.kafka.enabled:false}")
 public class EventController {
     private static final String CONTROL_TOPIC = "_connect_configs";
 
@@ -33,8 +35,9 @@ public class EventController {
     private final EventSender eventSender;
 
 
-    public EventController(@Autowired(required = false) EventListener eventListener,
-                           @Autowired(required = false) EventConsumerListener eventConsumerListener,
+    @Autowired(required = false)
+    public EventController(EventListener eventListener,
+                           EventConsumerListener eventConsumerListener,
                            FactProvider<LogFact> factProvider, EventSender eventSender) {
 
         this.factProvider = factProvider;
