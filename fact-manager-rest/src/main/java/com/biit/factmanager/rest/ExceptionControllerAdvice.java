@@ -1,8 +1,10 @@
 package com.biit.factmanager.rest;
 
 import com.biit.factmanager.core.providers.exceptions.FactNotFoundException;
+import com.biit.factmanager.core.providers.exceptions.InvalidFactException;
 import com.biit.factmanager.core.providers.exceptions.InvalidParameterException;
 import com.biit.factmanager.logger.FactManagerLogger;
+import com.biit.form.result.xls.exceptions.InvalidXlsElementException;
 import com.biit.kafka.exceptions.InvalidEventException;
 import com.biit.server.exceptions.ErrorResponse;
 import com.biit.server.exceptions.ServerExceptionControllerAdvice;
@@ -59,5 +61,17 @@ public class ExceptionControllerAdvice extends ServerExceptionControllerAdvice {
     public ResponseEntity<Object> invalidValueException(Exception ex) {
         FactManagerLogger.errorMessage(this.getClass().getName(), ex);
         return new ResponseEntity<>(new ErrorResponse(ex.getMessage(), "invalid_parameter", ex), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidFactException.class)
+    public ResponseEntity<Object> invalidFactException(Exception ex) {
+        FactManagerLogger.errorMessage(this.getClass().getName(), ex);
+        return new ResponseEntity<>(new ErrorResponse(ex.getMessage(), "invalid_fact", ex), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidXlsElementException.class)
+    public ResponseEntity<Object> invalidXlsElementException(Exception ex) {
+        FactManagerLogger.errorMessage(this.getClass().getName(), ex);
+        return new ResponseEntity<>(new ErrorResponse(ex.getMessage(), "invalid_xls", ex), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

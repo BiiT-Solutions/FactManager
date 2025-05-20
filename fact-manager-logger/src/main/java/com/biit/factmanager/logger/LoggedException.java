@@ -36,6 +36,11 @@ public abstract class LoggedException extends RuntimeException {
         FactManagerLogger.errorMessage(clazz, e);
     }
 
+    public LoggedException(Class<?> clazz, String message, Throwable e) {
+        super(message, e);
+        FactManagerLogger.errorMessage(clazz, e);
+    }
+
     public HttpStatus getStatus() {
         return status;
     }

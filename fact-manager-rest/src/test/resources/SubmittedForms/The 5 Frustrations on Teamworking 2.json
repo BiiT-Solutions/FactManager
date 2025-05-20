@@ -1,0 +1,164 @@
+{
+  "class" : "com.biit.form.result.FormResult",
+  "submittedAt" : "2025-03-13T14:00:32.408Z",
+  "children" : [ {
+    "class" : "com.biit.form.result.CategoryResult",
+    "name" : "privacy",
+    "label" : "Privacy",
+    "comparationId" : "67570b09-2bea-4bf2-9854-76819184dae3",
+    "children" : [ {
+      "class" : "com.biit.form.result.RepeatableGroupResult",
+      "name" : "privacy_nl",
+      "label" : "Privacy Statement (NL)",
+      "comparationId" : "9b137ea5-9043-4e78-82cd-1d8111a61a9d",
+      "children" : [ ]
+    }, {
+      "class" : "com.biit.form.result.RepeatableGroupResult",
+      "name" : "privacy_en",
+      "label" : "Privacy Statement (EN)",
+      "comparationId" : "5bdd0f75-e7c7-4502-b722-3df6993256ec",
+      "children" : [ ]
+    }, {
+      "class" : "com.biit.form.result.QuestionWithValueResult",
+      "values" : [ "yes" ],
+      "answerLabels" : [ "Ja" ],
+      "name" : "continue",
+      "label" : "Selecteer \"Ja\" om door te gaan...",
+      "comparationId" : "110e706d-35ce-418b-8c27-02c2b6e1a567"
+    } ]
+  }, {
+    "class" : "com.biit.form.result.CategoryResult",
+    "name" : "instructions",
+    "label" : "Instructie",
+    "comparationId" : "b2c68190-21c2-42a6-ab57-e0080a136987",
+    "children" : [ {
+      "class" : "com.biit.form.result.RepeatableGroupResult",
+      "name" : "instructions_nl",
+      "label" : "Instructie (NL)",
+      "comparationId" : "965a0df5-8caa-4d30-a5d0-513f33898f39",
+      "children" : [ ]
+    }, {
+      "class" : "com.biit.form.result.RepeatableGroupResult",
+      "name" : "instrucitons_en",
+      "label" : "Instructions (EN)",
+      "comparationId" : "9632990a-4f3f-417a-90a4-53fb54e5fd9b",
+      "children" : [ ]
+    } ]
+  }, {
+    "class" : "com.biit.form.result.CategoryResult",
+    "name" : "frustrations",
+    "label" : "Lencioni",
+    "comparationId" : "4371bc87-6460-41b8-8fb7-02a7d8415f56",
+    "children" : [ {
+      "class" : "com.biit.form.result.QuestionWithValueResult",
+      "values" : [ "generally" ],
+      "answerLabels" : [ "Meestal" ],
+      "name" : "passionated",
+      "label" : "Teamleden zeggen eerlijk wat ze vinden bij het nemen van beslissingen.",
+      "comparationId" : "aa878b26-0240-4cd9-88c3-1ba971f28e65"
+    }, {
+      "class" : "com.biit.form.result.QuestionWithValueResult",
+      "values" : [ "sometimes" ],
+      "answerLabels" : [ "Soms" ],
+      "name" : "communication",
+      "label" : "Teamleden spreken elkaar aan op gedrag dat niet helpt.",
+      "comparationId" : "b391a9cf-73db-4d94-8abe-b9bd5b5f9424"
+    }, {
+      "class" : "com.biit.form.result.QuestionWithValueResult",
+      "values" : [ "generally" ],
+      "answerLabels" : [ "Meestal" ],
+      "name" : "inter_knowledge",
+      "label" : "Teamleden weten waar anderen aan werken en wat ze bijdragen.",
+      "comparationId" : "825eecea-ef42-4421-a15f-211208de9f28"
+    }, {
+      "class" : "com.biit.form.result.QuestionWithValueResult",
+      "values" : [ "sometimes" ],
+      "answerLabels" : [ "Soms" ],
+      "name" : "apologize",
+      "label" : "Teamleden zeggen snel sorry als ze iets fout doen.",
+      "comparationId" : "29b1a74e-8227-4625-b1cd-2b935af89922"
+    }, {
+      "class" : "com.biit.form.result.QuestionWithValueResult",
+      "values" : [ "sometimes" ],
+      "answerLabels" : [ "Soms" ],
+      "name" : "sacrifices",
+      "label" : "Teamleden doen soms iets extra’s voor het team, ook al kost dat moeite.",
+      "comparationId" : "c2d77034-6698-40df-af87-e4497cc26fe0"
+    }, {
+      "class" : "com.biit.form.result.QuestionWithValueResult",
+      "values" : [ "sometimes" ],
+      "answerLabels" : [ "Soms" ],
+      "name" : "weakness",
+      "label" : "Teamleden durven hun fouten en zwakke punten te delen.",
+      "comparationId" : "7b2c4797-0493-460b-8766-1763b003d265"
+    }, {
+      "class" : "com.biit.form.result.QuestionWithValueResult",
+      "values" : [ "generally" ],
+      "answerLabels" : [ "Meestal" ],
+      "name" : "meetings_fascinating",
+      "label" : "Teamvergaderingen zijn interessant en niet saai.",
+      "comparationId" : "f158d217-c47f-49d8-8859-86ba36f60e15"
+    }, {
+      "class" : "com.biit.form.result.QuestionWithValueResult",
+      "values" : [ "generally" ],
+      "answerLabels" : [ "Meestal" ],
+      "name" : "support_descissions",
+      "label" : "Na een vergadering steunen teamleden de gemaakte beslissingen, zelfs als ze het eerst niet eens waren.",
+      "comparationId" : "a2e4a4f7-5762-4b8b-9461-5f8e7776b2e0"
+    }, {
+      "class" : "com.biit.form.result.QuestionWithValueResult",
+      "values" : [ "sometimes" ],
+      "answerLabels" : [ "Soms" ],
+      "name" : "failing_goals",
+      "label" : "Als het team doelen niet haalt, voelt iedereen zich daar verantwoordelijk voor.",
+      "comparationId" : "19796825-730b-44b4-8baa-d325f4fe9fd3"
+    }, {
+      "class" : "com.biit.form.result.QuestionWithValueResult",
+      "values" : [ "sometimes" ],
+      "answerLabels" : [ "Soms" ],
+      "name" : "meetings_constructive",
+      "label" : "Tijdens vergaderingen worden moeilijke onderwerpen besproken en opgelost.",
+      "comparationId" : "c6b7d30f-6e3d-47bd-9152-c3678584f8bb"
+    }, {
+      "class" : "com.biit.form.result.QuestionWithValueResult",
+      "values" : [ "sometimes" ],
+      "answerLabels" : [ "Soms" ],
+      "name" : "concerted_about_letting_down",
+      "label" : "Teamleden vinden het spannend om kritiek te geven op collega’s.",
+      "comparationId" : "fff00d87-6b8d-4127-a83e-6fc7b702cb9a"
+    }, {
+      "class" : "com.biit.form.result.QuestionWithValueResult",
+      "values" : [ "generally" ],
+      "answerLabels" : [ "Meestal" ],
+      "name" : "tal_each_other",
+      "label" : "Teamleden kennen iets van elkaars persoonlijke leven en praten daar makkelijk over.",
+      "comparationId" : "706543f8-df68-433c-88f0-eea22953ea70"
+    }, {
+      "class" : "com.biit.form.result.QuestionWithValueResult",
+      "values" : [ "sometimes" ],
+      "answerLabels" : [ "Soms" ],
+      "name" : "discussions_with_solutions",
+      "label" : "Het team sluit discussies af met duidelijke oplossingen en plannen.",
+      "comparationId" : "9483a041-df9c-41fb-b8bf-df5213eedcf0"
+    }, {
+      "class" : "com.biit.form.result.QuestionWithValueResult",
+      "values" : [ "sometimes" ],
+      "answerLabels" : [ "Soms" ],
+      "name" : "challenges_on_plans",
+      "label" : "Teamleden dagen elkaar uit over plannen en ideeën.",
+      "comparationId" : "d25168e8-0c78-476f-8def-8ce29eaf0272"
+    }, {
+      "class" : "com.biit.form.result.QuestionWithValueResult",
+      "values" : [ "sometimes" ],
+      "answerLabels" : [ "Soms" ],
+      "name" : "modest_about_recognition",
+      "label" : "Teamleden zijn bescheiden over hun eigen werk, maar geven anderen snel waardering.",
+      "comparationId" : "6f0dc300-836e-42cd-a191-4b09563e5385"
+    } ]
+  } ],
+  "label" : "The 5 Frustrations on Teamworking",
+  "organizationId" : 18903,
+  "version" : 2,
+  "name" : "form",
+  "comparationId" : "19e40c4a-eaeb-46ce-be19-ed1b20c9cf3c"
+}

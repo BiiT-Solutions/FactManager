@@ -28,6 +28,10 @@
             <artifactId>fact-manager-dto</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.biit</groupId>
+            <artifactId>form-result-xls</artifactId>
+        </dependency>
         <!-- Testing -->
         <dependency>
             <groupId>org.testng</groupId>
