@@ -2,7 +2,7 @@ package com.biit.factmanager.test;
 
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.persistence.entities.LogFact;
-import com.biit.factmanager.rest.api.SubmittedFormServices;
+import com.biit.factmanager.rest.api.model.XmlSearch;
 import com.biit.form.result.FormResult;
 import com.biit.server.security.model.AuthRequest;
 import com.biit.usermanager.client.providers.AuthenticatedUserProvider;
@@ -67,9 +67,6 @@ public class XlsServicesTests extends AbstractTransactionalTestNGSpringContextTe
     private static final String FORM_AS_JSON_3 = "The 5 Frustrations on Teamworking 3.json";
 
     private static final String FORM_NAME = "The 5 Frustrations on Teamworking";
-
-    @Autowired
-    private SubmittedFormServices submittedFormServices;
 
     @Autowired
     private FactProvider<LogFact> factProvider;
@@ -173,6 +170,40 @@ public class XlsServicesTests extends AbstractTransactionalTestNGSpringContextTe
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM)
                         .params(requestParams)
+                        .with(csrf()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+
+        //Store the file for comparison.
+        final File xlsFile = new File(OUTPUT_FOLDER + File.separator + "getXlsFile.xls");
+        Files.write(xlsFile.toPath(), createResult.getResponse().getContentAsByteArray());
+    }
+
+
+    @Test(dependsOnMethods = "setAuthentication")
+    public void getMultipleXlsFile() throws Exception {
+        final List<XmlSearch> searches = new ArrayList<>();
+
+        final XmlSearch xmlSearch1 = new XmlSearch();
+        xmlSearch1.setElementName(FORM_NAME);
+        xmlSearch1.setLastDays(1);
+        xmlSearch1.setLatestByUser(true);
+        xmlSearch1.setUnit(UNIT_1);
+        searches.add(xmlSearch1);
+
+        final XmlSearch xmlSearch2 = new XmlSearch();
+        xmlSearch2.setElementName(FORM_NAME);
+        xmlSearch2.setLastDays(1);
+        xmlSearch2.setLatestByUser(true);
+        xmlSearch2.setUnit(UNIT_2);
+        searches.add(xmlSearch2);
+
+
+        final MvcResult createResult = mockMvc.perform(post("/facts/forms/xls")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
+                        .accept(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM)
+                        .content(toJson(searches))
                         .with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();

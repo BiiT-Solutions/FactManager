@@ -5,19 +5,25 @@ import com.biit.factmanager.core.controllers.FormXmlController;
 import com.biit.factmanager.dto.FactDTO;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.LogFact;
+import com.biit.factmanager.rest.api.model.XmlSearch;
 import com.biit.form.result.xls.exceptions.InvalidXlsElementException;
+import com.biit.server.rest.SecurityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -26,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -37,6 +44,9 @@ public class SubmittedFormServices {
 
     private final FactController<LogFact> factController;
     private final FormXmlController formXmlController;
+
+    @Autowired
+    private SecurityService securityService;
 
     public SubmittedFormServices(FactController<LogFact> factController, FormXmlController formXmlController) {
         this.factController = factController;
@@ -92,6 +102,40 @@ public class SubmittedFormServices {
         final byte[] bytes = formXmlController.convert(facts);
         final ContentDisposition contentDisposition = ContentDisposition.builder("attachment")
                 .filename((elementName != null ? elementName : "values") + ".xls").build();
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
+        return bytes;
+    }
+
+
+    @Operation(summary = "Search forms functionality", description = """
+            Receives a list of requests and generate a XML document with the information of all involved forms. Can contain different form sources.
+            """,
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @PreAuthorize("hasAnyAuthority(@securityService.editorPrivilege, @securityService.adminPrivilege)")
+    @ResponseStatus(value = HttpStatus.OK)
+    @PostMapping(value = "/xls", produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public byte[] getXmlDocument(
+            @RequestBody List<XmlSearch> xmlSearchres,
+            Authentication authentication, HttpServletRequest httpRequest, HttpServletResponse response) throws InvalidXlsElementException {
+
+        final List<FactDTO> facts = new ArrayList<>();
+
+        for (XmlSearch xmlSearch : xmlSearchres) {
+            securityService.canBeDoneByDifferentUsers(xmlSearch.getCreatedBy(), authentication);
+
+            facts.addAll(factController.findBy(xmlSearch.getOrganization(), xmlSearch.getUnit(), xmlSearch.getCreatedBy(),
+                    xmlSearch.getApplication(), xmlSearch.getTenant(), xmlSearch.getSession(), SUBJECT,
+                    xmlSearch.getGroup(), xmlSearch.getElement(), xmlSearch.getElementName(), FACT_TYPE,
+                    xmlSearch.getFrom() != null ? LocalDateTime.ofInstant(xmlSearch.getFrom().toInstant(), ZoneId.systemDefault()) : null,
+                    xmlSearch.getTo() != null ? LocalDateTime.ofInstant(xmlSearch.getTo().toInstant(), ZoneId.systemDefault()) : null,
+                    xmlSearch.getLastDays(), xmlSearch.getLatestByUser(), null, null, null));
+        }
+
+
+        FactManagerLogger.debug(this.getClass(), "Found '{}' facts.", facts.size());
+        final byte[] bytes = formXmlController.convert(facts);
+        final ContentDisposition contentDisposition = ContentDisposition.builder("attachment")
+                .filename("form.xls").build();
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
         return bytes;
     }
