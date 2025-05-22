@@ -39,8 +39,8 @@ import java.util.List;
 @RequestMapping(value = "/facts/forms")
 @RestController
 public class SubmittedFormServices {
-    private static final String SUBJECT = "SUBMITTED";
-    private static final String FACT_TYPE = "FormResult";
+    private static final String SUBJECT = "CREATED";
+    private static final String FACT_TYPE = "DroolsResultForm";
 
     private final FactController<LogFact> factController;
     private final FormXmlController formXmlController;
