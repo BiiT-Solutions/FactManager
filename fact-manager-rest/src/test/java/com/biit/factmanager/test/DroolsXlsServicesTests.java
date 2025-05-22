@@ -4,7 +4,6 @@ import com.biit.drools.form.DroolsSubmittedForm;
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.persistence.entities.LogFact;
 import com.biit.factmanager.rest.api.model.XmlSearch;
-import com.biit.form.result.FormResult;
 import com.biit.server.security.model.AuthRequest;
 import com.biit.usermanager.client.providers.AuthenticatedUserProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -49,23 +48,23 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ExtendWith(MockitoExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @Test(groups = {"xmlServices"})
-public class XlsServicesTests extends AbstractTransactionalTestNGSpringContextTests {
+public class DroolsXlsServicesTests extends AbstractTransactionalTestNGSpringContextTests {
 
     private static final String USER_NAME = "user";
     private static final String USER_PASSWORD = "password";
 
     private static final String TOPIC = "form";
     private static final String APPLICATION = "XFORMS";
-    private static final String TYPE = "FormResult";
+    private static final String TYPE = "DroolsResultForm";
     private static final String ORGANIZATION = "NHM";
-    private static final String SUBJECT = "SUBMITTED";
+    private static final String SUBJECT = "CREATED";
     private static final String UNIT_1 = "UNIT_1";
     private static final String UNIT_2 = "UNIT_2";
 
     private static final String OUTPUT_FOLDER = System.getProperty("java.io.tmpdir") + File.separator + "XmlForms";
-    private static final String FORM_AS_JSON = "The 5 Frustrations on Teamworking 1.json";
-    private static final String FORM_AS_JSON_2 = "The 5 Frustrations on Teamworking 2.json";
-    private static final String FORM_AS_JSON_3 = "The 5 Frustrations on Teamworking 3.json";
+    private static final String FORM_AS_JSON = "The 5 Frustrations on Teamworking 1 - Drools.json";
+    private static final String FORM_AS_JSON_2 = "The 5 Frustrations on Teamworking 2 - Drools.json";
+    private static final String FORM_AS_JSON_3 = "The 5 Frustrations on Teamworking 3 - Drools.json";
 
     private static final String FORM_NAME = "The 5 Frustrations on Teamworking";
 
@@ -95,10 +94,10 @@ public class XlsServicesTests extends AbstractTransactionalTestNGSpringContextTe
 
     private LogFact getLogFact(String file, String unit) throws URISyntaxException, IOException {
         final String text = new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource("SubmittedForms" + File.separator + file).toURI())));
-        final FormResult form = FormResult.fromJson(text);
+        final DroolsSubmittedForm form = DroolsSubmittedForm.getFromJson(text);
         final LogFact logFact = new LogFact();
         logFact.setValue(text);
-        logFact.setElementName(form.getLabel());
+        logFact.setElementName(form.getTag());
         logFact.setGroup(TOPIC);
         logFact.setApplication(APPLICATION);
         logFact.setFactType(TYPE);
@@ -167,7 +166,7 @@ public class XlsServicesTests extends AbstractTransactionalTestNGSpringContextTe
         requestParams.add("elementName", FORM_NAME);
         requestParams.add("lastDays", "1");
 
-        final MvcResult createResult = mockMvc.perform(get("/facts/forms/xls")
+        final MvcResult createResult = mockMvc.perform(get("/facts/drools-forms/xls")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM)
                         .params(requestParams)
@@ -177,7 +176,7 @@ public class XlsServicesTests extends AbstractTransactionalTestNGSpringContextTe
 
 
         //Store the file for comparison.
-        final File xlsFile = new File(OUTPUT_FOLDER + File.separator + "getXlsFile.xls");
+        final File xlsFile = new File(OUTPUT_FOLDER + File.separator + "getDroolsXlsFile.xls");
         Files.write(xlsFile.toPath(), createResult.getResponse().getContentAsByteArray());
     }
 
@@ -201,7 +200,7 @@ public class XlsServicesTests extends AbstractTransactionalTestNGSpringContextTe
         searches.add(xmlSearch2);
 
 
-        final MvcResult createResult = mockMvc.perform(post("/facts/forms/xls")
+        final MvcResult createResult = mockMvc.perform(post("/facts/drools-forms/xls")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
                         .accept(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -212,7 +211,7 @@ public class XlsServicesTests extends AbstractTransactionalTestNGSpringContextTe
 
 
         //Store the file for comparison.
-        final File xlsFile = new File(OUTPUT_FOLDER + File.separator + "MultipleXlsFile.xls");
+        final File xlsFile = new File(OUTPUT_FOLDER + File.separator + "DroolsMultipleXlsFile.xls");
         Files.write(xlsFile.toPath(), createResult.getResponse().getContentAsByteArray());
     }
 

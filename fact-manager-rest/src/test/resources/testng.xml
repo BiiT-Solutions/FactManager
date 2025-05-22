@@ -12,6 +12,7 @@
             <class name="com.biit.factmanager.test.rest.RestApiTest"/>
             <class name="com.biit.factmanager.test.FactsServicesTests"/>
             <class name="com.biit.factmanager.test.XlsServicesTests"/>
+            <class name="com.biit.factmanager.test.DroolsXlsServicesTests"/>
         </classes>
     </test>
 </suite>

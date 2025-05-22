@@ -1,12 +1,12 @@
 package com.biit.factmanager.rest.api;
 
+import com.biit.drools.form.xls.exceptions.InvalidXlsElementException;
+import com.biit.factmanager.core.controllers.DroolsFormXmlController;
 import com.biit.factmanager.core.controllers.FactController;
-import com.biit.factmanager.core.controllers.FormXmlController;
 import com.biit.factmanager.dto.FactDTO;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.LogFact;
 import com.biit.factmanager.rest.api.model.XmlSearch;
-import com.biit.form.result.xls.exceptions.InvalidXlsElementException;
 import com.biit.server.rest.SecurityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,19 +36,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@RequestMapping(value = "/facts/forms")
+@RequestMapping(value = "/facts/drools-forms")
 @RestController
-public class SubmittedFormServices {
-    private static final String SUBJECT = "SUBMITTED";
-    private static final String FACT_TYPE = "FormResult";
+public class DroolsSubmittedFormServices {
+    private static final String SUBJECT = "CREATED";
+    private static final String FACT_TYPE = "DroolsResultForm";
 
     private final FactController<LogFact> factController;
-    private final FormXmlController formXmlController;
+    private final DroolsFormXmlController formXmlController;
 
     @Autowired
     private SecurityService securityService;
 
-    public SubmittedFormServices(FactController<LogFact> factController, FormXmlController formXmlController) {
+    public DroolsSubmittedFormServices(FactController<LogFact> factController, DroolsFormXmlController formXmlController) {
         this.factController = factController;
         this.formXmlController = formXmlController;
     }
@@ -115,12 +115,12 @@ public class SubmittedFormServices {
     @ResponseStatus(value = HttpStatus.OK)
     @PostMapping(value = "/xls", produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public byte[] getXmlDocument(
-            @RequestBody List<XmlSearch> xmlSearches,
+            @RequestBody List<XmlSearch> xmlSearchres,
             Authentication authentication, HttpServletRequest httpRequest, HttpServletResponse response) throws InvalidXlsElementException {
 
         final List<FactDTO> facts = new ArrayList<>();
 
-        for (XmlSearch xmlSearch : xmlSearches) {
+        for (XmlSearch xmlSearch : xmlSearchres) {
             securityService.canBeDoneByDifferentUsers(xmlSearch.getCreatedBy(), authentication);
 
             facts.addAll(factController.findBy(xmlSearch.getOrganization(), xmlSearch.getUnit(), xmlSearch.getCreatedBy(),

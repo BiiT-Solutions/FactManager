@@ -70,6 +70,12 @@ public class ExceptionControllerAdvice extends ServerExceptionControllerAdvice {
     }
 
     @ExceptionHandler(InvalidXlsElementException.class)
+    public ResponseEntity<Object> invalidDroolsXlsElementException(Exception ex) {
+        FactManagerLogger.errorMessage(this.getClass().getName(), ex);
+        return new ResponseEntity<>(new ErrorResponse(ex.getMessage(), "invalid_xls", ex), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(com.biit.form.result.xls.exceptions.InvalidXlsElementException.class)
     public ResponseEntity<Object> invalidXlsElementException(Exception ex) {
         FactManagerLogger.errorMessage(this.getClass().getName(), ex);
         return new ResponseEntity<>(new ErrorResponse(ex.getMessage(), "invalid_xls", ex), HttpStatus.INTERNAL_SERVER_ERROR);

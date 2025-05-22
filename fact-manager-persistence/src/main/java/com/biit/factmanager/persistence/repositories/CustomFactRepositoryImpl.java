@@ -4,6 +4,7 @@ import com.biit.factmanager.logger.FactDatabaseLogger;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.CustomProperty;
 import com.biit.factmanager.persistence.entities.Fact;
+import com.biit.server.persistence.entities.CreatedElement;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -22,6 +23,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -191,7 +193,6 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
 
         propertiesQuery.select(subqueryRoot.get("fact")).where(criteriaBuilder.and(subPredicates.toArray(new Predicate[0])));
 
-        // query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
         if (customProperties == null) {
             query.select(root).where(predicates.toArray(new Predicate[0]));
         } else {
@@ -210,10 +211,10 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
 
     private List<T> filterByLatest(List<T> elements) {
         FactDatabaseLogger.info(this.getClass(), "Filtering elements '{}'.", elements);
-        final Map<String, List<T>> elementsByCreatedBy = elements.stream().collect(Collectors.groupingBy(e -> e.getCreatedBy()));
+        final Map<Optional<String>, List<T>> elementsByCreatedBy = elements.stream().collect(Collectors.groupingBy(e -> Optional.ofNullable(e.getCreatedBy())));
         final List<T> latestByCreatedBy = new ArrayList<>();
-        for (Map.Entry<String, List<T>> entry : elementsByCreatedBy.entrySet()) {
-            latestByCreatedBy.add(entry.getValue().stream().max(Comparator.comparing(t -> t.getCreatedAt())).orElse(null));
+        for (Map.Entry<Optional<String>, List<T>> entry : elementsByCreatedBy.entrySet()) {
+            latestByCreatedBy.add(entry.getValue().stream().max(Comparator.comparing(CreatedElement::getCreatedAt)).orElse(null));
         }
         FactDatabaseLogger.info(this.getClass(), "Elements filtered '{}'.", elements);
         return latestByCreatedBy;
