@@ -5,11 +5,13 @@
             <run>
                 <exclude name="factsServices"/>
                 <include name="restApiTest"/>
+                <include name="xmlServices"/>
             </run>
         </groups>
         <classes>
             <class name="com.biit.factmanager.test.rest.RestApiTest"/>
             <class name="com.biit.factmanager.test.FactsServicesTests"/>
+            <class name="com.biit.factmanager.test.XlsServicesTests"/>
         </classes>
     </test>
 </suite>

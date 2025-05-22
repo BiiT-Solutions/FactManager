@@ -1,9 +1,9 @@
 package com.biit.factmanager.test;
 
+import com.biit.drools.form.DroolsSubmittedForm;
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.persistence.entities.LogFact;
 import com.biit.factmanager.rest.api.model.XmlSearch;
-import com.biit.form.result.FormResult;
 import com.biit.server.security.model.AuthRequest;
 import com.biit.usermanager.client.providers.AuthenticatedUserProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -47,7 +47,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ExtendWith(MockitoExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@Test(groups = {"factsServices"})
+@Test(groups = {"xmlServices"})
 public class XlsServicesTests extends AbstractTransactionalTestNGSpringContextTests {
 
     private static final String USER_NAME = "user";
@@ -94,10 +94,10 @@ public class XlsServicesTests extends AbstractTransactionalTestNGSpringContextTe
 
     private LogFact getLogFact(String file, String unit) throws URISyntaxException, IOException {
         final String text = new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource("SubmittedForms" + File.separator + file).toURI())));
-        final FormResult form = FormResult.fromJson(text);
+        final DroolsSubmittedForm form = DroolsSubmittedForm.getFromJson(text);
         final LogFact logFact = new LogFact();
         logFact.setValue(text);
-        logFact.setElementName(form.getLabel());
+        logFact.setElementName(form.getTag());
         logFact.setGroup(TOPIC);
         logFact.setApplication(APPLICATION);
         logFact.setFactType(TYPE);
