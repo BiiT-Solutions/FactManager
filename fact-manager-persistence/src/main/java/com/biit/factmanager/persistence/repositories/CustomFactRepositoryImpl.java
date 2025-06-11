@@ -125,7 +125,7 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
             predicates.add(criteriaBuilder.equal(root.get("unit"), unit));
         }
         if (createdBy != null && !createdBy.isEmpty()) {
-            predicates.add(root.get("createdBy").in(createdBy));
+            predicates.add(root.get("createdByHash").in(createdBy));
         }
         if (application != null) {
             predicates.add(criteriaBuilder.equal(root.get("application"), application));

@@ -146,7 +146,6 @@ public class FactServices<V> {
             - element: The element that actions the fact.
             - elementName: The name of the entity. Can be the form name, a customer email, etc.
             - factType: if it has a form answer, is a timing event, etc.
-            - valueType: the class name of the value.
             - startDate: filtering facts from this day.
             - endDate: filtering facts to this day.
             - lastDays: if set, replaces startDate and endDate.
@@ -302,7 +301,6 @@ public class FactServices<V> {
             - element: The element that actions the fact.
             - elementName: The name of the entity. Can be the form name, a customer email, etc.
             - factType: if it has a form answer, is a timing event, etc.
-            - valueType: the class name of the value.
             - startDate: filtering facts from this day.
             - endDate: filtering facts to this day.
             - lastDays: if set, replaces startDate and endDate.
