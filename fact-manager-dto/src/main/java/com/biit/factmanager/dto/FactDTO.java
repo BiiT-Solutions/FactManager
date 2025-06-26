@@ -1,8 +1,10 @@
 package com.biit.factmanager.dto;
 
 import com.biit.server.controllers.models.CreatedElementDTO;
+import com.biit.server.controllers.models.ElementDTO;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import jakarta.validation.constraints.Size;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
@@ -15,10 +17,13 @@ public class FactDTO extends CreatedElementDTO {
 
     private Long id;
 
+    @Size(min = ElementDTO.MIN_FIELD_LENGTH, max = ElementDTO.MAX_NORMAL_FIELD_LENGTH)
     private String organization;
 
+    @Size(min = ElementDTO.MIN_FIELD_LENGTH, max = ElementDTO.MAX_NORMAL_FIELD_LENGTH)
     private String unit;
 
+    @Size(min = ElementDTO.MIN_FIELD_LENGTH, max = ElementDTO.MAX_NORMAL_FIELD_LENGTH)
     private String application;
 
     private String tenant;
