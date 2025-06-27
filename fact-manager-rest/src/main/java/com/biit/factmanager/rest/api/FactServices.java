@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.data.util.Pair;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -51,7 +52,7 @@ public class FactServices<V> {
     @PreAuthorize("hasAnyAuthority(@securityService.adminPrivilege)")
     @ResponseStatus(value = HttpStatus.OK)
     @PostMapping(value = "/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteFact(@Parameter(name = "fact", required = true) @RequestBody FactDTO fact,
+    public void deleteFact(@Parameter(name = "fact", required = true) @Valid @RequestBody FactDTO fact,
                            HttpServletRequest httpRequest) {
         FactManagerLogger.info(this.getClass().getName(), "Removed fact '" + fact + "'.");
         factController.deleteById(fact.getId());
@@ -276,7 +277,7 @@ public class FactServices<V> {
     @PreAuthorize("hasAnyAuthority(@securityService.editorPrivilege, @securityService.adminPrivilege)")
     @ResponseStatus(value = HttpStatus.OK)
     @PostMapping(value = "/query", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Collection<FactDTO> getFactsBigLoads(@RequestBody SearchFactRequest searchFactRequest, HttpServletRequest httpRequest) {
+    public Collection<FactDTO> getFactsBigLoads(@Valid @RequestBody SearchFactRequest searchFactRequest, HttpServletRequest httpRequest) {
         if (searchFactRequest == null) {
             return new ArrayList<>();
         }
