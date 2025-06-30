@@ -30,7 +30,9 @@ import java.util.UUID;
 @Controller
 @ConditionalOnExpression("${spring.kafka.enabled:false}")
 public class EventController {
-    private static final String CONTROL_TOPIC = "_connect_configs";
+    private static final String CONTROL_TOPIC_1 = "_connect_configs";
+    private static final String CONTROL_TOPIC_2 = "_connect_offset";
+    private static final String CONTROL_TOPIC_3 = "_connect_status";
 
     private final FactProvider<LogFact> factProvider;
     private final CustomPropertyProvider<LogFact> customPropertyProvider;
@@ -49,7 +51,7 @@ public class EventController {
         //Listen to topic
         if (eventListener != null) {
             eventListener.addListener((event, offset, groupId, key, partition, topic, timeStamp) -> {
-                if (!Objects.equals(CONTROL_TOPIC, topic)) {
+                if (!Objects.equals(CONTROL_TOPIC_1, topic) && !Objects.equals(CONTROL_TOPIC_2, topic) && !Objects.equals(CONTROL_TOPIC_3, topic)) {
                     EventsLogger.debug(this.getClass(), "Received event '{}' on topic '{}', key '{}', partition '{}' at '{}'",
                             event, topic, groupId, key, partition, LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp),
                                     TimeZone.getDefault().toZoneId()));
@@ -60,7 +62,7 @@ public class EventController {
         //Listens to all events on Kafka Streams.
         if (eventConsumerListener != null) {
             eventConsumerListener.addListener((event, offset, groupId, key, partition, topic, timeStamp) -> {
-                if (!Objects.equals(CONTROL_TOPIC, topic)) {
+                if (!Objects.equals(CONTROL_TOPIC_1, topic) && !Objects.equals(CONTROL_TOPIC_2, topic) && !Objects.equals(CONTROL_TOPIC_3, topic)) {
                     EventsLogger.debug(this.getClass(), "Received event '{}' on topic '{}', key '{}', partition '{}' at '{}'",
                             event, topic, groupId, key, partition, LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStamp),
                                     TimeZone.getDefault().toZoneId()));
