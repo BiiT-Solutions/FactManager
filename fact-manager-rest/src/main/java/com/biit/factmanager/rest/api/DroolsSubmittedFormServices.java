@@ -8,12 +8,13 @@ import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.LogFact;
 import com.biit.factmanager.rest.api.model.XmlSearch;
 import com.biit.server.rest.SecurityService;
+import com.biit.server.security.IUserOrganizationProvider;
+import com.biit.server.security.model.IUserOrganization;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -45,12 +46,18 @@ public class DroolsSubmittedFormServices {
     private final FactController<LogFact> factController;
     private final DroolsFormXmlController formXmlController;
 
-    @Autowired
-    private SecurityService securityService;
+    private final SecurityService securityService;
 
-    public DroolsSubmittedFormServices(FactController<LogFact> factController, DroolsFormXmlController formXmlController) {
+    private final List<IUserOrganizationProvider<? extends IUserOrganization>> userOrganizationProvider;
+
+    public DroolsSubmittedFormServices(FactController<LogFact> factController,
+                                       DroolsFormXmlController formXmlController,
+                                       SecurityService securityService,
+                                       List<IUserOrganizationProvider<? extends IUserOrganization>> userOrganizationProvider) {
         this.factController = factController;
         this.formXmlController = formXmlController;
+        this.securityService = securityService;
+        this.userOrganizationProvider = userOrganizationProvider;
     }
 
     @Operation(summary = "Search forms functionality", description = """
@@ -121,7 +128,7 @@ public class DroolsSubmittedFormServices {
         final List<FactDTO> facts = new ArrayList<>();
 
         for (XmlSearch xmlSearch : xmlSearchres) {
-            securityService.canBeDoneByDifferentUsers(xmlSearch.getCreatedBy(), authentication);
+            securityService.canBeDoneByDifferentUsers(xmlSearch.getCreatedBy(), authentication, userOrganizationProvider.get(0));
 
             facts.addAll(factController.findBy(xmlSearch.getOrganization(), xmlSearch.getUnit(), xmlSearch.getCreatedBy(),
                     xmlSearch.getApplication(), xmlSearch.getTenant(), xmlSearch.getSession(), SUBJECT,
