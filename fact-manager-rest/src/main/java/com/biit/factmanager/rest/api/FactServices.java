@@ -4,7 +4,10 @@ import com.biit.factmanager.core.controllers.FactController;
 import com.biit.factmanager.dto.CustomPropertyDTO;
 import com.biit.factmanager.dto.FactDTO;
 import com.biit.factmanager.logger.FactManagerLogger;
+import com.biit.factmanager.rest.FactManagerSecurityService;
 import com.biit.server.exceptions.BadRequestException;
+import com.biit.server.security.IUserOrganizationProvider;
+import com.biit.server.security.model.IUserOrganization;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -41,9 +44,14 @@ import java.util.Map;
 public class FactServices<V> {
 
     private final FactController<V> factController;
+    private final FactManagerSecurityService securityService;
+    private final List<IUserOrganizationProvider<? extends IUserOrganization>> userOrganizationProviders;
 
-    public FactServices(FactController<V> factController) {
+    public FactServices(FactController<V> factController, FactManagerSecurityService securityService,
+                        List<IUserOrganizationProvider<? extends IUserOrganization>> userOrganizationProviders) {
         this.factController = factController;
+        this.securityService = securityService;
+        this.userOrganizationProviders = userOrganizationProviders;
     }
 
 
@@ -191,6 +199,12 @@ public class FactServices<V> {
         } else {
             pairs = null;
         }
+
+        if (!userOrganizationProviders.isEmpty()) {
+            organization = securityService.isAllowedOrganization(organization, authentication, userOrganizationProviders.get(0),
+                    securityService.getAdminPrivilege(), securityService.getEditorPrivilege());
+        }
+
         return factController.findBy(organization, unit, Collections.singletonList(authentication.getName()), application,
                 tenant, session, subject, group, element, elementName,
                 factType,
@@ -243,7 +257,7 @@ public class FactServices<V> {
             @Parameter(name = "latestByUser", required = false) @RequestParam(value = "latestByUser", required = false) Boolean latestByUser,
             @RequestBody(required = false) Collection<CustomPropertyDTO> customProperties,
             @Parameter(name = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters,
-            HttpServletRequest httpRequest) {
+            Authentication authentication, HttpServletRequest httpRequest) {
 
         final Pair<String, Object>[] pairs;
         if (valueParameters != null) {
@@ -264,6 +278,12 @@ public class FactServices<V> {
             customProperties.forEach(customPropertyDTO -> customPropertiesMap.put(customPropertyDTO.getKey(), customPropertyDTO.getValue()));
         }
 
+        if (!userOrganizationProviders.isEmpty()) {
+            organization = securityService.isAllowedOrganization(organization, authentication, userOrganizationProviders.get(0),
+                    securityService.getAdminPrivilege(), securityService.getEditorPrivilege());
+        }
+
+
         return factController.findBy(organization, unit, createdBy, application, tenant, session, subject, group, element, elementName,
                 factType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
@@ -277,16 +297,23 @@ public class FactServices<V> {
     @PreAuthorize("hasAnyAuthority(@securityService.editorPrivilege, @securityService.adminPrivilege)")
     @ResponseStatus(value = HttpStatus.OK)
     @PostMapping(value = "/query", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Collection<FactDTO> getFactsBigLoads(@Valid @RequestBody SearchFactRequest searchFactRequest, HttpServletRequest httpRequest) {
+    public Collection<FactDTO> getFactsBigLoads(@Valid @RequestBody SearchFactRequest searchFactRequest,
+                                                Authentication authentication, HttpServletRequest httpRequest) {
         if (searchFactRequest == null) {
             return new ArrayList<>();
         }
+
+        if (!userOrganizationProviders.isEmpty()) {
+            searchFactRequest.setOrganization(securityService.isAllowedOrganization(searchFactRequest.getOrganization(), authentication,
+                    userOrganizationProviders.get(0), securityService.getAdminPrivilege(), securityService.getEditorPrivilege()));
+        }
+
         return getFacts(searchFactRequest.getOrganization(), searchFactRequest.getUnit(), searchFactRequest.getCreatedBy(),
                 searchFactRequest.getApplication(), searchFactRequest.getTenant(), searchFactRequest.getSession(),
                 searchFactRequest.getSubject(), searchFactRequest.getGroup(), searchFactRequest.getElement(),
                 searchFactRequest.getElementName(), searchFactRequest.getFactType(), searchFactRequest.getFrom(),
                 searchFactRequest.getTo(), searchFactRequest.getLastDays(), searchFactRequest.getLatestByUser(),
-                searchFactRequest.getCustomProperties(), searchFactRequest.getValueParameters(), httpRequest);
+                searchFactRequest.getCustomProperties(), searchFactRequest.getValueParameters(), authentication, httpRequest);
     }
 
 
@@ -354,6 +381,11 @@ public class FactServices<V> {
             customProperties.forEach(customPropertyDTO -> customPropertiesMap.put(customPropertyDTO.getKey(), customPropertyDTO.getValue()));
         }
 
+        if (!userOrganizationProviders.isEmpty()) {
+            organization = securityService.isAllowedOrganization(organization, authentication, userOrganizationProviders.get(0),
+                    securityService.getAdminPrivilege(), securityService.getEditorPrivilege());
+        }
+
         return factController.findBy(organization, unit, Collections.singletonList(authentication.getName()), application,
                 tenant, session, subject, group, element, elementName,
                 factType,
@@ -379,5 +411,6 @@ public class FactServices<V> {
         factController.updateBySession(session, createdAt != null ? LocalDateTime.ofInstant(createdAt.toInstant(), ZoneId.systemDefault()) : null,
                 authentication.getName());
     }
+
 
 }
