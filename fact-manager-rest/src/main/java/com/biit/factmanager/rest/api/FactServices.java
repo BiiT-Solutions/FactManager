@@ -100,7 +100,8 @@ public class FactServices<V> {
             - parameters: set of parameters/value pairs that are specific for each fact (search in the value).
             """,
             security = @SecurityRequirement(name = "bearerAuth"))
-    @PreAuthorize("hasAnyAuthority(@securityService.editorPrivilege, @securityService.adminPrivilege)")
+    @PreAuthorize("hasAnyAuthority(@securityService.editorPrivilege, @securityService.adminPrivilege,"
+            + "@securityService.organizationAdminPrivilege)")
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<FactDTO> getFacts(
@@ -124,7 +125,7 @@ public class FactServices<V> {
             @Parameter(name = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters,
             @RequestParam(name = "page", defaultValue = "0") Optional<Integer> page,
             @RequestParam(name = "size", defaultValue = StorableObjectProvider.MAX_PAGE_SIZE + "") Optional<Integer> size,
-            HttpServletRequest httpRequest) {
+            Authentication authentication, HttpServletRequest httpRequest) {
 
         final Pair<String, Object>[] pairs;
         if (valueParameters != null) {
@@ -138,6 +139,11 @@ public class FactServices<V> {
             }
         } else {
             pairs = null;
+        }
+
+        if (!userOrganizationProviders.isEmpty()) {
+            organization = securityService.isAllowedOrganization(organization, authentication, userOrganizationProviders.get(0),
+                    securityService.getAdminPrivilege(), securityService.getEditorPrivilege());
         }
 
         return factController.findBy(organization, unit, createdBy, application, tenant, session, subject, group, element, elementName,
@@ -167,7 +173,8 @@ public class FactServices<V> {
             - parameters: set of parameters/value pairs that are specific for each fact (search in the value).
             """,
             security = @SecurityRequirement(name = "bearerAuth"))
-    @PreAuthorize("hasAnyAuthority(@securityService.viewerPrivilege, @securityService.editorPrivilege, @securityService.adminPrivilege)")
+    @PreAuthorize("hasAnyAuthority(@securityService.viewerPrivilege, @securityService.editorPrivilege, @securityService.adminPrivilege,"
+            + "@securityService.organizationAdminPrivilege)")
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(value = "/own", produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<FactDTO> getOwnFacts(
@@ -242,7 +249,8 @@ public class FactServices<V> {
             - parameters: set of parameters/value pairs that are specific for each fact (search in the value).
             """,
             security = @SecurityRequirement(name = "bearerAuth"))
-    @PreAuthorize("hasAnyAuthority(@securityService.editorPrivilege, @securityService.adminPrivilege)")
+    @PreAuthorize("hasAnyAuthority(@securityService.editorPrivilege, @securityService.adminPrivilege,"
+            + "@securityService.organizationAdminPrivilege)")
     @ResponseStatus(value = HttpStatus.OK)
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<FactDTO> getFacts(
@@ -305,7 +313,8 @@ public class FactServices<V> {
 
     @Operation(summary = "Search facts functionality sending the query as the body", description = "Useful for large queries.",
             security = @SecurityRequirement(name = "bearerAuth"))
-    @PreAuthorize("hasAnyAuthority(@securityService.editorPrivilege, @securityService.adminPrivilege)")
+    @PreAuthorize("hasAnyAuthority(@securityService.editorPrivilege, @securityService.adminPrivilege,"
+            + "@securityService.organizationAdminPrivilege)")
     @ResponseStatus(value = HttpStatus.OK)
     @PostMapping(value = "/query", produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<FactDTO> getFactsBigLoads(@RequestParam(name = "page", defaultValue = "0") Optional<Integer> page,
@@ -350,7 +359,8 @@ public class FactServices<V> {
             - customProperties: map of properties that are specific for each fact (search in custom properties).
             """,
             security = @SecurityRequirement(name = "bearerAuth"))
-    @PreAuthorize("hasAnyAuthority(@securityService.viewerPrivilege, @securityService.editorPrivilege, @securityService.adminPrivilege)")
+    @PreAuthorize("hasAnyAuthority(@securityService.viewerPrivilege, @securityService.editorPrivilege, @securityService.adminPrivilege,"
+            + "@securityService.organizationAdminPrivilege)")
     @ResponseStatus(value = HttpStatus.OK)
     @PostMapping(value = "/own", produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<FactDTO> getOwnFacts(

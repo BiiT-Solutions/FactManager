@@ -84,7 +84,7 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
 
         query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
         query.select(root).where(root.in(propertiesQuery));
-        return entityManager.createQuery(query).getResultList();
+        return entityManager.createQuery(query).setFirstResult((int) pageable.getOffset()).setMaxResults(pageable.getPageSize()).getResultList();
     }
 
     @Override
@@ -105,7 +105,7 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
 
         query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
         query.select(root).where(predicates.toArray(new Predicate[predicates.size()]));
-        return entityManager.createQuery(query).getResultList();
+        return entityManager.createQuery(query).setFirstResult((int) pageable.getOffset()).setMaxResults(pageable.getPageSize()).getResultList();
     }
 
     @Override
@@ -200,7 +200,8 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
             query.select(root).where(root.in(propertiesQuery), criteriaBuilder.and(predicates.toArray(new Predicate[0])));
         }
 
-        final List<T> results = entityManager.createQuery(query).getResultList();
+        final List<T> results = entityManager.createQuery(query)
+                .setFirstResult((int) pageable.getOffset()).setMaxResults(pageable.getPageSize()).getResultList();
 
         //I have not found any way of filtering this through criteriaBuilder.
         if (latestByUser != null && latestByUser) {
