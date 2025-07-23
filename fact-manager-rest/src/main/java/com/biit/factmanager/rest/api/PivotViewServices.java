@@ -3,6 +3,7 @@ package com.biit.factmanager.rest.api;
 import com.biit.factmanager.core.providers.PivotViewProvider;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.server.exceptions.BadRequestException;
+import com.biit.server.providers.StorableObjectProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RequestMapping(value = "/pivotView")
 @RestController
@@ -72,6 +74,8 @@ public class PivotViewServices<T extends Fact<?>> {
             @Parameter(name = "startDate", required = false) @RequestParam(value = "startDate", required = false) LocalDateTime startDate,
             @Parameter(name = "endDate", required = false) @RequestParam(value = "endDate", required = false) LocalDateTime endDate,
             @Parameter(name = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
+            @RequestParam(name = "page", defaultValue = "0") Optional<Integer> page,
+            @RequestParam(name = "size", defaultValue = StorableObjectProvider.MAX_PAGE_SIZE + "") Optional<Integer> size,
             @Parameter(name = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters) {
 
         if (valueParameters.size() == 1 && valueParameters.get(0).compareTo("[]") == 0) {
@@ -88,7 +92,7 @@ public class PivotViewServices<T extends Fact<?>> {
         }
 
         return pivotViewProvider.get(organization, unit, createdBy, application, tenant, session, subject, group, element, elementName,
-                factType, startDate, endDate, lastDays, pairs);
+                factType, startDate, endDate, lastDays, page.orElse(0), size.orElse(StorableObjectProvider.MAX_PAGE_SIZE), pairs);
     }
 
 

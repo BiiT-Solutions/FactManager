@@ -5,13 +5,13 @@ import com.biit.factmanager.persistence.entities.LogFact;
 import com.biit.factmanager.persistence.repositories.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -51,22 +51,22 @@ public class FactCustomPropertyTests extends AbstractTransactionalTestNGSpringCo
     private void findByCustomProperty() {
         Map<String, String> properties = new HashMap<>();
         properties.put("property1", "value1");
-        List<LogFact> logFacts = logFactRepository.findByCustomProperty(properties);
+        List<LogFact> logFacts = logFactRepository.findByCustomProperty(properties, PageRequest.of(0, 10));
         Assert.assertEquals(logFacts.size(), 1);
 
         properties.put("property2", "value2");
-        logFacts = logFactRepository.findByCustomProperty(properties);
+        logFacts = logFactRepository.findByCustomProperty(properties,  PageRequest.of(0, 10));
         Assert.assertEquals(logFacts.size(), 1);
 
         //properties = new HashMap<>();
         properties.put("property1", "value2");
-        logFacts = logFactRepository.findByCustomProperty(properties);
+        logFacts = logFactRepository.findByCustomProperty(properties,  PageRequest.of(0, 10));
         Assert.assertEquals(logFacts.size(), 0);
     }
 
     @Test(dependsOnMethods = "createFact")
-    private void findByMultiplesValues(){
-       Collection<LogFact> logFacts = logFactRepository.findBy(null, null, null, null, null, null, null, null, null,
+    private void findByMultiplesValues() {
+        Collection<LogFact> logFacts = logFactRepository.findBy(null, null, null, null, null, null, null, null, null,
                 null, null, "property1", "value1");
         Assert.assertEquals(logFacts.size(), 1);
 

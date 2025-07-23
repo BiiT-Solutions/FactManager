@@ -66,11 +66,11 @@ public class FactsTests extends AbstractTestNGSpringContextTests {
         formrunnerVariableFact.setEntity(formrunnerVariableValue);
         formrunnerVariableFactProvider.save(formrunnerVariableFact);
 
-        Assert.assertEquals(formrunnerVariableFactProvider.getByValueParameter("xpath", QUESTION_XPATH_1).size(), 1);
-        Assert.assertEquals(formrunnerVariableFactProvider.getByValueParameter("xpath", QUESTION_XPATH_2).size(), 1);
-        Assert.assertEquals(formrunnerVariableFactProvider.getByValueParameter("value", VALUE_1).size(), 1);
-        Assert.assertEquals(formrunnerVariableFactProvider.getByValueParameter("value", VALUE_2).size(), 1);
-        Assert.assertEquals(formrunnerVariableFactProvider.getByValueParameter("value", "1000").size(), 0);
+        Assert.assertEquals(formrunnerVariableFactProvider.getByValueParameter(0, 10, "xpath", QUESTION_XPATH_1).size(), 1);
+        Assert.assertEquals(formrunnerVariableFactProvider.getByValueParameter(0, 10, "xpath", QUESTION_XPATH_2).size(), 1);
+        Assert.assertEquals(formrunnerVariableFactProvider.getByValueParameter(0, 10, "value", VALUE_1).size(), 1);
+        Assert.assertEquals(formrunnerVariableFactProvider.getByValueParameter(0, 10, "value", VALUE_2).size(), 1);
+        Assert.assertEquals(formrunnerVariableFactProvider.getByValueParameter(0, 10, "value", "1000").size(), 0);
     }
 
 

@@ -4,6 +4,7 @@ import com.biit.factmanager.core.providers.ChartProvider;
 import com.biit.factmanager.persistence.entities.Fact;
 import com.biit.factmanager.persistence.enums.ChartType;
 import com.biit.server.exceptions.BadRequestException;
+import com.biit.server.providers.StorableObjectProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -24,7 +25,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @RequestMapping(value = "/chart")
 @RestController
@@ -82,8 +83,8 @@ public class ChartServices<T extends Fact<?>> {
             @RequestParam(value = "to", required = false) OffsetDateTime to,
             @Parameter(name = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
             @Parameter(description = "possible types: BAR, LINE, STEP ", required = false) @RequestParam(value = "type", required = false) ChartType type,
-            @Parameter(name = "custom-properties", required = false) @RequestParam(value = "custom-properties", required = false)
-            Map<String, String> customProperties,
+            @RequestParam(name = "page", defaultValue = "0") Optional<Integer> page,
+            @RequestParam(name = "size", defaultValue = StorableObjectProvider.MAX_PAGE_SIZE + "") Optional<Integer> size,
             @Parameter(name = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters) {
 
         if (valueParameters.size() % 2 == 1) {
@@ -99,6 +100,6 @@ public class ChartServices<T extends Fact<?>> {
                 factType, valueType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
-                lastDays, type, pairs);
+                lastDays, type, page.orElse(0), size.orElse(StorableObjectProvider.MAX_PAGE_SIZE), pairs);
     }
 }

@@ -5,6 +5,7 @@ import com.biit.factmanager.persistence.entities.values.FormrunnerQuestionValue;
 import com.biit.factmanager.persistence.repositories.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.util.Pair;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -114,32 +115,32 @@ public class FormrunnerQuestionFactRepositoryTests extends AbstractTransactional
 
     @Test(dependsOnMethods = "addFactsWithValues")
     private void searchFactByValueCompany() {
-        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findByValueParameters(Pair.of("companyId", FACT_COMPANY_ID));
+        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findByValueParameters(PageRequest.of(0, 10), Pair.of("companyId", FACT_COMPANY_ID));
         Assert.assertEquals(facts.size(), 2);
     }
 
     @Test(dependsOnMethods = "searchFactByValueCompany")
     private void searchFactByValueQuestion() {
-        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findByValueParameters(Pair.of("xpath", FACT_QUESTION_XPATH));
+        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findByValueParameters(PageRequest.of(0, 10), Pair.of("xpath", FACT_QUESTION_XPATH));
         Assert.assertEquals(facts.size(), 1);
     }
 
     @Test(dependsOnMethods = "searchFactByValueCompany")
     private void searchFactByValueAnswer() {
-        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findByValueParameters(Pair.of("answer", FACT_ANSWER));
+        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findByValueParameters(PageRequest.of(0, 10), Pair.of("answer", FACT_ANSWER));
         Assert.assertEquals(facts.size(), 2);
     }
 
     @Test(dependsOnMethods = "searchFactByValueCompany")
     private void searchFactByValueQuestionAndAnswer() {
-        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findByValueParameters(Pair.of("xpath", FACT_QUESTION_XPATH),
+        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findByValueParameters(PageRequest.of(0, 10), Pair.of("xpath", FACT_QUESTION_XPATH),
                 Pair.of("answer", FACT_ANSWER));
         Assert.assertEquals(facts.size(), 1);
     }
 
     @Test(dependsOnMethods = "searchFactByValueCompany")
     private void searchFactByInvalidValueQuestionAndAnswer() {
-        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findByValueParameters(Pair.of("xpathWrong", FACT_QUESTION_XPATH),
+        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findByValueParameters(PageRequest.of(0, 10), Pair.of("xpathWrong", FACT_QUESTION_XPATH),
                 Pair.of("answer", FACT_ANSWER));
         Assert.assertEquals(facts.size(), 0);
     }
@@ -147,14 +148,14 @@ public class FormrunnerQuestionFactRepositoryTests extends AbstractTransactional
     @Test(dependsOnMethods = "searchFactByValueCompany")
     private void searchFactByValueQuestionAndAnswerValidDate() {
         Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findBy(null, null, null, null, null, null, null, null, null, null, null, null, LocalDateTime.now().minus(1, ChronoUnit.HOURS),
-                LocalDateTime.now(), null, null, null, Pair.of("xpath", FACT_QUESTION_XPATH), Pair.of("answer", FACT_ANSWER));
+                LocalDateTime.now(), null, null, null, PageRequest.of(0, 10), Pair.of("xpath", FACT_QUESTION_XPATH), Pair.of("answer", FACT_ANSWER));
         Assert.assertEquals(facts.size(), 1);
     }
 
     @Test(dependsOnMethods = "searchFactByValueCompany")
     private void searchFactByValueQuestionAndAnswerInvalidDate() {
-        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findBy(null, null,null,  null, null, null, null, null, null, null, null, null, LocalDateTime.now(),
-                LocalDateTime.now(), null, null, null, Pair.of("question", FACT_QUESTION_XPATH), Pair.of("answer", FACT_ANSWER));
+        Collection<FormrunnerQuestionFact> facts = formrunnerQuestionFactRepository.findBy(null, null, null, null, null, null, null, null, null, null, null, null, LocalDateTime.now(),
+                LocalDateTime.now(), null, null, null, PageRequest.of(0, 10), Pair.of("question", FACT_QUESTION_XPATH), Pair.of("answer", FACT_ANSWER));
         Assert.assertEquals(facts.size(), 0);
     }
 

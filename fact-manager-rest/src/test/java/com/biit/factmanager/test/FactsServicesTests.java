@@ -1,6 +1,5 @@
 package com.biit.factmanager.test;
 
-import com.biit.factmanager.core.controllers.FactController;
 import com.biit.factmanager.core.providers.FactProvider;
 import com.biit.factmanager.dto.FactDTO;
 import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
@@ -18,6 +17,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 @Test(groups = {"factsServices"})
@@ -42,7 +42,7 @@ public class FactsServicesTests extends AbstractTransactionalTestNGSpringContext
     public void addFacts() {
         long previousFacts = factProvider.count();
         Assert.assertEquals(factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null,
-                null, null, null, null, null, null, null, null).size(), 0);
+                null, null, null, null, null, null, null, Optional.empty(), Optional.empty(), null).size(), 0);
         // Save 2 empty facts
         FormrunnerQuestionFact FormrunnerQuestionFact = new FormrunnerQuestionFact();
         FormrunnerQuestionFact.setGroup(FACT_EXAMINATION_GROUP);
@@ -56,19 +56,19 @@ public class FactsServicesTests extends AbstractTransactionalTestNGSpringContext
         Assert.assertEquals(factProvider.count(), previousFacts + 2);
         // 2 saved
         Assert.assertEquals(factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null, null,
-                null, null, null, null, null, null, null).size(), 2);
+                null, null, null, null, null, null, Optional.empty(), Optional.empty(), null).size(), 2);
     }
 
     @Test(dependsOnMethods = "addFacts")
     public void removeFact() {
         Collection<FactDTO> facts = factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null, null,
-                null, null, null, null, null, null, null);
+                null, null, null, null, null, null, Optional.empty(), Optional.empty(), null);
         Assert.assertEquals(facts.size(), 2);
         Assert.assertNotNull(facts);
         for (FactDTO fact : facts) {
             factServices.deleteFact(fact, null);
         }
-        Assert.assertEquals(factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null, null, null, null, null, null, null, null, null).size(), 0);
+        Assert.assertEquals(factServices.getFacts(null, null, null, null, null, null, FACT_EXAMINATION_GROUP, null, null, null, null, null, null, null, null, null, Optional.empty(), Optional.empty(), null).size(), 0);
     }
 
 

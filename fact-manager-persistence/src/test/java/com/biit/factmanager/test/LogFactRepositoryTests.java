@@ -4,6 +4,7 @@ import com.biit.factmanager.persistence.entities.LogFact;
 import com.biit.factmanager.persistence.repositories.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.util.Pair;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -51,13 +52,13 @@ public class LogFactRepositoryTests extends AbstractTransactionalTestNGSpringCon
 
     @Test(dependsOnMethods = "createFact")
     private void searchFactByValue() {
-        Collection<LogFact> facts = logFactRepository.findByValueParameters(Pair.of("string", STRING_FACT));
+        Collection<LogFact> facts = logFactRepository.findByValueParameters(PageRequest.of(0, 10), Pair.of("string", STRING_FACT));
         Assert.assertEquals(facts.size(), 1);
     }
 
     @Test(dependsOnMethods = "createFact")
     private void searchFactByInvalidValue() {
-        Assert.assertEquals(logFactRepository.findByValueParameters(Pair.of("string", STRING_FACT + "!")).size(), 0);
+        Assert.assertEquals(logFactRepository.findByValueParameters(PageRequest.of(0, 10), Pair.of("string", STRING_FACT + "!")).size(), 0);
     }
 
     @Test(dependsOnMethods = {"searchFactByValue", "searchFactByInvalidValue", "readFact"})
@@ -75,12 +76,12 @@ public class LogFactRepositoryTests extends AbstractTransactionalTestNGSpringCon
 
     @Test(dependsOnMethods = "updateStringFact")
     private void searchFactByUpdatedValue() {
-        Assert.assertEquals(logFactRepository.findByValueParameters(Pair.of("string", STRING_FACT_UPDATED)).size(), 1);
+        Assert.assertEquals(logFactRepository.findByValueParameters(PageRequest.of(0, 10), Pair.of("string", STRING_FACT_UPDATED)).size(), 1);
     }
 
     @Test(dependsOnMethods = "updateStringFact")
     private void searchFactByOldValue() {
-        Assert.assertEquals(logFactRepository.findByValueParameters(Pair.of("string", NEW_STRING_FACT)).size(), 0);
+        Assert.assertEquals(logFactRepository.findByValueParameters(PageRequest.of(0, 10), Pair.of("string", NEW_STRING_FACT)).size(), 0);
     }
 
     @Test(dependsOnMethods = {"updateStringFact", "searchFactByUpdatedValue", "searchFactByOldValue"})

@@ -7,6 +7,7 @@ import com.biit.factmanager.persistence.repositories.FactRepository;
 import com.biit.server.providers.CrudProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
@@ -63,7 +64,7 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
         return factRepository.findByElementAndGroup(element, group);
     }
 
-    public List<T> getByValueParameter(Object... pairParameterValues) {
+    public List<T> getByValueParameter(int page, int size, Object... pairParameterValues) {
         if (pairParameterValues == null) {
             return new ArrayList<>();
         }
@@ -77,7 +78,7 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
         for (int i = 0; i < pairParameterValues.length; i += 2) {
             pairs[i] = Pair.of(pairParameterValues[i].toString(), pairParameterValues[i + 1]);
         }
-        return factRepository.findByValueParameters(pairs);
+        return factRepository.findByValueParameters(PageRequest.of(page, size), pairs);
     }
 
     public List<T> findByOrganization(String organization) {
@@ -88,23 +89,24 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
                           String group, String element, String elementName, String factType, LocalDateTime startDate,
                           LocalDateTime endDate, Integer lastDays, Boolean latestByUser,
                           Boolean discriminatorValue, Map<String, String> customProperties,
-                          Pair<String, Object>... valueParameters) {
+                          int page, int size, Pair<String, Object>... valueParameters) {
         if (valueParameters != null && valueParameters.length > 0 && getEncryptionKey() != null && !getEncryptionKey().isBlank()) {
             throw new InvalidParameterException(this.getClass(), "Search by parameters not allowed if database encryption is set!");
         }
         if (lastDays == null) {
             return findBy(organization, unit, customers, application, tenant, session, subject, group, element, elementName, factType,
-                    startDate, endDate, latestByUser, discriminatorValue, customProperties, valueParameters);
+                    startDate, endDate, latestByUser, discriminatorValue, customProperties, page, size, valueParameters);
         } else {
             return findBy(organization, unit, customers, application, tenant, session, subject, group, element, elementName, factType,
-                    lastDays, latestByUser, discriminatorValue, customProperties, valueParameters);
+                    lastDays, latestByUser, discriminatorValue, customProperties, page, size, valueParameters);
         }
     }
 
 
     public List<T> findBy(String organization, String unit, Collection<String> customers, String application, String tenant, String session, String subject,
                           String group, String element, String elementName, String factType, Integer lastDays, Boolean latestByUser,
-                          Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>... valueParameters) {
+                          Boolean discriminatorValue, Map<String, String> customProperties, int page, int size,
+                          Pair<String, Object>... valueParameters) {
         if (valueParameters != null && valueParameters.length > 0 && getEncryptionKey() != null && !getEncryptionKey().isBlank()) {
             throw new InvalidParameterException(this.getClass(), "Search by parameters not allowed if database encryption is set!");
         }
@@ -112,20 +114,21 @@ public class FactProvider<T extends Fact<?>> extends CrudProvider<T, Long, FactR
         if (lastDays != null) {
             final LocalDateTime startDate = LocalDateTime.now().minusDays(lastDays);
             return factRepository.findBy(entityClass, organization, unit, customers, application, tenant, group, element, elementName, session,
-                    subject, factType, startDate, endDate, latestByUser, discriminatorValue, customProperties, valueParameters);
+                    subject, factType, startDate, endDate, latestByUser, discriminatorValue, customProperties, PageRequest.of(page, size), valueParameters);
         }
         return factRepository.findBy(entityClass, organization, unit, customers, application, tenant, group, element, elementName, session, subject,
-                factType, null, endDate, latestByUser, discriminatorValue, customProperties, valueParameters);
+                factType, null, endDate, latestByUser, discriminatorValue, customProperties, PageRequest.of(page, size), valueParameters);
     }
 
     public List<T> findBy(String organization, String unit, Collection<String> customers, String application, String tenant, String session, String subject,
                           String group, String element, String elementName, String factType, LocalDateTime startDate, LocalDateTime endDate,
-                          Boolean latestByUser, Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>... valueParameters) {
+                          Boolean latestByUser, Boolean discriminatorValue, Map<String, String> customProperties, int page, int size,
+                          Pair<String, Object>... valueParameters) {
         if (valueParameters != null && valueParameters.length > 0 && getEncryptionKey() != null && !getEncryptionKey().isBlank()) {
             throw new InvalidParameterException(this.getClass(), "Search by parameters not allowed if database encryption is set!");
         }
         return factRepository.findBy(entityClass, organization, unit, customers, application, tenant, group, element, elementName, session, subject, factType,
-                startDate, endDate, latestByUser, discriminatorValue, customProperties, valueParameters);
+                startDate, endDate, latestByUser, discriminatorValue, customProperties, PageRequest.of(page, size), valueParameters);
     }
 
     /**

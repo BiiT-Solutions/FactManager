@@ -6,6 +6,7 @@ import com.biit.factmanager.dto.FactDTO;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.rest.FactManagerSecurityService;
 import com.biit.server.exceptions.BadRequestException;
+import com.biit.server.providers.StorableObjectProvider;
 import com.biit.server.security.IUserOrganizationProvider;
 import com.biit.server.security.model.IUserOrganization;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,6 +39,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RequestMapping(value = "/facts")
 @RestController
@@ -120,6 +122,8 @@ public class FactServices<V> {
             @Parameter(name = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
             @Parameter(name = "latestByUser", required = false) @RequestParam(value = "latestByUser", required = false) Boolean latestByUser,
             @Parameter(name = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters,
+            @RequestParam(name = "page", defaultValue = "0") Optional<Integer> page,
+            @RequestParam(name = "size", defaultValue = StorableObjectProvider.MAX_PAGE_SIZE + "") Optional<Integer> size,
             HttpServletRequest httpRequest) {
 
         final Pair<String, Object>[] pairs;
@@ -140,7 +144,8 @@ public class FactServices<V> {
                 factType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
-                lastDays, latestByUser, null, null, pairs);
+                lastDays, latestByUser, null, null, pairs,
+                page.orElse(0), size.orElse(StorableObjectProvider.MAX_PAGE_SIZE));
     }
 
     @Operation(summary = "Search in your facts", description = """
@@ -183,6 +188,8 @@ public class FactServices<V> {
             @Parameter(name = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
             @Parameter(name = "latestByUser", required = false) @RequestParam(value = "latestByUser", required = false) Boolean latestByUser,
             @Parameter(name = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters,
+            @RequestParam(name = "page", defaultValue = "0") Optional<Integer> page,
+            @RequestParam(name = "size", defaultValue = StorableObjectProvider.MAX_PAGE_SIZE + "") Optional<Integer> size,
             Authentication authentication,
             HttpServletRequest httpRequest) {
 
@@ -210,7 +217,8 @@ public class FactServices<V> {
                 factType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
-                lastDays, latestByUser, null, null, pairs);
+                lastDays, latestByUser, null, null, pairs,
+                page.orElse(0), size.orElse(StorableObjectProvider.MAX_PAGE_SIZE));
     }
 
 
@@ -257,6 +265,8 @@ public class FactServices<V> {
             @Parameter(name = "latestByUser", required = false) @RequestParam(value = "latestByUser", required = false) Boolean latestByUser,
             @RequestBody(required = false) Collection<CustomPropertyDTO> customProperties,
             @Parameter(name = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters,
+            @RequestParam(name = "page", defaultValue = "0") Optional<Integer> page,
+            @RequestParam(name = "size", defaultValue = StorableObjectProvider.MAX_PAGE_SIZE + "") Optional<Integer> size,
             Authentication authentication, HttpServletRequest httpRequest) {
 
         final Pair<String, Object>[] pairs;
@@ -288,7 +298,8 @@ public class FactServices<V> {
                 factType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
-                lastDays, latestByUser, null, customPropertiesMap, pairs);
+                lastDays, latestByUser, null, customPropertiesMap, pairs,
+                page.orElse(0), size.orElse(StorableObjectProvider.MAX_PAGE_SIZE));
     }
 
 
@@ -297,7 +308,9 @@ public class FactServices<V> {
     @PreAuthorize("hasAnyAuthority(@securityService.editorPrivilege, @securityService.adminPrivilege)")
     @ResponseStatus(value = HttpStatus.OK)
     @PostMapping(value = "/query", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Collection<FactDTO> getFactsBigLoads(@Valid @RequestBody SearchFactRequest searchFactRequest,
+    public Collection<FactDTO> getFactsBigLoads(@RequestParam(name = "page", defaultValue = "0") Optional<Integer> page,
+                                                @RequestParam(name = "size", defaultValue = StorableObjectProvider.MAX_PAGE_SIZE + "") Optional<Integer> size,
+                                                @Valid @RequestBody SearchFactRequest searchFactRequest,
                                                 Authentication authentication, HttpServletRequest httpRequest) {
         if (searchFactRequest == null) {
             return new ArrayList<>();
@@ -313,7 +326,7 @@ public class FactServices<V> {
                 searchFactRequest.getSubject(), searchFactRequest.getGroup(), searchFactRequest.getElement(),
                 searchFactRequest.getElementName(), searchFactRequest.getFactType(), searchFactRequest.getFrom(),
                 searchFactRequest.getTo(), searchFactRequest.getLastDays(), searchFactRequest.getLatestByUser(),
-                searchFactRequest.getCustomProperties(), searchFactRequest.getValueParameters(), authentication, httpRequest);
+                searchFactRequest.getCustomProperties(), searchFactRequest.getValueParameters(), page, size, authentication, httpRequest);
     }
 
 
@@ -358,6 +371,8 @@ public class FactServices<V> {
             @Parameter(name = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
             @Parameter(name = "latestByUser", required = false) @RequestParam(value = "latestByUser", required = false) Boolean latestByUser,
             @Parameter(name = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters,
+            @RequestParam(name = "page", defaultValue = "0") Optional<Integer> page,
+            @RequestParam(name = "size", defaultValue = StorableObjectProvider.MAX_PAGE_SIZE + "") Optional<Integer> size,
             @RequestBody(required = false) Collection<CustomPropertyDTO> customProperties,
             Authentication authentication,
             HttpServletRequest httpRequest) {
@@ -391,7 +406,8 @@ public class FactServices<V> {
                 factType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
-                lastDays, latestByUser, null, customPropertiesMap, pairs);
+                lastDays, latestByUser, null, customPropertiesMap, pairs,
+                page.orElse(0), size.orElse(StorableObjectProvider.MAX_PAGE_SIZE));
     }
 
 

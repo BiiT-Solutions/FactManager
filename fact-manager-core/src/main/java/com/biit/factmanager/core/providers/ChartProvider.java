@@ -30,7 +30,7 @@ public class ChartProvider<T extends Fact<?>> {
     public final String getChart(String organization, String unit, List<String> createdBy, String application, String tenant, String session, String subject,
                                  String group, String element, String elementName, String factType, String valueType, LocalDateTime startDate,
                                  LocalDateTime endDate,
-                                 Integer lastDays, ChartType type, Pair<String, Object>... valueParameters) {
+                                 Integer lastDays, ChartType type, int page, int size, Pair<String, Object>... valueParameters) {
         if (!organization.isEmpty() && tenant.isEmpty() && session.isEmpty() && subject.isEmpty() && group.isEmpty() && element.isEmpty()) {
             return htmlFromformrunnerQuestionFactsByQuestion(factProvider.findByOrganization(organization), type);
         }
@@ -39,7 +39,7 @@ public class ChartProvider<T extends Fact<?>> {
         }
         return htmlFromformrunnerQuestionFactsByQuestion(factProvider.
                 findBy(organization, unit, createdBy, application, tenant, session, subject, group, element, elementName,
-                        factType, startDate, endDate, lastDays, null, null, null, valueParameters), type);
+                        factType, startDate, endDate, lastDays, null, null, null, page, size, valueParameters), type);
     }
 
     public String htmlFromformrunnerQuestionFactsByQuestion(Collection<T> facts, ChartType type) {

@@ -1,6 +1,7 @@
 package com.biit.factmanager.persistence.repositories;
 
 import com.biit.factmanager.persistence.entities.Fact;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 
 import java.time.LocalDateTime;
@@ -16,11 +17,12 @@ public interface CustomFactRepository<T extends Fact<?>> {
      * @param customProperties
      * @return
      */
-    List<T> findByCustomProperty(Map<String, String> customProperties);
+    List<T> findByCustomProperty(Map<String, String> customProperties, Pageable pageable);
 
-    List<T> findByValueParameters(Pair<String, Object>... valueParameters);
+    List<T> findByValueParameters(Pageable pageable, Pair<String, Object>... valueParameters);
 
     List<T> findBy(Class<T> entityTypeClass, String organization, String unit, Collection<String> createdBy, String application, String tenant, String group,
                    String element, String elementName, String session, String subject, String factType, LocalDateTime startDate, LocalDateTime endDate,
-                   Boolean latestByUser, Boolean discriminatorValue, Map<String, String> customProperties, Pair<String, Object>... valueParameters);
+                   Boolean latestByUser, Boolean discriminatorValue, Map<String, String> customProperties, Pageable pageable,
+                   Pair<String, Object>... valueParameters);
 }

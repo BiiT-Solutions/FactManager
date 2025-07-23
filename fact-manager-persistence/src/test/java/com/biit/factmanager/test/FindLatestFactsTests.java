@@ -6,6 +6,7 @@ import com.biit.factmanager.persistence.entities.values.FormrunnerValue;
 import com.biit.factmanager.persistence.repositories.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.testng.Assert;
@@ -70,7 +71,7 @@ public class FindLatestFactsTests extends AbstractTransactionalTestNGSpringConte
     @Test
     public void getLatestBy() {
         Collection<FormrunnerFact> facts = factRepository.findBy(FormrunnerFact.class, ORGANIZATION, null, null, APPLICATION, null, null, null, null, null, null, null, null, null,
-                true, null, null);
+                true, null,  null, PageRequest.of(0, 10));
 
         //3 users
         Assert.assertEquals(facts.size(), 3);

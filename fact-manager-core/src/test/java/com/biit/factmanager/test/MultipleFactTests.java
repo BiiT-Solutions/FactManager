@@ -86,7 +86,8 @@ public class MultipleFactTests extends AbstractTestNGSpringContextTests {
 
     @Test
     public void findTypesFromProvider() {
-        List<?> facts = overlordFactProvider.findBy(null, null, null, null, null, null, null, "GROUP", null, null, null, null, null, null, null);
+        List<?> facts = overlordFactProvider.findBy(null, null, null, null, null, null, null, "GROUP", null, null, null, null, null, null, null,
+                0, 10);
         Assert.assertEquals(facts.size(), 3);
     }
 }

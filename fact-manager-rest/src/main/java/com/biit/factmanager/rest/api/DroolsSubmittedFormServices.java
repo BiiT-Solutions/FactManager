@@ -7,6 +7,7 @@ import com.biit.factmanager.dto.FactDTO;
 import com.biit.factmanager.logger.FactManagerLogger;
 import com.biit.factmanager.persistence.entities.LogFact;
 import com.biit.factmanager.rest.api.model.XmlSearch;
+import com.biit.server.providers.StorableObjectProvider;
 import com.biit.server.rest.SecurityService;
 import com.biit.server.security.IUserOrganizationProvider;
 import com.biit.server.security.model.IUserOrganization;
@@ -36,6 +37,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @RequestMapping(value = "/facts/drools-forms")
 @RestController
@@ -96,6 +98,8 @@ public class DroolsSubmittedFormServices {
             @RequestParam(value = "to", required = false) OffsetDateTime to,
             @Parameter(name = "lastDays", required = false) @RequestParam(value = "lastDays", required = false) Integer lastDays,
             @Parameter(name = "latestByUser", required = false) @RequestParam(value = "latestByUser", required = false) Boolean latestByUser,
+            @RequestParam(name = "page", defaultValue = "0") Optional<Integer> page,
+            @RequestParam(name = "size", defaultValue = StorableObjectProvider.MAX_PAGE_SIZE + "") Optional<Integer> size,
             HttpServletRequest httpRequest, HttpServletResponse response) throws InvalidXlsElementException {
 
 
@@ -103,7 +107,8 @@ public class DroolsSubmittedFormServices {
                 element, elementName, FACT_TYPE,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
-                lastDays, latestByUser, null, null, null);
+                lastDays, latestByUser, null, null, null,
+                page.orElse(0), size.orElse(StorableObjectProvider.MAX_PAGE_SIZE));
 
         FactManagerLogger.debug(this.getClass(), "Found '{}' facts.", facts.size());
         final byte[] bytes = formXmlController.convert(facts);
@@ -122,6 +127,8 @@ public class DroolsSubmittedFormServices {
     @ResponseStatus(value = HttpStatus.OK)
     @PostMapping(value = "/xls", produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public byte[] getXmlDocument(
+            @RequestParam(name = "page", defaultValue = "0") Optional<Integer> page,
+            @RequestParam(name = "size", defaultValue = StorableObjectProvider.MAX_PAGE_SIZE + "") Optional<Integer> size,
             @RequestBody List<XmlSearch> xmlSearchres,
             Authentication authentication, HttpServletRequest httpRequest, HttpServletResponse response) throws InvalidXlsElementException {
 
@@ -135,7 +142,8 @@ public class DroolsSubmittedFormServices {
                     xmlSearch.getGroup(), xmlSearch.getElement(), xmlSearch.getElementName(), FACT_TYPE,
                     xmlSearch.getFrom() != null ? LocalDateTime.ofInstant(xmlSearch.getFrom().toInstant(), ZoneId.systemDefault()) : null,
                     xmlSearch.getTo() != null ? LocalDateTime.ofInstant(xmlSearch.getTo().toInstant(), ZoneId.systemDefault()) : null,
-                    xmlSearch.getLastDays(), xmlSearch.getLatestByUser(), null, null, null));
+                    xmlSearch.getLastDays(), xmlSearch.getLatestByUser(), null, null, null,
+                    page.orElse(0), size.orElse(StorableObjectProvider.MAX_PAGE_SIZE)));
         }
 
 

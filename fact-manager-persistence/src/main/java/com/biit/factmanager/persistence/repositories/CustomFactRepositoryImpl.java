@@ -13,6 +13,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
 
@@ -59,7 +60,7 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
     }
 
     @Override
-    public List<T> findByCustomProperty(Map<String, String> customProperties) {
+    public List<T> findByCustomProperty(Map<String, String> customProperties, Pageable pageable) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> query = criteriaBuilder.createQuery(entityTypeClass);
         final Root<T> root = query.from(entityTypeClass);
@@ -87,7 +88,7 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
     }
 
     @Override
-    public List<T> findByValueParameters(Pair<String, Object>... valueParameters) {
+    public List<T> findByValueParameters(Pageable pageable, Pair<String, Object>... valueParameters) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> query = criteriaBuilder.createQuery(entityTypeClass);
         final Root<T> root = query.from(entityTypeClass);
@@ -111,7 +112,7 @@ public class CustomFactRepositoryImpl<T extends Fact<?>> implements CustomFactRe
     public List<T> findBy(Class<T> entityTypeClass, String organization, String unit, Collection<String> createdBy, String application,
                           String tenant, String group, String element, String elementName, String session, String subject, String factType,
                           LocalDateTime startDate, LocalDateTime endDate, Boolean latestByUser, Boolean discriminatorValue,
-                          Map<String, String> customProperties,
+                          Map<String, String> customProperties, Pageable pageable,
                           Pair<String, Object>... valueParameters) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> query = criteriaBuilder.createQuery(entityTypeClass == null ? this.entityTypeClass : entityTypeClass);

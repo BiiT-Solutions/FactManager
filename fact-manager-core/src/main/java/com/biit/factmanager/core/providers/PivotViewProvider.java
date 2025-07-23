@@ -29,12 +29,12 @@ public class PivotViewProvider<T extends Fact<?>> {
 
     public String get(String organization, String unit, List<String> customers, String application, String tenant, String session, String subject,
                       String group, String element, String elementName, String factType, LocalDateTime startDate, LocalDateTime endDate,
-                      Integer lastDays, Pair<String, Object>... valueParameters) {
+                      Integer lastDays, int page, int size, Pair<String, Object>... valueParameters) {
         if (organization.isEmpty() && tenant.isEmpty() && session.isEmpty() && subject.isEmpty() && group.isEmpty() && element.isEmpty()) {
             return xmlFormFacts(factProvider.getAll());
         }
         return xmlFormFacts(factProvider.findBy(organization, unit, customers, application, tenant, session, subject, group, element, elementName,
-                factType, startDate, endDate, lastDays, null, null, null, valueParameters));
+                factType, startDate, endDate, lastDays, null, null, null, page, size, valueParameters));
     }
 
     public String xmlFormFacts(Collection<T> facts) {
