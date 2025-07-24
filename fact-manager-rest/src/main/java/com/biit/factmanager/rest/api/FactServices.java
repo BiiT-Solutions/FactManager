@@ -142,7 +142,7 @@ public class FactServices<V> {
         }
 
         if (!userOrganizationProviders.isEmpty()) {
-            organization = securityService.isAllowedOrganization(organization, authentication, userOrganizationProviders.get(0),
+            organization = securityService.isAllowedOrganization(organization, authentication,
                     securityService.getAdminPrivilege(), securityService.getEditorPrivilege());
         }
 
@@ -215,7 +215,7 @@ public class FactServices<V> {
         }
 
         if (!userOrganizationProviders.isEmpty()) {
-            organization = securityService.isAllowedOrganization(organization, authentication, userOrganizationProviders.get(0),
+            organization = securityService.isAllowedOrganization(organization, authentication,
                     securityService.getAdminPrivilege(), securityService.getEditorPrivilege());
         }
 
@@ -297,7 +297,7 @@ public class FactServices<V> {
         }
 
         if (!userOrganizationProviders.isEmpty()) {
-            organization = securityService.isAllowedOrganization(organization, authentication, userOrganizationProviders.get(0),
+            organization = securityService.isAllowedOrganization(organization, authentication,
                     securityService.getAdminPrivilege(), securityService.getEditorPrivilege());
         }
 
@@ -327,7 +327,7 @@ public class FactServices<V> {
 
         if (!userOrganizationProviders.isEmpty()) {
             searchFactRequest.setOrganization(securityService.isAllowedOrganization(searchFactRequest.getOrganization(), authentication,
-                    userOrganizationProviders.get(0), securityService.getAdminPrivilege(), securityService.getEditorPrivilege()));
+                    securityService.getAdminPrivilege(), securityService.getEditorPrivilege()));
         }
 
         return getFacts(searchFactRequest.getOrganization(), searchFactRequest.getUnit(), searchFactRequest.getCreatedBy(),
@@ -407,7 +407,7 @@ public class FactServices<V> {
         }
 
         if (!userOrganizationProviders.isEmpty()) {
-            organization = securityService.isAllowedOrganization(organization, authentication, userOrganizationProviders.get(0),
+            organization = securityService.isAllowedOrganization(organization, authentication,
                     securityService.getAdminPrivilege(), securityService.getEditorPrivilege());
         }
 

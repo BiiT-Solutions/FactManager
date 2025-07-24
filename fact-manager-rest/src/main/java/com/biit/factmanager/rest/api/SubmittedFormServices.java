@@ -9,8 +9,6 @@ import com.biit.factmanager.rest.api.model.XmlSearch;
 import com.biit.form.result.xls.exceptions.InvalidXlsElementException;
 import com.biit.server.providers.StorableObjectProvider;
 import com.biit.server.rest.SecurityService;
-import com.biit.server.security.IUserOrganizationProvider;
-import com.biit.server.security.model.IUserOrganization;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -48,16 +46,13 @@ public class SubmittedFormServices {
 
     private final FactController<LogFact> factController;
     private final FormXmlController formXmlController;
-    private final List<IUserOrganizationProvider<? extends IUserOrganization>> userOrganizationProvider;
 
     @Autowired
     private SecurityService securityService;
 
-    public SubmittedFormServices(FactController<LogFact> factController, FormXmlController formXmlController,
-                                 List<IUserOrganizationProvider<? extends IUserOrganization>> userOrganizationProvider) {
+    public SubmittedFormServices(FactController<LogFact> factController, FormXmlController formXmlController) {
         this.factController = factController;
         this.formXmlController = formXmlController;
-        this.userOrganizationProvider = userOrganizationProvider;
     }
 
     @Operation(summary = "Search forms functionality", description = """
@@ -133,7 +128,7 @@ public class SubmittedFormServices {
         final List<FactDTO> facts = new ArrayList<>();
 
         for (XmlSearch xmlSearch : xmlSearches) {
-            securityService.canBeDoneByDifferentUsers(xmlSearch.getCreatedBy(), authentication, userOrganizationProvider.get(0));
+            securityService.canBeDoneByDifferentUsers(xmlSearch.getCreatedBy(), authentication);
 
             facts.addAll(factController.findBy(xmlSearch.getOrganization(), xmlSearch.getUnit(), xmlSearch.getCreatedBy(),
                     xmlSearch.getApplication(), xmlSearch.getTenant(), xmlSearch.getSession(), SUBJECT,

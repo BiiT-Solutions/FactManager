@@ -9,8 +9,6 @@ import com.biit.factmanager.persistence.entities.LogFact;
 import com.biit.factmanager.rest.api.model.XmlSearch;
 import com.biit.server.providers.StorableObjectProvider;
 import com.biit.server.rest.SecurityService;
-import com.biit.server.security.IUserOrganizationProvider;
-import com.biit.server.security.model.IUserOrganization;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -50,16 +48,12 @@ public class DroolsSubmittedFormServices {
 
     private final SecurityService securityService;
 
-    private final List<IUserOrganizationProvider<? extends IUserOrganization>> userOrganizationProvider;
-
     public DroolsSubmittedFormServices(FactController<LogFact> factController,
                                        DroolsFormXmlController formXmlController,
-                                       SecurityService securityService,
-                                       List<IUserOrganizationProvider<? extends IUserOrganization>> userOrganizationProvider) {
+                                       SecurityService securityService) {
         this.factController = factController;
         this.formXmlController = formXmlController;
         this.securityService = securityService;
-        this.userOrganizationProvider = userOrganizationProvider;
     }
 
     @Operation(summary = "Search forms functionality", description = """
@@ -135,7 +129,7 @@ public class DroolsSubmittedFormServices {
         final List<FactDTO> facts = new ArrayList<>();
 
         for (XmlSearch xmlSearch : xmlSearchres) {
-            securityService.canBeDoneByDifferentUsers(xmlSearch.getCreatedBy(), authentication, userOrganizationProvider.get(0));
+            securityService.canBeDoneByDifferentUsers(xmlSearch.getCreatedBy(), authentication);
 
             facts.addAll(factController.findBy(xmlSearch.getOrganization(), xmlSearch.getUnit(), xmlSearch.getCreatedBy(),
                     xmlSearch.getApplication(), xmlSearch.getTenant(), xmlSearch.getSession(), SUBJECT,
