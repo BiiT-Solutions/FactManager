@@ -1,5 +1,6 @@
 package com.biit.factmanager.rest;
 
+import com.biit.usermanager.logger.UserManagerLogger;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -14,6 +15,10 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
         if (!(request instanceof ContentCachingRequestWrapper)) {
             request = new ContentCachingRequestWrapper(request);
         }
-        super.doDispatch(request, response);
+        try {
+            super.doDispatch(request, response);
+        } catch (Exception e) {
+            UserManagerLogger.errorMessage(this.getClass(), e);
+        }
     }
 }

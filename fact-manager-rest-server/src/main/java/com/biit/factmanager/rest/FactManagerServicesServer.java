@@ -9,7 +9,6 @@ import com.biit.factmanager.persistence.entities.FormrunnerQuestionFact;
 import com.biit.factmanager.persistence.repositories.FactRepository;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.servers.Server;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -47,20 +46,17 @@ public class FactManagerServicesServer {
 
     //These beans are needed to populate the discriminator value of Fact JPA Table, as needs the entityClass to be defined.
     @Bean
-    @Qualifier("basicFactProvider")
     public FactProvider<BasicFact> getBasicFactProvider(FactRepository<BasicFact> factRepository) {
         return new FactProvider<>(BasicFact.class, factRepository);
     }
 
 
     @Bean
-    @Qualifier("formRunnerFactProvider")
     public FactProvider<FormrunnerFact> getFormRunnerFactProvider(FactRepository<FormrunnerFact> factRepository) {
         return new FactProvider<>(FormrunnerFact.class, factRepository);
     }
 
     @Bean
-    @Qualifier("formRunnerQuestionFactProvider")
     public FactProvider<FormrunnerQuestionFact> getFormRunnerQuestionFactProvider(FactRepository<FormrunnerQuestionFact> factRepository) {
         return new FactProvider<>(FormrunnerQuestionFact.class, factRepository);
     }

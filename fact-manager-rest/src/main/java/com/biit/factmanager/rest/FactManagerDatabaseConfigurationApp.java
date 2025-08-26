@@ -29,9 +29,6 @@ import java.util.HashMap;
 public class FactManagerDatabaseConfigurationApp {
     public static final String PACKAGE = "com.biit.factmanager.persistence";
 
-    @Autowired
-    private Environment environment;
-
     @Bean
     @Primary
     @ConfigurationProperties(prefix = "spring.factmanager.datasource")
@@ -42,7 +39,8 @@ public class FactManagerDatabaseConfigurationApp {
     @Bean(name = "factmanagerSystemFactoryApp")
     @Primary
     public LocalContainerEntityManagerFactoryBean factmanagerSystemFactoryApp(EntityManagerFactoryBuilder builder,
-                                                                           @Qualifier("factmanagerDataSourceApp") DataSource dataSource) {
+                                                                              @Autowired Environment environment,
+                                                                              @Qualifier("factmanagerDataSourceApp") DataSource dataSource) {
         final HashMap<String, Object> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", environment.getProperty("spring.factmanager.datasource.jpa.hibernate.ddl-auto"));
         properties.put("hibernate.dialect", environment.getProperty("spring.factmanager.datasource.hibernate.dialect"));
@@ -58,20 +56,17 @@ public class FactManagerDatabaseConfigurationApp {
 
     //These beans are needed to populate the discriminator value of Fact JPA Table, as needs the entityClass to be defined.
     @Bean
-    @Qualifier("basicFactProvider")
     public FactProvider<BasicFact> getBasicFactProvider(FactRepository<BasicFact> factRepository) {
         return new FactProvider<>(BasicFact.class, factRepository);
     }
 
 
     @Bean
-    @Qualifier("formRunnerFactProvider")
     public FactProvider<FormrunnerFact> getFormRunnerFactProvider(FactRepository<FormrunnerFact> factRepository) {
         return new FactProvider<>(FormrunnerFact.class, factRepository);
     }
 
     @Bean
-    @Qualifier("formRunnerQuestionFactProvider")
     public FactProvider<FormrunnerQuestionFact> getFormRunnerQuestionFactProvider(FactRepository<FormrunnerQuestionFact> factRepository) {
         return new FactProvider<>(FormrunnerQuestionFact.class, factRepository);
     }
