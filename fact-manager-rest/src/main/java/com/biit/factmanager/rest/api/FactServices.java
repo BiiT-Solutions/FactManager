@@ -98,6 +98,7 @@ public class FactServices<V> {
             - lastDays: if set, replaces startDate and endDate.
             - latestByUser: only gets the latest fact by each different user.
             - parameters: set of parameters/value pairs that are specific for each fact (search in the value).
+            - excludeValue: Facts does not include the value (payload).
             """,
             security = @SecurityRequirement(name = "bearerAuth"))
     @PreAuthorize("hasAnyAuthority(@securityService.editorPrivilege, @securityService.adminPrivilege,"
@@ -125,6 +126,7 @@ public class FactServices<V> {
             @Parameter(name = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters,
             @RequestParam(name = "page", defaultValue = "0") Optional<Integer> page,
             @RequestParam(name = "size", defaultValue = StorableObjectProvider.MAX_PAGE_SIZE + "") Optional<Integer> size,
+            @Parameter(name = "excludeValue") @RequestParam(name = "excludeValue", defaultValue = "false", required = false) Boolean excludeValue,
             Authentication authentication, HttpServletRequest httpRequest) {
 
         final Pair<String, Object>[] pairs;
@@ -146,12 +148,16 @@ public class FactServices<V> {
                     securityService.getAdminPrivilege(), securityService.getEditorPrivilege());
         }
 
-        return factController.findBy(organization, unit, createdBy, application, tenant, session, subject, group, element, elementName,
-                factType,
+        final Collection<FactDTO> facts = factController.findBy(organization, unit, createdBy, application, tenant, session, subject, group, element,
+                elementName, factType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
                 lastDays, latestByUser, null, null, pairs,
                 page.orElse(0), size.orElse(StorableObjectProvider.MAX_PAGE_SIZE));
+        if (Boolean.TRUE.equals(excludeValue)) {
+            facts.parallelStream().forEach(fact -> fact.setValue(null));
+        }
+        return facts;
     }
 
     @Operation(summary = "Search in your facts", description = """
@@ -171,6 +177,7 @@ public class FactServices<V> {
             - lastDays: if set, replaces startDate and endDate.
             - latestByUser: only gets the latest fact by each different user.
             - parameters: set of parameters/value pairs that are specific for each fact (search in the value).
+            - excludeValue: Facts does not include the value (payload).
             """,
             security = @SecurityRequirement(name = "bearerAuth"))
     @PreAuthorize("hasAnyAuthority(@securityService.viewerPrivilege, @securityService.editorPrivilege, @securityService.adminPrivilege,"
@@ -197,6 +204,7 @@ public class FactServices<V> {
             @Parameter(name = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters,
             @RequestParam(name = "page", defaultValue = "0") Optional<Integer> page,
             @RequestParam(name = "size", defaultValue = StorableObjectProvider.MAX_PAGE_SIZE + "") Optional<Integer> size,
+            @Parameter(name = "excludeValue") @RequestParam(name = "excludeValue", defaultValue = "false", required = false) Boolean excludeValue,
             Authentication authentication,
             HttpServletRequest httpRequest) {
 
@@ -219,13 +227,18 @@ public class FactServices<V> {
                     securityService.getAdminPrivilege(), securityService.getEditorPrivilege());
         }
 
-        return factController.findBy(organization, unit, Collections.singletonList(authentication.getName()), application,
+        final Collection<FactDTO> facts = factController.findBy(organization, unit, Collections.singletonList(authentication.getName()), application,
                 tenant, session, subject, group, element, elementName,
                 factType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
                 lastDays, latestByUser, null, null, pairs,
                 page.orElse(0), size.orElse(StorableObjectProvider.MAX_PAGE_SIZE));
+
+        if (Boolean.TRUE.equals(excludeValue)) {
+            facts.parallelStream().forEach(fact -> fact.setValue(null));
+        }
+        return facts;
     }
 
 
@@ -247,6 +260,7 @@ public class FactServices<V> {
             - lastDays: if set, replaces startDate and endDate.
             - latestByUser: only gets the latest fact by each different user.
             - parameters: set of parameters/value pairs that are specific for each fact (search in the value).
+            - excludeValue: Facts does not include the value (payload).
             """,
             security = @SecurityRequirement(name = "bearerAuth"))
     @PreAuthorize("hasAnyAuthority(@securityService.editorPrivilege, @securityService.adminPrivilege,"
@@ -275,6 +289,7 @@ public class FactServices<V> {
             @Parameter(name = "parameters", required = false) @RequestParam(value = "parameters", required = false) List<String> valueParameters,
             @RequestParam(name = "page", defaultValue = "0") Optional<Integer> page,
             @RequestParam(name = "size", defaultValue = StorableObjectProvider.MAX_PAGE_SIZE + "") Optional<Integer> size,
+            @Parameter(name = "excludeValue") @RequestParam(name = "excludeValue", defaultValue = "false", required = false) Boolean excludeValue,
             Authentication authentication, HttpServletRequest httpRequest) {
 
         final Pair<String, Object>[] pairs;
@@ -302,12 +317,17 @@ public class FactServices<V> {
         }
 
 
-        return factController.findBy(organization, unit, createdBy, application, tenant, session, subject, group, element, elementName,
-                factType,
+        final Collection<FactDTO> facts = factController.findBy(organization, unit, createdBy, application, tenant, session, subject, group, element,
+                elementName, factType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
                 lastDays, latestByUser, null, customPropertiesMap, pairs,
                 page.orElse(0), size.orElse(StorableObjectProvider.MAX_PAGE_SIZE));
+
+        if (Boolean.TRUE.equals(excludeValue)) {
+            facts.parallelStream().forEach(fact -> fact.setValue(null));
+        }
+        return facts;
     }
 
 
@@ -335,7 +355,8 @@ public class FactServices<V> {
                 searchFactRequest.getSubject(), searchFactRequest.getGroup(), searchFactRequest.getElement(),
                 searchFactRequest.getElementName(), searchFactRequest.getFactType(), searchFactRequest.getFrom(),
                 searchFactRequest.getTo(), searchFactRequest.getLastDays(), searchFactRequest.getLatestByUser(),
-                searchFactRequest.getCustomProperties(), searchFactRequest.getValueParameters(), page, size, authentication, httpRequest);
+                searchFactRequest.getCustomProperties(), searchFactRequest.getValueParameters(), page, size,
+                searchFactRequest.isExcludeValue(), authentication, httpRequest);
     }
 
 
@@ -357,6 +378,7 @@ public class FactServices<V> {
             - latestByUser: only gets the latest fact by each different user.
             - parameters: set of parameters/value pairs that are specific for each fact (search in the value).
             - customProperties: map of properties that are specific for each fact (search in custom properties).
+            - excludeValue: Facts does not include the value (payload).
             """,
             security = @SecurityRequirement(name = "bearerAuth"))
     @PreAuthorize("hasAnyAuthority(@securityService.viewerPrivilege, @securityService.editorPrivilege, @securityService.adminPrivilege,"
@@ -384,6 +406,7 @@ public class FactServices<V> {
             @RequestParam(name = "page", defaultValue = "0") Optional<Integer> page,
             @RequestParam(name = "size", defaultValue = StorableObjectProvider.MAX_PAGE_SIZE + "") Optional<Integer> size,
             @RequestBody(required = false) Collection<CustomPropertyDTO> customProperties,
+            @Parameter(name = "excludeValue") @RequestParam(name = "excludeValue", defaultValue = "false", required = false) Boolean excludeValue,
             Authentication authentication,
             HttpServletRequest httpRequest) {
 
@@ -411,17 +434,22 @@ public class FactServices<V> {
                     securityService.getAdminPrivilege(), securityService.getEditorPrivilege());
         }
 
-        return factController.findBy(organization, unit, Collections.singletonList(authentication.getName()), application,
+        final Collection<FactDTO> facts = factController.findBy(organization, unit, Collections.singletonList(authentication.getName()), application,
                 tenant, session, subject, group, element, elementName,
                 factType,
                 from != null ? LocalDateTime.ofInstant(from.toInstant(), ZoneId.systemDefault()) : null,
                 to != null ? LocalDateTime.ofInstant(to.toInstant(), ZoneId.systemDefault()) : null,
                 lastDays, latestByUser, null, customPropertiesMap, pairs,
                 page.orElse(0), size.orElse(StorableObjectProvider.MAX_PAGE_SIZE));
+
+        if (Boolean.TRUE.equals(excludeValue)) {
+            facts.parallelStream().forEach(fact -> fact.setValue(null));
+        }
+        return facts;
     }
 
 
-    @Operation(summary = "Update all facts from a session. This method alter the content into the database.",
+    @Operation(summary = "Update all facts from a session. This method alters the content stored into the database.",
             security = @SecurityRequirement(name = "bearerAuth"))
     @PreAuthorize("hasAnyAuthority(@securityService.adminPrivilege)")
     @ResponseStatus(value = HttpStatus.OK)

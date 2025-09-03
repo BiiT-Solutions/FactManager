@@ -36,6 +36,7 @@ public class SearchFactRequest {
     private Boolean latestByUser;
     private Collection<CustomPropertyDTO> customProperties;
     private List<String> valueParameters;
+    private boolean excludeValue;
 
     public String getOrganization() {
         return organization;
@@ -171,5 +172,13 @@ public class SearchFactRequest {
 
     public void setValueParameters(List<String> valueParameters) {
         this.valueParameters = valueParameters;
+    }
+
+    public boolean isExcludeValue() {
+        return excludeValue;
+    }
+
+    public void setExcludeValue(boolean excludeValue) {
+        this.excludeValue = excludeValue;
     }
 }
