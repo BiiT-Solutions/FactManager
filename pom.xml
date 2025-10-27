@@ -7,6 +7,7 @@
     <name>FactManager</name>
     <packaging>pom</packaging>
     <description>Application for handling facts as events and store them on database.</description>
+    <url>https://github.com/BiiT-Solutions</url>
 
     <parent>
         <groupId>com.biit-solutions</groupId>
@@ -66,7 +67,6 @@
 
 
     <build>
-        <finalName>factManager</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

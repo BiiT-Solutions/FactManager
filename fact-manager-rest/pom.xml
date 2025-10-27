@@ -4,6 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
     <name>FactManager (Rest)</name>
     <artifactId>fact-manager-rest</artifactId>
+    <description>Application for handling facts as events and store them on database (REST API).</description>
+    <url>https://github.com/BiiT-Solutions</url>
 
     <parent>
         <artifactId>fact-manager</artifactId>

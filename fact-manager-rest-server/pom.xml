@@ -3,7 +3,6 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>fact-manager-rest-server</artifactId>
     <name>FactManager (Rest Server)</name>
-    <description>Project for running the Fact Server</description>
 
     <parent>
         <groupId>com.biit-solutions</groupId>

@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <name>FactManager (core)</name>
     <artifactId>fact-manager-core</artifactId>
-
+    <name>FactManager (core)</name>
+    <description>Application for handling facts as events and store them on database (Core).</description>
+    <url>https://github.com/BiiT-Solutions</url>
 
     <parent>
         <artifactId>fact-manager</artifactId>
         <groupId>com.biit-solutions</groupId>
         <version>0.5.153-SNAPSHOT</version>
     </parent>
-
 
     <properties>
         <main.basedir>${basedir}/..</main.basedir>
@@ -31,15 +32,18 @@
         <dependency>
             <groupId>com.biit-solutions</groupId>
             <artifactId>form-result-xls</artifactId>
+            <version>${form-result-xls.version}</version>
         </dependency>
         <dependency>
             <groupId>com.biit-solutions.drools</groupId>
             <artifactId>drools-submitted-form-xls</artifactId>
+            <version>${drools-submitted-form-xls.version}</version>
         </dependency>
         <!-- Testing -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
+            <version>${org.testng.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
