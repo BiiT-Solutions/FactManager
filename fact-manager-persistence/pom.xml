@@ -7,7 +7,7 @@
 
     <parent>
         <artifactId>fact-manager</artifactId>
-        <groupId>com.biit</groupId>
+        <groupId>com.biit-solutions</groupId>
         <version>0.5.151-SNAPSHOT</version>
     </parent>
 
@@ -24,23 +24,23 @@
         </dependency>
 
         <dependency>
-            <groupId>com.biit</groupId>
+            <groupId>com.biit-solutions</groupId>
             <artifactId>database-encryptor</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.biit</groupId>
+            <groupId>com.biit-solutions.kafka</groupId>
             <artifactId>kafka-client</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.biit</groupId>
+            <groupId>com.biit-solutions</groupId>
             <artifactId>fact-manager-logger</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.biit</groupId>
+            <groupId>com.biit-solutions</groupId>
             <artifactId>rest-server-persistence</artifactId>
         </dependency>
 
@@ -52,7 +52,7 @@
 
 
         <dependency>
-            <groupId>com.biit</groupId>
+            <groupId>com.biit-solutions</groupId>
             <artifactId>common-utils</artifactId>
         </dependency>
 
@@ -82,7 +82,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.biit</groupId>
+            <groupId>com.biit-solutions.kafka</groupId>
             <artifactId>event-structure</artifactId>
         </dependency>
 

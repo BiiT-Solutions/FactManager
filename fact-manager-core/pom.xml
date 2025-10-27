@@ -8,7 +8,7 @@
 
     <parent>
         <artifactId>fact-manager</artifactId>
-        <groupId>com.biit</groupId>
+        <groupId>com.biit-solutions</groupId>
         <version>0.5.151-SNAPSHOT</version>
     </parent>
 
@@ -19,21 +19,21 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.biit</groupId>
+            <groupId>com.biit-solutions</groupId>
             <artifactId>fact-manager-persistence</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.biit</groupId>
+            <groupId>com.biit-solutions</groupId>
             <artifactId>fact-manager-dto</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.biit</groupId>
+            <groupId>com.biit-solutions</groupId>
             <artifactId>form-result-xls</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.biit.drools</groupId>
+            <groupId>com.biit-solutions.drools</groupId>
             <artifactId>drools-submitted-form-xls</artifactId>
         </dependency>
         <!-- Testing -->

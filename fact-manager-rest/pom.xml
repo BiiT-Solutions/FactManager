@@ -7,7 +7,7 @@
 
     <parent>
         <artifactId>fact-manager</artifactId>
-        <groupId>com.biit</groupId>
+        <groupId>com.biit-solutions</groupId>
         <version>0.5.151-SNAPSHOT</version>
     </parent>
 
@@ -17,20 +17,20 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.biit</groupId>
+            <groupId>com.biit-solutions</groupId>
             <artifactId>fact-manager-kafka</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.biit</groupId>
+            <groupId>com.biit-solutions</groupId>
             <artifactId>rest-server-rest</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.biit</groupId>
+            <groupId>com.biit-solutions</groupId>
             <artifactId>user-manager-system-rest-client</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.biit</groupId>
+            <groupId>com.biit-solutions</groupId>
             <artifactId>rest-server-defaults</artifactId>
         </dependency>
         <dependency>
@@ -68,7 +68,7 @@
         </dependency>
         <!-- Testing -->
         <dependency>
-            <groupId>com.biit</groupId>
+            <groupId>com.biit-solutions</groupId>
             <artifactId>user-manager-system-test</artifactId>
             <scope>test</scope>
         </dependency>

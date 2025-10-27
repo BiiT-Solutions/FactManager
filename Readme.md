@@ -42,7 +42,7 @@ If you want to access to this server, a client is provided to help you. Include 
 
 ```
  <dependency>
-       <groupId>com.biit</groupId>
+       <groupId>com.biit-solutions</groupId>
        <artifactId>fact-manager-rest-client</artifactId>
  </dependency>
 ```

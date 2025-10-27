@@ -7,7 +7,7 @@
 
     <parent>
         <artifactId>fact-manager</artifactId>
-        <groupId>com.biit</groupId>
+        <groupId>com.biit-solutions</groupId>
         <version>0.5.151-SNAPSHOT</version>
     </parent>
 
@@ -17,12 +17,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.biit</groupId>
+            <groupId>com.biit-solutions</groupId>
             <artifactId>fact-manager-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.biit</groupId>
+            <groupId>com.biit-solutions.kafka</groupId>
             <artifactId>kafka-client</artifactId>
         </dependency>
 
